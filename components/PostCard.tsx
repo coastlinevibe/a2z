@@ -108,9 +108,9 @@ export function PostCard({
         </h2>
 
         {/* Emoji tags */}
-        {post.emoji_tags.length > 0 && (
+        {post.emoji_tags && post.emoji_tags.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-3">
-            {post.emoji_tags.map((tag, index) => (
+            {(post.emoji_tags || []).map((tag, index) => (
               <span
                 key={index}
                 className="inline-block px-2 py-1 bg-gray-100 text-gray-700 text-sm rounded-full"
