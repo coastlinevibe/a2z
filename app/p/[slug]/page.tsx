@@ -33,7 +33,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const price = formatPrice(post.price_cents, post.currency)
-  const baseUrl = process.env.SELLR_BASE_URL || 'http://localhost:3000'
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SELLR_BASE_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
   const publicUrl = `${baseUrl}/p/${post.slug}`
 
   return {
@@ -89,7 +91,7 @@ async function incrementViews(postId: string) {
 async function handleAnalytics(postId: string, action: 'view' | 'click') {
   'use server'
   
-  await fetch(`${process.env.SELLR_BASE_URL || 'http://localhost:3000'}/api/posts/${postId}`, {
+  await fetch(`${process.env.NEXT_PUBLIC_SELLR_BASE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')}/api/posts/${postId}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action }),
@@ -141,13 +143,13 @@ export default async function PublicPostPage({ params }: PageProps) {
               <div className="flex items-center space-x-2">
                 <input
                   type="text"
-                  value={`${process.env.SELLR_BASE_URL || 'http://localhost:3000'}/p/${post.slug}`}
+                  value={`${process.env.NEXT_PUBLIC_SELLR_BASE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')}/p/${post.slug}`}
                   readOnly
                   className="flex-1 px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm"
                 />
                 <button
                   onClick={() => {
-                    navigator.clipboard.writeText(`${process.env.SELLR_BASE_URL || 'http://localhost:3000'}/p/${post.slug}`)
+                    navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_SELLR_BASE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')}/p/${post.slug}`)
                     alert('Link copied!')
                   }}
                   className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
@@ -166,7 +168,7 @@ export default async function PublicPostPage({ params }: PageProps) {
                   {generateShareMessage(
                     post.title,
                     formatPrice(post.price_cents, post.currency),
-                    `${process.env.SELLR_BASE_URL || 'http://localhost:3000'}/p/${post.slug}`
+                    `${process.env.NEXT_PUBLIC_SELLR_BASE_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')}/p/${post.slug}`
                   )}
                 </pre>
               </div>

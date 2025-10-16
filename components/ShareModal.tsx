@@ -21,7 +21,10 @@ export function ShareModal({ isOpen, onClose, post, className }: ShareModalProps
 
   if (!isOpen) return null
 
-  const baseUrl = process.env.NEXT_PUBLIC_SELLR_BASE_URL || 'http://localhost:3000'
+  // Prefer explicit env; otherwise use current origin in the browser.
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SELLR_BASE_URL ||
+    (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000')
   const publicUrl = `${baseUrl}/p/${post.slug}`
   const price = formatPrice(post.price_cents, post.currency)
   const shareMessage = generateShareMessage(post.title, price, publicUrl)
