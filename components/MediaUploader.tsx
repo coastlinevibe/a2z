@@ -9,6 +9,9 @@ interface MediaUploaderProps {
   onMediaChange: (urls: string[]) => void
   maxFiles?: number
   className?: string
+  displayType?: 'hover' | 'slider' | 'vertical' | 'gallery'
+  mediaDescriptions?: Record<string, string>
+  onDescriptionsChange?: (descriptions: Record<string, string>) => void
 }
 
 interface UploadingFile {
@@ -23,7 +26,10 @@ export function MediaUploader({
   mediaUrls, 
   onMediaChange, 
   maxFiles = 9,
-  className 
+  className,
+  displayType = 'hover',
+  mediaDescriptions = {},
+  onDescriptionsChange
 }: MediaUploaderProps) {
   const [uploadingFiles, setUploadingFiles] = useState<UploadingFile[]>([])
   const [dragActive, setDragActive] = useState(false)
@@ -321,6 +327,56 @@ export function MediaUploader({
                   >
                     <X className="h-3 w-3" />
                   </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Image Descriptions for Gallery Mode */}
+        {displayType === 'gallery' && mediaUrls.length > 0 && (
+          <div className="mt-4 space-y-3">
+            <label className="block text-sm font-medium text-gray-700">
+              Image Descriptions (Optional)
+            </label>
+            <div className="space-y-2">
+              {mediaUrls.map((url, index) => (
+                <div key={url} className="flex items-start gap-3">
+                  <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                    {url.includes('.mp4') || url.includes('.webm') ? (
+                      <video
+                        src={url}
+                        className="w-full h-full object-cover"
+                        muted
+                      />
+                    ) : (
+                      <img
+                        src={url}
+                        alt={`Image ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <input
+                      type="text"
+                      value={mediaDescriptions[url] || ''}
+                      onChange={(e) => {
+                        if (onDescriptionsChange) {
+                          onDescriptionsChange({
+                            ...mediaDescriptions,
+                            [url]: e.target.value
+                          })
+                        }
+                      }}
+                      placeholder={`Description for image ${index + 1}`}
+                      maxLength={100}
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      {(mediaDescriptions[url] || '').length}/100 characters
+                    </p>
+                  </div>
                 </div>
               ))}
             </div>

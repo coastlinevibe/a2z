@@ -1,5 +1,11 @@
 import { z } from 'zod'
 
+// Media item schema for gallery with descriptions
+export const mediaItemSchema = z.object({
+  url: z.string().url(),
+  description: z.string().max(100, 'Description must be less than 100 characters').optional(),
+})
+
 // Post creation schema
 export const createPostSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters').max(80, 'Title must be less than 80 characters'),
@@ -7,7 +13,8 @@ export const createPostSchema = z.object({
   currency: z.string().default('ZAR'),
   description: z.string().max(600, 'Description must be less than 600 characters').optional(),
   emoji_tags: z.array(z.string()).max(4, 'Maximum 4 emoji tags allowed'),
-  media_urls: z.array(z.string().url()).min(1, 'At least one image is required'),
+  media_urls: z.array(z.string().url()).min(1, 'At least one image is required').max(8, 'Maximum 8 images allowed'),
+  media_items: z.array(mediaItemSchema).max(8, 'Maximum 8 images allowed').optional(),
   whatsapp_number: z.string()
     .transform((val) => {
       if (!val) return val

@@ -22,7 +22,8 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
   const [createdPost, setCreatedPost] = useState<any>(null)
   const [showShareModal, setShowShareModal] = useState(false)
   const [previewLayout, setPreviewLayout] = useState<'square' | 'portrait' | 'landscape'>('square')
-  const [displayType, setDisplayType] = useState<'hover' | 'slider'>('hover')
+  const [displayType, setDisplayType] = useState<'hover' | 'slider' | 'vertical' | 'gallery'>('hover')
+  const [mediaDescriptions, setMediaDescriptions] = useState<Record<string, string>>({})
 
   const {
     register,
@@ -37,6 +38,7 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
       currency: 'ZAR',
       emoji_tags: [],
       media_urls: [],
+      media_items: [],
     },
   })
 
@@ -86,6 +88,7 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
     description: watchedValues.description || undefined,
     emoji_tags: watchedValues.emoji_tags || [],
     media_urls: watchedValues.media_urls || [],
+    media_descriptions: mediaDescriptions,
     whatsapp_number: watchedValues.whatsapp_number || undefined,
     location: watchedValues.location || undefined,
     views: 0,
@@ -112,6 +115,10 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
             <MediaUploader
               mediaUrls={watchedValues.media_urls || []}
               onMediaChange={(urls) => setValue('media_urls', urls)}
+              displayType={displayType}
+              mediaDescriptions={mediaDescriptions}
+              onDescriptionsChange={setMediaDescriptions}
+              maxFiles={8}
             />
 
             {/* Image Display Options */}
@@ -119,24 +126,24 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
               <label className="block text-sm font-medium text-gray-700 mb-3">
                 Image Display
               </label>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-4 gap-2">
                 {/* Hover Gallery */}
                 <button
                   type="button"
                   onClick={() => setDisplayType('hover')}
                   className={cn(
-                    'p-3 border-2 rounded-lg transition-colors',
+                    'p-2 border-2 rounded-lg transition-colors',
                     displayType === 'hover'
                       ? 'border-emerald-500 bg-emerald-50'
                       : 'border-gray-200 hover:border-gray-300'
                   )}
                 >
-                  <div className="flex flex-col items-center space-y-2">
-                    <div className="w-10 h-10 bg-gray-300 rounded-lg flex items-center justify-center">
-                      <span className="text-xl">🖼️</span>
+                  <div className="flex flex-col items-center space-y-1">
+                    <div className="w-8 h-8 bg-gray-300 rounded-lg flex items-center justify-center">
+                      <span className="text-lg">🖼️</span>
                     </div>
-                    <div className="font-medium text-gray-900 text-sm text-center">
-                      Hover Gallery
+                    <div className="font-medium text-gray-900 text-xs text-center">
+                      Hover
                     </div>
                   </div>
                 </button>
@@ -146,18 +153,60 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
                   type="button"
                   onClick={() => setDisplayType('slider')}
                   className={cn(
-                    'p-3 border-2 rounded-lg transition-colors',
+                    'p-2 border-2 rounded-lg transition-colors',
                     displayType === 'slider'
                       ? 'border-emerald-500 bg-emerald-50'
                       : 'border-gray-200 hover:border-gray-300'
                   )}
                 >
-                  <div className="flex flex-col items-center space-y-2">
-                    <div className="w-10 h-10 bg-gray-300 rounded-lg flex items-center justify-center">
-                      <span className="text-xl">↔️</span>
+                  <div className="flex flex-col items-center space-y-1">
+                    <div className="w-8 h-8 bg-gray-300 rounded-lg flex items-center justify-center">
+                      <span className="text-lg">↔️</span>
                     </div>
-                    <div className="font-medium text-gray-900 text-sm text-center">
-                      Horizontal Slider
+                    <div className="font-medium text-gray-900 text-xs text-center">
+                      Horizontal
+                    </div>
+                  </div>
+                </button>
+
+                {/* Vertical Slider */}
+                <button
+                  type="button"
+                  onClick={() => setDisplayType('vertical')}
+                  className={cn(
+                    'p-2 border-2 rounded-lg transition-colors',
+                    displayType === 'vertical'
+                      ? 'border-emerald-500 bg-emerald-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                  )}
+                >
+                  <div className="flex flex-col items-center space-y-1">
+                    <div className="w-8 h-8 bg-gray-300 rounded-lg flex items-center justify-center">
+                      <span className="text-lg">↕️</span>
+                    </div>
+                    <div className="font-medium text-gray-900 text-xs text-center">
+                      Vertical
+                    </div>
+                  </div>
+                </button>
+
+                {/* Masonry Gallery */}
+                <button
+                  type="button"
+                  onClick={() => setDisplayType('gallery')}
+                  className={cn(
+                    'p-2 border-2 rounded-lg transition-colors',
+                    displayType === 'gallery'
+                      ? 'border-emerald-500 bg-emerald-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                  )}
+                >
+                  <div className="flex flex-col items-center space-y-1">
+                    <div className="w-8 h-8 bg-gray-300 rounded-lg flex items-center justify-center">
+                      <span className="text-lg">🎨</span>
+                    </div>
+                    <div className="font-medium text-gray-900 text-xs text-center">
+                      Gallery
                     </div>
                   </div>
                 </button>

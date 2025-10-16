@@ -5,6 +5,8 @@ import { MessageCircle, ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn, formatPrice } from '@/lib/utils'
 import { HoverGallery } from './HoverGallery'
 import { HorizontalSlider } from './HorizontalSlider'
+import { VerticalSlider } from './VerticalSlider'
+import { MasonryGallery } from './MasonryGallery'
 
 interface Post {
   id: string
@@ -14,6 +16,7 @@ interface Post {
   description?: string | null
   emoji_tags: string[]
   media_urls: string[]
+  media_descriptions?: Record<string, string>
   whatsapp_number?: string | null
   location?: string | null
 }
@@ -21,7 +24,7 @@ interface Post {
 interface PostCardPreviewProps {
   post: Post
   layout?: 'square' | 'portrait' | 'landscape'
-  displayType?: 'hover' | 'slider'
+  displayType?: 'hover' | 'slider' | 'vertical' | 'gallery'
   className?: string
 }
 
@@ -78,11 +81,24 @@ export function PostCardPreview({
             aspectRatio={layout}
             className="rounded-t-xl"
           />
-        ) : (
+        ) : displayType === 'slider' ? (
           <HorizontalSlider 
             images={post.media_urls}
             alt={post.title}
             className="rounded-t-xl"
+          />
+        ) : displayType === 'vertical' ? (
+          <VerticalSlider 
+            images={post.media_urls}
+            alt={post.title}
+            className="rounded-t-xl"
+          />
+        ) : (
+          <MasonryGallery 
+            images={post.media_urls}
+            alt={post.title}
+            className="rounded-t-xl"
+            descriptions={post.media_descriptions || {}}
           />
         )}
       </div>
