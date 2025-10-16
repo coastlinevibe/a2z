@@ -119,29 +119,24 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
               <label className="block text-sm font-medium text-gray-700 mb-3">
                 Image Display
               </label>
-              <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
                 {/* Hover Gallery */}
                 <button
                   type="button"
                   onClick={() => setDisplayType('hover')}
                   className={cn(
-                    'w-full p-4 border-2 rounded-lg text-left transition-colors',
+                    'p-3 border-2 rounded-lg transition-colors',
                     displayType === 'hover'
                       ? 'border-emerald-500 bg-emerald-50'
                       : 'border-gray-200 hover:border-gray-300'
                   )}
                 >
-                  <div className="flex items-center space-x-3">
-                    <div className="flex-shrink-0">
-                      <div className="w-12 h-12 bg-gray-300 rounded-lg flex items-center justify-center">
-                        <span className="text-2xl">🖼️</span>
-                      </div>
+                  <div className="flex flex-col items-center space-y-2">
+                    <div className="w-10 h-10 bg-gray-300 rounded-lg flex items-center justify-center">
+                      <span className="text-xl">🖼️</span>
                     </div>
-                    <div className="flex-1">
-                      <div className="font-medium text-gray-900">Hover Gallery</div>
-                      <div className="text-sm text-gray-500">
-                        Customers can hover or swipe to browse all images
-                      </div>
+                    <div className="font-medium text-gray-900 text-sm text-center">
+                      Hover Gallery
                     </div>
                   </div>
                 </button>
@@ -151,23 +146,18 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
                   type="button"
                   onClick={() => setDisplayType('slider')}
                   className={cn(
-                    'w-full p-4 border-2 rounded-lg text-left transition-colors',
+                    'p-3 border-2 rounded-lg transition-colors',
                     displayType === 'slider'
                       ? 'border-emerald-500 bg-emerald-50'
                       : 'border-gray-200 hover:border-gray-300'
                   )}
                 >
-                  <div className="flex items-center space-x-3">
-                    <div className="flex-shrink-0">
-                      <div className="w-12 h-12 bg-gray-300 rounded-lg flex items-center justify-center">
-                        <span className="text-2xl">↔️</span>
-                      </div>
+                  <div className="flex flex-col items-center space-y-2">
+                    <div className="w-10 h-10 bg-gray-300 rounded-lg flex items-center justify-center">
+                      <span className="text-xl">↔️</span>
                     </div>
-                    <div className="flex-1">
-                      <div className="font-medium text-gray-900">Horizontal Slider</div>
-                      <div className="text-sm text-gray-500">
-                        Swipeable carousel with thumbnail navigation
-                      </div>
+                    <div className="font-medium text-gray-900 text-sm text-center">
+                      Horizontal Slider
                     </div>
                   </div>
                 </button>
