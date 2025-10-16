@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { MessageCircle, ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn, formatPrice } from '@/lib/utils'
 import { HoverGallery } from './HoverGallery'
+import { HorizontalSlider } from './HorizontalSlider'
 
 interface Post {
   id: string
@@ -20,12 +21,14 @@ interface Post {
 interface PostCardPreviewProps {
   post: Post
   layout?: 'square' | 'portrait' | 'landscape'
+  displayType?: 'hover' | 'slider'
   className?: string
 }
 
 export function PostCardPreview({ 
   post, 
   layout = 'square',
+  displayType = 'hover',
   className 
 }: PostCardPreviewProps) {
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0)
@@ -66,14 +69,22 @@ export function PostCardPreview({
       'bg-white rounded-xl shadow-lg overflow-hidden max-w-md mx-auto',
       className
     )}>
-      {/* Hover Gallery */}
+      {/* Image Display */}
       <div className="group">
-        <HoverGallery 
-          images={post.media_urls}
-          alt={post.title}
-          aspectRatio={layout}
-          className="rounded-t-xl"
-        />
+        {displayType === 'hover' ? (
+          <HoverGallery 
+            images={post.media_urls}
+            alt={post.title}
+            aspectRatio={layout}
+            className="rounded-t-xl"
+          />
+        ) : (
+          <HorizontalSlider 
+            images={post.media_urls}
+            alt={post.title}
+            className="rounded-t-xl"
+          />
+        )}
       </div>
 
       {/* Content */}

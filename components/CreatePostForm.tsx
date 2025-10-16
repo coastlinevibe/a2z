@@ -22,6 +22,7 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
   const [createdPost, setCreatedPost] = useState<any>(null)
   const [showShareModal, setShowShareModal] = useState(false)
   const [previewLayout, setPreviewLayout] = useState<'square' | 'portrait' | 'landscape'>('square')
+  const [displayType, setDisplayType] = useState<'hover' | 'slider'>('hover')
 
   const {
     register,
@@ -113,35 +114,64 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
               onMediaChange={(urls) => setValue('media_urls', urls)}
             />
 
-            {/* Hover Gallery Option */}
+            {/* Image Display Options */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-3">
                 Image Display
               </label>
-              <button
-                type="button"
-                onClick={() => setPreviewLayout('square')}
-                className={cn(
-                  'w-full p-4 border-2 rounded-lg text-left transition-colors',
-                  previewLayout === 'square'
-                    ? 'border-emerald-500 bg-emerald-50'
-                    : 'border-gray-200 hover:border-gray-300'
-                )}
-              >
-                <div className="flex items-center space-x-3">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 bg-gray-300 rounded-lg flex items-center justify-center">
-                      <span className="text-2xl">🖼️</span>
+              <div className="space-y-3">
+                {/* Hover Gallery */}
+                <button
+                  type="button"
+                  onClick={() => setDisplayType('hover')}
+                  className={cn(
+                    'w-full p-4 border-2 rounded-lg text-left transition-colors',
+                    displayType === 'hover'
+                      ? 'border-emerald-500 bg-emerald-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                  )}
+                >
+                  <div className="flex items-center space-x-3">
+                    <div className="flex-shrink-0">
+                      <div className="w-12 h-12 bg-gray-300 rounded-lg flex items-center justify-center">
+                        <span className="text-2xl">🖼️</span>
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium text-gray-900">Hover Gallery</div>
+                      <div className="text-sm text-gray-500">
+                        Customers can hover or swipe to browse all images
+                      </div>
                     </div>
                   </div>
-                  <div className="flex-1">
-                    <div className="font-medium text-gray-900">Hover Gallery</div>
-                    <div className="text-sm text-gray-500">
-                      Customers can hover or swipe to browse all images
+                </button>
+
+                {/* Horizontal Slider */}
+                <button
+                  type="button"
+                  onClick={() => setDisplayType('slider')}
+                  className={cn(
+                    'w-full p-4 border-2 rounded-lg text-left transition-colors',
+                    displayType === 'slider'
+                      ? 'border-emerald-500 bg-emerald-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                  )}
+                >
+                  <div className="flex items-center space-x-3">
+                    <div className="flex-shrink-0">
+                      <div className="w-12 h-12 bg-gray-300 rounded-lg flex items-center justify-center">
+                        <span className="text-2xl">↔️</span>
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium text-gray-900">Horizontal Slider</div>
+                      <div className="text-sm text-gray-500">
+                        Swipeable carousel with thumbnail navigation
+                      </div>
                     </div>
                   </div>
-                </div>
-              </button>
+                </button>
+              </div>
             </div>
 
             {/* Title */}
@@ -275,7 +305,7 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
             <h3 className="text-lg font-semibold text-gray-900">
               Live Preview
             </h3>
-            <PostCardPreview post={previewPost} layout={previewLayout} />
+            <PostCardPreview post={previewPost} layout={previewLayout} displayType={displayType} />
             <p className="text-sm text-gray-500 text-center">
               This is how your listing will appear when shared
             </p>
