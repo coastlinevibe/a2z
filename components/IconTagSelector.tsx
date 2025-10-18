@@ -110,7 +110,7 @@ export function IconTagSelector({ selectedTags, onChange, maxTags = 5 }: IconTag
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <label className="block text-sm font-medium text-gray-700">
-          Category Tags
+          Category Tags <span className="text-red-500">*</span>
         </label>
         <span className="text-xs text-gray-500">
           {selectedTags.length}/{maxTags} selected
