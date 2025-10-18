@@ -16,6 +16,16 @@ const nextConfig = {
   },
   // Enable static exports for better performance
   output: 'standalone',
+  // Workaround: avoid server vendor-chunk resolution for @supabase packages on Windows/Dev
+  // by externalizing them from the server bundle so Node resolves them from node_modules.
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      const externals = config.externals || []
+      externals.push(/^@supabase\/.*$/)
+      config.externals = externals
+    }
+    return config
+  },
 }
 
 module.exports = nextConfig

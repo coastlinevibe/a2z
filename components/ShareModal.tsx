@@ -26,7 +26,7 @@ export function ShareModal({ isOpen, onClose, post, username, className }: Share
   // Prefer explicit env; otherwise use current origin in the browser.
   const baseUrl =
     process.env.NEXT_PUBLIC_SELLR_BASE_URL ||
-    (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000')
+    (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3004')
   
   // Use username from prop or post object
   const userSlug = username || post.username

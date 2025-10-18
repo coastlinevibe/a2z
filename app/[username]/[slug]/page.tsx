@@ -2,12 +2,13 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@supabase/supabase-js'
 import { PostCard } from '@/components/PostCard'
+import { ShareSection } from '@/components/ShareSection'
 import { formatPrice } from '@/lib/utils'
 import type { Metadata } from 'next'
 
-// Server-side Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+// Server-side Supabase client with fallbacks
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://localhost:54321'
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0'
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 interface PageProps {
@@ -54,7 +55,10 @@ async function incrementViews(postId: string) {
       body: JSON.stringify({ action: 'view' }),
       cache: 'no-store',
     })
-  } catch {}
+  } catch (error) {
+    console.error('Failed to increment views:', error)
+    // Don't fail the page render if analytics fail
+  }
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -115,11 +119,6 @@ export default async function UserListingPage({ params }: PageProps) {
   // Increment views
   incrementViews(post.id)
 
-  const baseUrl =
-    process.env.NEXT_PUBLIC_SELLR_BASE_URL ||
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
-  const publicUrl = `${baseUrl}/${username}/${post.slug}`
-
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -140,47 +139,7 @@ export default async function UserListingPage({ params }: PageProps) {
         />
 
         {/* Share Section */}
-        <div className="mt-8 bg-white rounded-xl shadow-sm p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            Share This Listing
-          </h3>
-          
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Copy Link
-              </label>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="text"
-                  value={publicUrl}
-                  readOnly
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm"
-                />
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(publicUrl)
-                    alert('Link copied!')
-                  }}
-                  className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
-                >
-                  Copy
-                </button>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                WhatsApp Message
-              </label>
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                <pre className="text-sm text-gray-700 whitespace-pre-wrap font-sans">
-                  {`${post.title} — ${formatPrice(post.price_cents, post.currency)}\n${publicUrl}`}
-                </pre>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ShareSection post={post} username={username} />
 
         {/* Back to Sellr */}
         <div className="mt-8 text-center">

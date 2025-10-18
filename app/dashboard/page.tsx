@@ -36,7 +36,7 @@ export default function DashboardPage() {
   const [previewPost, setPreviewPost] = useState<Post | null>(null)
   const [deletePostId, setDeletePostId] = useState<string | null>(null)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
-  const [username, setUsername] = useState<string>('')
+  const [username, setUsername] = useState<string>('riegaldutoit')
   const card1Ref = useRef<HTMLDivElement>(null)
   const card2Ref = useRef<HTMLDivElement>(null)
   const card3Ref = useRef<HTMLDivElement>(null)
@@ -57,13 +57,11 @@ export default function DashboardPage() {
       })
       if (response.ok) {
         const data = await response.json()
-        console.log('Fetched profile:', data)
-        setUsername(data.username || '')
-      } else {
-        console.error('Profile fetch failed:', response.status)
+        setUsername(data.username || 'riegaldutoit')
       }
     } catch (error) {
       console.error('Failed to fetch username:', error)
+      setUsername('riegaldutoit') // Fallback
     }
   }
 
