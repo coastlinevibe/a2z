@@ -114,7 +114,7 @@ export async function GET(request: NextRequest) {
       query = query.eq('is_active', true)
     }
 
-    const { data: posts, error } = await query
+    let { data: posts, error } = await query
 
     if (error) {
       console.error('Supabase select error:', error)
@@ -122,6 +122,22 @@ export async function GET(request: NextRequest) {
         { error: 'Failed to fetch posts' },
         { status: 500 }
       )
+    }
+
+    // Add username to posts that don't have it
+    if (posts && owner) {
+      const { data: profile } = await supabaseAdmin
+        .from('profiles')
+        .select('username')
+        .eq('id', owner)
+        .single()
+
+      if (profile?.username) {
+        posts = posts.map(post => ({
+          ...post,
+          username: post.username || profile.username
+        }))
+      }
     }
 
     return NextResponse.json({
