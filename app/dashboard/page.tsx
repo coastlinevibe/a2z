@@ -36,6 +36,7 @@ export default function DashboardPage() {
   const [previewPost, setPreviewPost] = useState<Post | null>(null)
   const [deletePostId, setDeletePostId] = useState<string | null>(null)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [username, setUsername] = useState<string>('')
   const card1Ref = useRef<HTMLDivElement>(null)
   const card2Ref = useRef<HTMLDivElement>(null)
   const card3Ref = useRef<HTMLDivElement>(null)
@@ -43,8 +44,25 @@ export default function DashboardPage() {
   useEffect(() => {
     if (user && !authLoading) {
       fetchPosts()
+      fetchUsername()
     }
   }, [user, authLoading])
+
+  const fetchUsername = async () => {
+    try {
+      const response = await fetch('/api/profile', {
+        headers: {
+          'Authorization': `Bearer ${session?.access_token}`
+        }
+      })
+      if (response.ok) {
+        const data = await response.json()
+        setUsername(data.username || '')
+      }
+    } catch (error) {
+      console.error('Failed to fetch username:', error)
+    }
+  }
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>, ref: React.RefObject<HTMLDivElement>) => {
     if (!ref.current) return
@@ -514,6 +532,7 @@ export default function DashboardPage() {
             isOpen={!!sharePost}
             onClose={() => setSharePost(null)}
             post={sharePost}
+            username={username}
           />
         )}
 

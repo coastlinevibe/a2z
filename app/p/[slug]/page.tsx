@@ -5,7 +5,7 @@ import { formatPrice, generateShareMessage } from '@/lib/utils'
 import type { Metadata } from 'next'
 
 interface PageProps {
-  params: Promise<{ slug: string }>
+  params: { slug: string }
 }
 
 async function getPost(slug: string) {
@@ -24,8 +24,7 @@ async function getPost(slug: string) {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params
-  const post = await getPost(slug)
+  const post = await getPost(params.slug)
 
   if (!post) {
     return {
@@ -97,8 +96,7 @@ async function handleAnalytics(postId: string, action: 'view' | 'click') {
 }
 
 export default async function PublicPostPage({ params }: PageProps) {
-  const { slug } = await params
-  const post = await getPost(slug)
+  const post = await getPost(params.slug)
 
   if (!post) {
     notFound()
@@ -107,13 +105,25 @@ export default async function PublicPostPage({ params }: PageProps) {
   // Increment views (server-side) without blocking the render
   incrementViews(post.id)
 
+  const handleWhatsAppClick = async () => {
+    'use server'
+    await handleAnalytics(post.id, 'click')
+  }
+
+  const handleCallClick = async () => {
+    'use server'
+    await handleAnalytics(post.id, 'click')
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Post Card */}
         <PostCard 
           post={post}
-          trackViews={false}
+          trackViews={true}
+          onWhatsAppClick={handleWhatsAppClick}
+          onCallClick={handleCallClick}
         />
 
         {/* Share Section */}
