@@ -30,6 +30,15 @@ export function ShareModal({ isOpen, onClose, post, username, className }: Share
   
   // Use username from prop or post object
   const userSlug = username || post.username
+  
+  // Debug logging
+  console.log('ShareModal Debug:', {
+    username,
+    postUsername: post.username,
+    userSlug,
+    slug: post.slug
+  })
+  
   const publicUrl = userSlug ? `${baseUrl}/${userSlug}/${post.slug}` : `${baseUrl}/p/${post.slug}`
   const price = formatPrice(post.price_cents, post.currency)
   const shareMessage = `${post.title} — ${price}\n${publicUrl}`

@@ -57,7 +57,10 @@ export default function DashboardPage() {
       })
       if (response.ok) {
         const data = await response.json()
+        console.log('Fetched profile:', data)
         setUsername(data.username || '')
+      } else {
+        console.error('Profile fetch failed:', response.status)
       }
     } catch (error) {
       console.error('Failed to fetch username:', error)
@@ -82,6 +85,8 @@ export default function DashboardPage() {
       const result = await response.json()
       
       if (result.ok) {
+        console.log('Fetched posts:', result.data)
+        console.log('First post username:', result.data[0]?.username)
         setPosts(result.data)
       }
     } catch (error) {
