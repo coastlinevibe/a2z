@@ -5,7 +5,7 @@ import { PostCard } from '@/components/PostCard'
 import type { Metadata } from 'next'
 
 interface PageProps {
-  params: { username: string }
+  params: Promise<{ username: string }>
 }
 
 async function getUserProfile(username: string) {
@@ -38,7 +38,8 @@ async function getUserPosts(userId: string) {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const profile = await getUserProfile(params.username)
+  const { username } = await params
+  const profile = await getUserProfile(username)
 
   if (!profile) {
     return {
@@ -47,13 +48,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   return {
-    title: `${profile.display_name || params.username} - Sellr`,
-    description: profile.bio || `Check out ${profile.display_name || params.username}'s listings on Sellr`,
+    title: `${profile.display_name || username} - Sellr`,
+    description: profile.bio || `Check out ${profile.display_name || username}'s listings on Sellr`,
   }
 }
 
 export default async function UserProfilePage({ params }: PageProps) {
-  const profile = await getUserProfile(params.username)
+  const { username } = await params
+  const profile = await getUserProfile(username)
 
   if (!profile) {
     notFound()
@@ -70,19 +72,19 @@ export default async function UserProfilePage({ params }: PageProps) {
             {profile.avatar_url ? (
               <img
                 src={profile.avatar_url}
-                alt={profile.display_name || params.username}
+                alt={profile.display_name || username}
                 className="w-20 h-20 rounded-full"
               />
             ) : (
               <div className="w-20 h-20 rounded-full bg-emerald-500 flex items-center justify-center text-white text-2xl font-bold">
-                {(profile.display_name || params.username).charAt(0).toUpperCase()}
+                {(profile.display_name || username).charAt(0).toUpperCase()}
               </div>
             )}
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
-                {profile.display_name || params.username}
+                {profile.display_name || username}
               </h1>
-              <p className="text-gray-600">@{params.username}</p>
+              <p className="text-gray-600">@{username}</p>
               {profile.bio && (
                 <p className="mt-2 text-gray-700">{profile.bio}</p>
               )}
@@ -106,7 +108,7 @@ export default async function UserProfilePage({ params }: PageProps) {
             {posts.map((post) => (
               <Link
                 key={post.id}
-                href={`/${params.username}/${post.slug}`}
+                href={`/${username}/${post.slug}`}
                 className="block hover:scale-105 transition-transform"
               >
                 <PostCard post={post} trackViews={false} />

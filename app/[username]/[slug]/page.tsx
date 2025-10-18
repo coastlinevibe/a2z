@@ -6,7 +6,7 @@ import { formatPrice, generateShareMessage } from '@/lib/utils'
 import type { Metadata } from 'next'
 
 interface PageProps {
-  params: { username: string; slug: string }
+  params: Promise<{ username: string; slug: string }>
 }
 
 async function getPost(username: string, slug: string) {
@@ -53,7 +53,8 @@ async function incrementViews(postId: string) {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const post = await getPost(params.username, params.slug)
+  const { username, slug } = await params
+  const post = await getPost(username, slug)
 
   if (!post) {
     return {
@@ -65,11 +66,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const baseUrl =
     process.env.NEXT_PUBLIC_SELLR_BASE_URL ||
     (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
-  const publicUrl = `${baseUrl}/${params.username}/${post.slug}`
+  const publicUrl = `${baseUrl}/${username}/${post.slug}`
 
   return {
-    title: `${post.title} - ${price} | ${params.username} on Sellr`,
-    description: post.description || `${post.title} for ${price}. Contact ${params.username} on WhatsApp.`,
+    title: `${post.title} - ${price} | ${username} on Sellr`,
+    description: post.description || `${post.title} for ${price}. Contact ${username} on WhatsApp.`,
     openGraph: {
       title: `${post.title} - ${price}`,
       description: post.description || `${post.title} for ${price}`,
@@ -99,7 +100,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function UserListingPage({ params }: PageProps) {
-  const post = await getPost(params.username, params.slug)
+  const { username, slug } = await params
+  const post = await getPost(username, slug)
 
   if (!post) {
     notFound()
@@ -111,7 +113,7 @@ export default async function UserListingPage({ params }: PageProps) {
   const baseUrl =
     process.env.NEXT_PUBLIC_SELLR_BASE_URL ||
     (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
-  const publicUrl = `${baseUrl}/${params.username}/${post.slug}`
+  const publicUrl = `${baseUrl}/${username}/${post.slug}`
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -119,10 +121,10 @@ export default async function UserListingPage({ params }: PageProps) {
         {/* Breadcrumb */}
         <div className="mb-4">
           <Link
-            href={`/${params.username}`}
+            href={`/${username}`}
             className="text-emerald-600 hover:text-emerald-700 font-medium"
           >
-            ← Back to @{params.username}&apos;s profile
+            ← Back to @{username}&apos;s profile
           </Link>
         </div>
 
