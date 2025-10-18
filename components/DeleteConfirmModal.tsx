@@ -63,7 +63,7 @@ export function DeleteConfirmModal({
             </h3>
             {itemName && (
               <p className="text-sm font-medium text-gray-700 mb-2">
-                "{itemName}"
+                &quot;{itemName}&quot;
               </p>
             )}
             <p className="text-gray-600">
