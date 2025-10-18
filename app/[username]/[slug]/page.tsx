@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabaseClient'
 import { PostCard } from '@/components/PostCard'
-import { formatPrice, generateShareMessage } from '@/lib/utils'
+import { formatPrice } from '@/lib/utils'
 import type { Metadata } from 'next'
 
 interface PageProps {
@@ -170,11 +170,7 @@ export default async function UserListingPage({ params }: PageProps) {
               </label>
               <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
                 <pre className="text-sm text-gray-700 whitespace-pre-wrap font-sans">
-                  {generateShareMessage(
-                    post.title,
-                    formatPrice(post.price_cents, post.currency),
-                    publicUrl
-                  )}
+                  {`${post.title} — ${formatPrice(post.price_cents, post.currency)}\n${publicUrl}`}
                 </pre>
               </div>
             </div>
