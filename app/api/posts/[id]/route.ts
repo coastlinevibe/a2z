@@ -10,11 +10,11 @@ const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const body = await request.json()
-    const postId = params.id
+    const { id: postId } = await params
 
     // Check if this is an analytics action
     const analyticsValidation = analyticsActionSchema.safeParse(body)
@@ -110,10 +110,10 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const postId = params.id
+    const { id: postId } = await params
 
     // Get the authorization header
     const authHeader = request.headers.get('Authorization')
