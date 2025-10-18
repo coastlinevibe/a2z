@@ -1,9 +1,14 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { supabase } from '@/lib/supabaseClient'
+import { createClient } from '@supabase/supabase-js'
 import { PostCard } from '@/components/PostCard'
 import { formatPrice } from '@/lib/utils'
 import type { Metadata } from 'next'
+
+// Server-side Supabase client
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 interface PageProps {
   params: Promise<{ username: string; slug: string }>
