@@ -83,9 +83,22 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Get user's username to add to the post
+    const { data: profile } = await supabaseAdmin
+      .from('profiles')
+      .select('username')
+      .eq('id', user.id)
+      .single()
+
+    // Add username to the post for immediate use in ShareModal
+    const postWithUsername = {
+      ...post,
+      username: profile?.username || null
+    }
+
     return NextResponse.json({
       ok: true,
-      data: post,
+      data: postWithUsername,
     })
   } catch (error) {
     console.error('Posts API error:', error)
