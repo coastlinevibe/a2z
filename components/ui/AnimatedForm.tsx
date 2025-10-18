@@ -21,7 +21,7 @@ export const AnimatedInput = forwardRef<HTMLInputElement, AnimatedInputProps>(
           <input
             type={inputType}
             className={clsx(
-              'peer w-full bg-gray-800 text-white pt-5 pb-1 px-3 outline-none border border-gray-600 rounded-lg transition-all duration-300 focus:border-blue-400 valid:border-blue-400',
+              'peer w-full bg-gray-800 text-white pt-5 pb-1 px-3 outline-none border border-gray-600 rounded-lg transition-all duration-300 focus:border-emerald-400 valid:border-emerald-400',
               showPasswordToggle && isPasswordType && 'pr-10',
               className
             )}
@@ -29,7 +29,7 @@ export const AnimatedInput = forwardRef<HTMLInputElement, AnimatedInputProps>(
             ref={ref}
             {...props}
           />
-          <span className="absolute left-3 top-0 text-gray-400 text-sm cursor-text transition-all duration-300 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-focus:top-0 peer-focus:text-sm peer-focus:text-blue-400 peer-focus:font-semibold peer-valid:top-0 peer-valid:text-sm peer-valid:text-blue-400 peer-valid:font-semibold">
+          <span className="absolute left-3 top-0 text-gray-400 text-sm cursor-text transition-all duration-300 peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-focus:top-0 peer-focus:text-sm peer-focus:text-emerald-400 peer-focus:font-semibold peer-valid:top-0 peer-valid:text-sm peer-valid:text-emerald-400 peer-valid:font-semibold">
             {label}
           </span>
           {showPasswordToggle && isPasswordType && (
@@ -77,7 +77,7 @@ export function AnimatedButton({ children, className, ...props }: AnimatedButton
   return (
     <button
       className={clsx(
-        'border-none outline-none py-3 px-4 rounded-lg text-white text-base transition-all duration-300 bg-blue-500 hover:bg-blue-400 transform hover:scale-[1.02] active:scale-[0.98]',
+        'border-none outline-none py-3 px-4 rounded-lg text-white text-base transition-all duration-300 bg-emerald-600 hover:bg-emerald-500 transform hover:scale-[1.02] active:scale-[0.98]',
         className
       )}
       {...props}

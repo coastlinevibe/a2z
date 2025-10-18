@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabaseClient'
 import { updatePostSchema, analyticsActionSchema } from '@/lib/validators'
+
+// Create admin client for operations that bypass RLS
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
 
 export async function PATCH(
   request: NextRequest,
@@ -109,15 +115,58 @@ export async function DELETE(
   try {
     const postId = params.id
 
-    const { error } = await supabase
+    // Get the authorization header
+    const authHeader = request.headers.get('Authorization')
+    if (!authHeader) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
+    // Verify the user owns this post
+    const token = authHeader.replace('Bearer ', '')
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
+    
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
+    // Check if the post belongs to the user (using admin client to bypass RLS)
+    const { data: post, error: fetchError } = await supabaseAdmin
+      .from('posts')
+      .select('owner')
+      .eq('id', postId)
+      .single()
+
+    if (fetchError || !post) {
+      return NextResponse.json(
+        { error: 'Post not found' },
+        { status: 404 }
+      )
+    }
+
+    if (post.owner !== user.id) {
+      return NextResponse.json(
+        { error: 'Forbidden: You do not own this post' },
+        { status: 403 }
+      )
+    }
+
+    // Delete the post (using admin client to bypass RLS)
+    const { error } = await supabaseAdmin
       .from('posts')
       .delete()
       .eq('id', postId)
+      .eq('owner', user.id)
 
     if (error) {
       console.error('Post delete error:', error)
       return NextResponse.json(
-        { error: 'Failed to delete post' },
+        { error: 'Failed to delete post', details: error.message },
         { status: 500 }
       )
     }

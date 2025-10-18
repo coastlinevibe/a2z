@@ -40,6 +40,7 @@ export const createPostSchema = z.object({
     })
     .optional(),
   location: z.string().optional(),
+  display_type: z.enum(['hover', 'slider', 'vertical', 'premium']).default('hover'),
 })
 
 // Post update schema

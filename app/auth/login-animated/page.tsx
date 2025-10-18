@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/lib/auth'
 import { AnimatedForm, AnimatedInput, AnimatedButton } from '@/components/ui/AnimatedForm'
+import { Home } from 'lucide-react'
 
 export default function AnimatedLoginPage() {
   const [email, setEmail] = useState('')
@@ -37,12 +38,21 @@ export default function AnimatedLoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-black bg-[url('/images/hero/bg2.jpg')] bg-center bg-no-repeat bg-cover py-12 px-4 sm:px-6 lg:px-8 relative">
+      <div className="absolute inset-0 bg-gradient-to-b from-emerald-950/85 via-emerald-950/65 to-emerald-950/85 backdrop-blur-[1px] md:backdrop-blur-sm"></div>
+      
+      {/* Home Link */}
+      <Link href="/" className="absolute top-6 left-6 z-20 flex items-center gap-2 text-white hover:text-emerald-300 transition-colors">
+        <Home className="h-5 w-5" />
+        <span className="font-semibold">Home</span>
+      </Link>
+      
+      <div className="relative z-10">
       <AnimatedForm>
         <div className="relative mb-6">
-          <h2 className="text-3xl font-bold text-blue-400 flex items-center">
-            <div className="w-4 h-4 bg-blue-400 rounded-full mr-3 relative">
-              <div className="absolute inset-0 bg-blue-400 rounded-full animate-ping"></div>
+          <h2 className="text-3xl font-bold text-emerald-400 flex items-center">
+            <div className="w-4 h-4 bg-emerald-400 rounded-full mr-3 relative">
+              <div className="absolute inset-0 bg-emerald-400 rounded-full animate-ping"></div>
             </div>
             Sign In
           </h2>
@@ -76,7 +86,7 @@ export default function AnimatedLoginPage() {
           )}
 
           <div className="text-right">
-            <Link href="/auth/forgot-password" className="text-sm text-blue-400 hover:underline">
+            <Link href="/auth/forgot-password" className="text-sm text-emerald-400 hover:underline">
               Forgot your password?
             </Link>
           </div>
@@ -87,12 +97,13 @@ export default function AnimatedLoginPage() {
 
           <p className="text-center text-gray-400 text-sm">
             Don&apos;t have an account?{' '}
-            <Link href="/auth/signup-animated" className="text-blue-400 hover:underline">
+            <Link href="/auth/signup-animated" className="text-emerald-400 hover:underline">
               Sign up
             </Link>
           </p>
         </form>
       </AnimatedForm>
+      </div>
     </div>
   )
 }

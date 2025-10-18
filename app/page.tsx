@@ -9,17 +9,18 @@ export default function HomePage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-emerald-50 to-blue-50 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative bg-black bg-[url('/images/hero/bg2.jpg')] bg-center bg-no-repeat bg-[length:65%] sm:bg-[length:75%] md:bg-[length:85%] lg:bg-[length:95%] xl:bg-cover py-28 md:py-32 lg:py-40">
+        <div className="absolute inset-0 bg-gradient-to-b from-emerald-950/85 via-emerald-950/65 to-emerald-950/85 backdrop-blur-[1px] md:backdrop-blur-sm"></div>
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             {user ? (
               <>
-                <h1 className="text-4xl sm:text-6xl font-bold text-gray-900 mb-6">
+                <h1 className="text-4xl sm:text-6xl font-bold text-white mb-6 drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
                   Welcome back,
                   <br />
-                  <span className="text-emerald-600">{user.user_metadata?.full_name || user.email?.split('@')[0]}!</span>
+                  <span className="text-emerald-300 drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)]">{user.user_metadata?.full_name || user.email?.split('@')[0]}!</span>
                 </h1>
-                <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                <p className="text-xl text-emerald-50 mb-8 max-w-2xl mx-auto drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
                   Ready to create your next listing? Your dashboard is waiting.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -40,12 +41,12 @@ export default function HomePage() {
               </>
             ) : (
               <>
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
                   Everything A to Z.<br />
-                  <span className="text-emerald-400">No Store Needed.</span>
+                  <span className="text-emerald-300 drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)]">No Store Needed.</span>
                 </h1>
-                <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-                  Turn your photo into a sale. Create beautiful listings and share them instantly on WhatsApp.
+                <p className="text-xl text-emerald-50 mb-8 max-w-2xl mx-auto drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
+                  Turn your photo into a sale. Create beautiful listings and share them instantly across all platforms.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Link
@@ -101,7 +102,7 @@ export default function HomePage() {
                 2. Get Your Link
               </h3>
               <p className="text-gray-600">
-                Instantly get a beautiful, shareable link that works perfectly in WhatsApp groups and chats.
+                Instantly get a beautiful, shareable link that works perfectly across WhatsApp, SMS, email, and social media.
               </p>
             </div>
 
@@ -113,7 +114,7 @@ export default function HomePage() {
                 3. Start Selling
               </h3>
               <p className="text-gray-600">
-                Share in WhatsApp groups, get direct messages, and close deals faster than ever.
+                Share anywhere—WhatsApp, Facebook, Instagram, SMS—and close deals faster than ever.
               </p>
             </div>
           </div>
@@ -125,7 +126,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Why Choose Sellr?
+              Why Choose a2z?
             </h2>
             <p className="text-lg text-gray-600">
               Built for the way South Africans actually sell
@@ -146,10 +147,10 @@ export default function HomePage() {
             <div className="bg-white p-6 rounded-xl shadow-sm">
               <MessageCircle className="h-8 w-8 text-blue-600 mb-4" />
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                WhatsApp Native
+                Share Everywhere
               </h3>
               <p className="text-gray-600">
-                Designed specifically for WhatsApp sharing with beautiful previews and direct chat buttons.
+                Designed for all platforms with beautiful previews and direct contact buttons that work everywhere.
               </p>
             </div>
 
@@ -189,7 +190,7 @@ export default function HomePage() {
                 Easy Sharing
               </h3>
               <p className="text-gray-600">
-                One-click sharing to WhatsApp with pre-written messages that convert.
+                One-click sharing to any platform with pre-written messages that convert.
               </p>
             </div>
           </div>
@@ -203,7 +204,7 @@ export default function HomePage() {
             Ready to Start Selling?
           </h2>
           <p className="text-xl text-emerald-100 mb-8">
-            Join thousands of South Africans who are already selling smarter with Sellr.
+            Join thousands of South Africans who are already selling smarter with a2z.
           </p>
           <Link
             href="/create"
@@ -223,13 +224,13 @@ export default function HomePage() {
               <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">S</span>
               </div>
-              <span className="text-xl font-bold">sellr</span>
+              <span className="text-xl font-bold">a2z</span>
             </div>
             <p className="text-gray-400 mb-4">
-              Simple Selling. No Store Needed.
+              Everything A to Z. No Store Needed.
             </p>
             <p className="text-sm text-gray-500">
-              © 2024 Sellr. Made with ❤️ for South African sellers.
+              © 2024 a2z. Made with ❤️ for South African sellers.
             </p>
           </div>
         </div>

@@ -24,12 +24,14 @@ export type Database = {
           description: string | null
           emoji_tags: string[]
           media_urls: string[]
+          media_descriptions: string[]
           slug: string
           is_active: boolean
           views: number
           clicks: number
           whatsapp_number: string | null
           location: string | null
+          display_type: string | null
           created_at: string
           updated_at: string
         }
@@ -42,12 +44,14 @@ export type Database = {
           description?: string | null
           emoji_tags?: string[]
           media_urls: string[]
+          media_descriptions?: string[]
           slug: string
           is_active?: boolean
           views?: number
           clicks?: number
           whatsapp_number?: string | null
           location?: string | null
+          display_type?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -60,12 +64,14 @@ export type Database = {
           description?: string | null
           emoji_tags?: string[]
           media_urls?: string[]
+          media_descriptions?: string[]
           slug?: string
           is_active?: boolean
           views?: number
           clicks?: number
           whatsapp_number?: string | null
           location?: string | null
+          display_type?: string | null
           created_at?: string
           updated_at?: string
         }

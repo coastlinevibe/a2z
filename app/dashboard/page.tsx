@@ -1,10 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { Plus, Eye, MousePointer, Edit, Trash2, ExternalLink, Share2, ToggleLeft, ToggleRight } from 'lucide-react'
+import { Plus, Eye, MousePointer, Edit, Trash2, ExternalLink, Share2, ToggleLeft, ToggleRight, Grid, List } from 'lucide-react'
 import { formatPrice, cn } from '@/lib/utils'
 import { ShareModal } from '@/components/ShareModal'
+import { PreviewModal } from '@/components/PreviewModal'
+import { DeleteConfirmModal } from '@/components/DeleteConfirmModal'
+import { ListingCardGrid } from '@/components/ListingCardGrid'
 import { useRequireAuth } from '@/lib/auth'
 
 interface Post {
@@ -26,16 +29,31 @@ interface Post {
 }
 
 export default function DashboardPage() {
-  const { user, loading: authLoading } = useRequireAuth()
+  const { user, session, loading: authLoading } = useRequireAuth()
   const [posts, setPosts] = useState<Post[]>([])
   const [loading, setLoading] = useState(true)
   const [sharePost, setSharePost] = useState<Post | null>(null)
+  const [previewPost, setPreviewPost] = useState<Post | null>(null)
+  const [deletePostId, setDeletePostId] = useState<string | null>(null)
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const card1Ref = useRef<HTMLDivElement>(null)
+  const card2Ref = useRef<HTMLDivElement>(null)
+  const card3Ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (user && !authLoading) {
       fetchPosts()
     }
   }, [user, authLoading])
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>, ref: React.RefObject<HTMLDivElement>) => {
+    if (!ref.current) return
+    const rect = ref.current.getBoundingClientRect()
+    const x = ((e.clientX - rect.x) / rect.width) * 100
+    const y = ((e.clientY - rect.y) / rect.height) * 100
+    ref.current.style.setProperty('--x', x.toString())
+    ref.current.style.setProperty('--y', y.toString())
+  }
 
   const fetchPosts = async () => {
     if (!user) return
@@ -74,26 +92,40 @@ export default function DashboardPage() {
   }
 
   const deletePost = async (postId: string) => {
-    if (!confirm('Are you sure you want to delete this listing?')) {
+    if (!session?.access_token) {
+      console.error('No access token available')
       return
     }
 
     try {
       const response = await fetch(`/api/posts/${postId}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+        },
       })
 
       if (response.ok) {
         setPosts(posts.filter(post => post.id !== postId))
+      } else {
+        const error = await response.json()
+        console.error('Delete failed:', error)
+        alert(`Failed to delete: ${error.error || 'Unknown error'}`)
       }
     } catch (error) {
       console.error('Error deleting post:', error)
+      alert('Failed to delete post. Please try again.')
     }
   }
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen py-8" style={{
+        backgroundImage: 'linear-gradient(rgba(236, 253, 245, 0.9), rgba(236, 253, 245, 0.9)), url(/images/hero/bg3.png)',
+        backgroundSize: 'auto, 150px 150px',
+        backgroundRepeat: 'no-repeat, repeat',
+        backgroundColor: '#f9fafb'
+      }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-200 rounded w-1/4 mb-8"></div>
@@ -112,7 +144,12 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen py-8" style={{
+      backgroundImage: 'linear-gradient(rgba(236, 253, 245, 0.9), rgba(236, 253, 245, 0.9)), url(/images/hero/bg3.png)',
+      backgroundSize: 'auto, 150px 150px',
+      backgroundRepeat: 'no-repeat, repeat',
+      backgroundColor: '#f9fafb'
+    }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
@@ -122,54 +159,127 @@ export default function DashboardPage() {
               Manage your products and track performance
             </p>
           </div>
-          <Link
-            href="/create"
-            className="mt-4 sm:mt-0 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            New Listing
-          </Link>
+          <div className="flex gap-3 mt-4 sm:mt-0">
+            {/* View Toggle */}
+            <div className="flex bg-white rounded-lg shadow-sm border border-gray-200">
+              <button
+                onClick={() => setViewMode('grid')}
+                className={cn(
+                  "px-4 py-2 rounded-l-lg transition-colors flex items-center gap-2",
+                  viewMode === 'grid' 
+                    ? "bg-emerald-600 text-white" 
+                    : "text-gray-600 hover:bg-gray-50"
+                )}
+              >
+                <Grid className="h-4 w-4" />
+                Grid
+              </button>
+              <button
+                onClick={() => setViewMode('list')}
+                className={cn(
+                  "px-4 py-2 rounded-r-lg transition-colors flex items-center gap-2",
+                  viewMode === 'list' 
+                    ? "bg-emerald-600 text-white" 
+                    : "text-gray-600 hover:bg-gray-50"
+                )}
+              >
+                <List className="h-4 w-4" />
+                List
+              </button>
+            </div>
+            
+            <Link
+              href="/create"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              New Listing
+            </Link>
+          </div>
         </div>
+
+        {/* SVG Filter for Gooey Effect */}
+        <svg width="0" height="0" style={{ position: 'absolute' }}>
+          <filter id="goo" x="-50%" y="-50%" width="200%" height="200%">
+            <feComponentTransfer>
+              <feFuncA type="discrete" tableValues="0 1"></feFuncA>
+            </feComponentTransfer>
+            <feGaussianBlur stdDeviation="5"></feGaussianBlur>
+            <feComponentTransfer>
+              <feFuncA type="table" tableValues="-5 11"></feFuncA>
+            </feComponentTransfer>
+          </filter>
+        </svg>
 
         {/* Stats Overview */}
         {posts.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              <div className="flex items-center">
-                <div className="bg-emerald-100 rounded-lg p-3">
-                  <Eye className="h-6 w-6 text-emerald-600" />
+            {/* Views */}
+            <div 
+              ref={card1Ref}
+              onMouseMove={(e) => handleMouseMove(e, card1Ref)}
+              className="gooey-card gooey-card-emerald group relative overflow-visible rounded-3xl bg-transparent p-8 transition-all duration-500 hover:scale-105"
+              style={{
+                '--x': '50',
+                '--y': '50',
+                '--hue': '170deg',
+              } as React.CSSProperties}
+            >
+              <div className="relative z-10 flex items-center gap-4">
+                <div className="rounded-2xl bg-white/20 backdrop-blur-sm p-3">
+                  <Eye className="h-7 w-7 text-white" />
                 </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Total Views</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                <div>
+                  <p className="text-sm font-medium text-white/80">Total Views</p>
+                  <p className="text-4xl font-bold text-white tracking-tight">
                     {posts.reduce((sum, post) => sum + post.views, 0)}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              <div className="flex items-center">
-                <div className="bg-blue-100 rounded-lg p-3">
-                  <MousePointer className="h-6 w-6 text-blue-600" />
+            {/* Clicks */}
+            <div 
+              ref={card2Ref}
+              onMouseMove={(e) => handleMouseMove(e, card2Ref)}
+              className="gooey-card gooey-card-blue group relative overflow-visible rounded-3xl bg-transparent p-8 transition-all duration-500 hover:scale-105"
+              style={{
+                '--x': '50',
+                '--y': '50',
+                '--hue': '220deg',
+              } as React.CSSProperties}
+            >
+              <div className="relative z-10 flex items-center gap-4">
+                <div className="rounded-2xl bg-white/20 backdrop-blur-sm p-3">
+                  <MousePointer className="h-7 w-7 text-white" />
                 </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Total Clicks</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                <div>
+                  <p className="text-sm font-medium text-white/80">Total Clicks</p>
+                  <p className="text-4xl font-bold text-white tracking-tight">
                     {posts.reduce((sum, post) => sum + post.clicks, 0)}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              <div className="flex items-center">
-                <div className="bg-purple-100 rounded-lg p-3">
-                  <Plus className="h-6 w-6 text-purple-600" />
+            {/* Active Listings */}
+            <div 
+              ref={card3Ref}
+              onMouseMove={(e) => handleMouseMove(e, card3Ref)}
+              className="gooey-card gooey-card-purple group relative overflow-visible rounded-3xl bg-transparent p-8 transition-all duration-500 hover:scale-105"
+              style={{
+                '--x': '50',
+                '--y': '50',
+                '--hue': '280deg',
+              } as React.CSSProperties}
+            >
+              <div className="relative z-10 flex items-center gap-4">
+                <div className="rounded-2xl bg-white/20 backdrop-blur-sm p-3">
+                  <Plus className="h-7 w-7 text-white" />
                 </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Active Listings</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                <div>
+                  <p className="text-sm font-medium text-white/80">Active Listings</p>
+                  <p className="text-4xl font-bold text-white tracking-tight">
                     {posts.filter(post => post.is_active).length}
                   </p>
                 </div>
@@ -177,6 +287,70 @@ export default function DashboardPage() {
             </div>
           </div>
         )}
+
+        <style jsx>{`
+          @property --a {
+            syntax: "<percentage>";
+            initial-value: 0%;
+            inherits: true;
+          }
+          @property --hue {
+            syntax: "<angle>";
+            initial-value: 170deg;
+            inherits: false;
+          }
+
+          .gooey-card {
+            --a: 0%;
+            --x: 50;
+            --y: 50;
+            isolation: isolate;
+            position: relative;
+          }
+
+          .gooey-card::before {
+            content: "";
+            position: absolute;
+            inset: -4px;
+            filter: blur(12px) url(#goo) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+            background-image:
+              linear-gradient(0deg, hsl(var(--hue), 66%, 66%), hsl(var(--hue), 66%, 66%)),
+              radial-gradient(
+                40% 70% at calc(var(--x) * 1%) calc(var(--y) * 1%),
+                hsla(var(--hue), 77%, 77%, var(--a)) 0%,
+                transparent 90%
+              );
+            background-clip: content-box, border-box;
+            padding: 24px;
+            z-index: -1;
+            border-radius: inherit;
+            animation: gooey-color 20s linear infinite both;
+            transition: --a 0.5s ease-in-out;
+          }
+
+          .gooey-card:hover::before {
+            --a: 100%;
+          }
+
+          .gooey-card-emerald {
+            --hue: 170deg;
+          }
+          .gooey-card-blue {
+            --hue: 220deg;
+          }
+          .gooey-card-purple {
+            --hue: 280deg;
+          }
+
+          @keyframes gooey-color {
+            from {
+              filter: blur(12px) url(#goo) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3)) hue-rotate(0deg);
+            }
+            to {
+              filter: blur(12px) url(#goo) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3)) hue-rotate(360deg);
+            }
+          }
+        `}</style>
 
         {/* Posts List */}
         {posts.length === 0 ? (
@@ -188,7 +362,7 @@ export default function DashboardPage() {
               No listings yet
             </h3>
             <p className="text-gray-600 mb-6">
-              Create your first listing to start selling on WhatsApp.
+              Create your first listing and share it anywhere to start selling.
             </p>
             <Link
               href="/create"
@@ -198,6 +372,13 @@ export default function DashboardPage() {
               Create Listing
             </Link>
           </div>
+        ) : viewMode === 'grid' ? (
+          <ListingCardGrid
+            posts={posts}
+            onShare={(post) => setSharePost(post)}
+            onPreview={(post) => setPreviewPost(post)}
+            onDelete={(postId) => setDeletePostId(postId)}
+          />
         ) : (
           <div className="space-y-6">
             {posts.map((post) => (
@@ -304,18 +485,17 @@ export default function DashboardPage() {
                         <Share2 className="h-4 w-4" />
                       </button>
 
-                      <Link
-                        href={`/p/${post.slug}`}
-                        target="_blank"
+                      <button
+                        onClick={() => setPreviewPost(post)}
                         className="p-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors"
-                        title="View Public Page"
+                        title="Preview"
                       >
-                        <ExternalLink className="h-4 w-4" />
-                      </Link>
+                        <Eye className="h-4 w-4" />
+                      </button>
 
                       <button
-                        onClick={() => deletePost(post.id)}
-                        className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
+                        onClick={() => setDeletePostId(post.id)}
+                        className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 hover:scale-110 transition-all duration-200 active:scale-95"
                         title="Delete"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -327,16 +507,34 @@ export default function DashboardPage() {
             ))}
           </div>
         )}
-      </div>
 
-      {/* Share Modal */}
-      {sharePost && (
-        <ShareModal
-          isOpen={!!sharePost}
-          onClose={() => setSharePost(null)}
-          post={sharePost}
+        {/* Share Modal */}
+        {sharePost && (
+          <ShareModal
+            isOpen={!!sharePost}
+            onClose={() => setSharePost(null)}
+            post={sharePost}
+          />
+        )}
+
+        {/* Preview Modal */}
+        {previewPost && (
+          <PreviewModal
+            isOpen={!!previewPost}
+            onClose={() => setPreviewPost(null)}
+            post={previewPost}
+          />
+        )}
+
+        {/* Delete Confirmation Modal */}
+        <DeleteConfirmModal
+          isOpen={!!deletePostId}
+          onClose={() => setDeletePostId(null)}
+          onConfirm={() => deletePostId && deletePost(deletePostId)}
+          itemName={posts.find(p => p.id === deletePostId)?.title}
+          message="This action cannot be undone. All data associated with this listing will be permanently deleted."
         />
-      )}
-    </div>
-  )
-}
+      </div>
+      </div>
+    )
+  }

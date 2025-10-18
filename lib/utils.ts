@@ -34,7 +34,7 @@ export function formatPrice(cents: number, currency: string = 'ZAR'): string {
   return new Intl.NumberFormat('en-ZA', {
     style: 'currency',
     currency: currency,
-    minimumFractionDigits: 0,
+    minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(amount)
 }

@@ -102,7 +102,7 @@ export function useAuth() {
 
 // Custom hook for protected routes
 export function useRequireAuth() {
-  const { user, loading } = useAuth()
+  const { user, session, loading } = useAuth()
   
   useEffect(() => {
     if (!loading && !user) {
@@ -110,5 +110,5 @@ export function useRequireAuth() {
     }
   }, [user, loading])
 
-  return { user, loading }
+  return { user, session, loading }
 }

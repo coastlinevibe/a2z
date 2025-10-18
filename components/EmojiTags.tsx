@@ -71,6 +71,7 @@ export function EmojiTags({
           <div className="flex flex-wrap gap-2 mb-3">
             {selectedTags.map((tag) => (
               <button
+                type="button"
                 key={tag}
                 onClick={() => toggleTag(tag)}
                 className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-emerald-100 text-emerald-800 hover:bg-emerald-200 transition-colors"
@@ -90,6 +91,7 @@ export function EmojiTags({
             
             return (
               <button
+                type="button"
                 key={tag}
                 onClick={() => toggleTag(tag)}
                 disabled={isDisabled}
@@ -121,6 +123,7 @@ export function EmojiTags({
               maxLength={20}
             />
             <button
+              type="button"
               onClick={addCustomTag}
               disabled={!customTag.trim()}
               className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"

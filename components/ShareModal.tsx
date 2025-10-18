@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { X, Copy, MessageCircle, Check, ExternalLink } from 'lucide-react'
-import { cn, formatPrice, generateShareMessage } from '@/lib/utils'
+import { X, Copy, Check, ExternalLink } from 'lucide-react'
+import { cn, formatPrice } from '@/lib/utils'
 
 interface ShareModalProps {
   isOpen: boolean
@@ -27,7 +27,7 @@ export function ShareModal({ isOpen, onClose, post, className }: ShareModalProps
     (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000')
   const publicUrl = `${baseUrl}/p/${post.slug}`
   const price = formatPrice(post.price_cents, post.currency)
-  const shareMessage = generateShareMessage(post.title, price, publicUrl)
+  const shareMessage = `${post.title} — ${price}\n${publicUrl}`
 
   const copyToClipboard = async (text: string) => {
     try {
@@ -46,11 +46,6 @@ export function ShareModal({ isOpen, onClose, post, className }: ShareModalProps
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     }
-  }
-
-  const shareToWhatsApp = () => {
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareMessage)}`
-    window.open(whatsappUrl, '_blank')
   }
 
   const openPublicPage = () => {
@@ -109,55 +104,62 @@ export function ShareModal({ isOpen, onClose, post, className }: ShareModalProps
             </div>
           </div>
 
+          {/* Quick Actions */}
+          <div className="space-y-3">
+            <button
+              onClick={() => copyToClipboard(publicUrl)}
+              className="w-full flex items-center justify-center px-4 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-medium rounded-lg transition-colors"
+            >
+              {copied ? (
+                <>
+                  <Check className="h-5 w-5 mr-2" />
+                  Link Copied!
+                </>
+              ) : (
+                <>
+                  <Copy className="h-5 w-5 mr-2" />
+                  Copy Link
+                </>
+              )}
+            </button>
+
+            <button
+              onClick={openPublicPage}
+              className="w-full flex items-center justify-center px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors"
+            >
+              <ExternalLink className="h-5 w-5 mr-2" />
+              Open Listing
+            </button>
+          </div>
+
           {/* Share message preview */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              WhatsApp Message Preview
+              Share Text (Optional)
             </label>
             <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
               <pre className="text-sm text-gray-700 whitespace-pre-wrap font-sans">
                 {shareMessage}
               </pre>
             </div>
-          </div>
-
-          {/* Action buttons */}
-          <div className="space-y-3">
             <button
               onClick={() => copyToClipboard(shareMessage)}
-              className="w-full flex items-center justify-center px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors"
+              className="mt-2 text-sm text-emerald-600 hover:text-emerald-700 font-medium"
             >
-              {copied ? (
-                <>
-                  <Check className="h-5 w-5 mr-2 text-green-600" />
-                  Copied!
-                </>
-              ) : (
-                <>
-                  <Copy className="h-5 w-5 mr-2" />
-                  Copy Message
-                </>
-              )}
-            </button>
-
-            <button
-              onClick={shareToWhatsApp}
-              className="w-full flex items-center justify-center px-4 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-medium rounded-lg transition-colors"
-            >
-              <MessageCircle className="h-5 w-5 mr-2" />
-              Share to WhatsApp
+              Copy text with link
             </button>
           </div>
 
           {/* Tips */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h4 className="text-sm font-medium text-blue-900 mb-2">
+          <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
+            <h4 className="text-sm font-medium text-emerald-900 mb-2">
               💡 Sharing Tips
             </h4>
-            <ul className="text-sm text-blue-800 space-y-1">
-              <li>• Share in relevant WhatsApp groups for better reach</li>
-              <li>• Add a personal message to build trust</li>
-              <li>• Update your listing if details change</li>
+            <ul className="text-sm text-emerald-800 space-y-1">
+              <li>• Share your link on WhatsApp, Facebook, Instagram, or SMS</li>
+              <li>• Post in relevant groups and communities for better reach</li>
+              <li>• Add a personal message to build trust with buyers</li>
+              <li>• Update your listing anytime if details change</li>
             </ul>
           </div>
         </div>

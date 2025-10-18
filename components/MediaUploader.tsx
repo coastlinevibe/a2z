@@ -9,7 +9,7 @@ interface MediaUploaderProps {
   onMediaChange: (urls: string[]) => void
   maxFiles?: number
   className?: string
-  displayType?: 'hover' | 'slider' | 'vertical' | 'gallery'
+  displayType?: 'hover' | 'slider' | 'vertical' | 'premium'
   mediaDescriptions?: Record<string, string>
   onDescriptionsChange?: (descriptions: Record<string, string>) => void
 }
@@ -206,10 +206,10 @@ export function MediaUploader({
             onDragLeave={handleDragLeave}
             onClick={handleBoxClick}
             className={cn(
-              'border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer',
+              'border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer bg-emerald-50',
               dragActive
-                ? 'border-emerald-400 bg-emerald-50'
-                : 'border-gray-300 hover:border-emerald-400 hover:bg-emerald-50'
+                ? 'border-emerald-400 bg-emerald-100'
+                : 'border-emerald-200 hover:border-emerald-400 hover:bg-emerald-100'
             )}
           >
             <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
@@ -333,8 +333,8 @@ export function MediaUploader({
           </div>
         )}
 
-        {/* Image Descriptions for Gallery Mode */}
-        {displayType === 'gallery' && mediaUrls.length > 0 && (
+        {/* Image Descriptions for Premium Gallery Mode */}
+        {displayType === 'premium' && mediaUrls.length > 0 && (
           <div className="mt-4 space-y-3">
             <label className="block text-sm font-medium text-gray-700">
               Image Descriptions (Optional)

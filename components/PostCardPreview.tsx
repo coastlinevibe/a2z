@@ -6,7 +6,7 @@ import { cn, formatPrice } from '@/lib/utils'
 import { HoverGallery } from './HoverGallery'
 import { HorizontalSlider } from './HorizontalSlider'
 import { VerticalSlider } from './VerticalSlider'
-import { MasonryGallery } from './MasonryGallery'
+import { PremiumGallery } from './PremiumGallery'
 
 interface Post {
   id: string
@@ -24,7 +24,7 @@ interface Post {
 interface PostCardPreviewProps {
   post: Post
   layout?: 'square' | 'portrait' | 'landscape'
-  displayType?: 'hover' | 'slider' | 'vertical' | 'gallery'
+  displayType?: 'hover' | 'slider' | 'vertical' | 'premium'
   className?: string
 }
 
@@ -94,11 +94,9 @@ export function PostCardPreview({
             className="rounded-t-xl"
           />
         ) : (
-          <MasonryGallery 
+          <PremiumGallery 
             images={post.media_urls}
-            alt={post.title}
             className="rounded-t-xl"
-            descriptions={post.media_descriptions || {}}
           />
         )}
       </div>
@@ -133,10 +131,10 @@ export function PostCardPreview({
           </p>
         )}
 
-        {/* WhatsApp button */}
+        {/* Contact button */}
         <button className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2">
           <MessageCircle className="h-5 w-5" />
-          <span>Chat on WhatsApp</span>
+          <span>Contact Seller</span>
         </button>
       </div>
     </div>

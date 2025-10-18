@@ -52,6 +52,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Extract media descriptions from media_items
+    const media_descriptions = data.media_items?.map(item => item.description || '') || []
+
     // Insert post
     const { data: post, error } = await supabaseAdmin
       .from('posts')
@@ -63,9 +66,11 @@ export async function POST(request: NextRequest) {
         description: data.description,
         emoji_tags: data.emoji_tags,
         media_urls: data.media_urls,
+        media_descriptions,
         slug,
         whatsapp_number: data.whatsapp_number,
         location: data.location,
+        display_type: data.display_type || 'hover',
       })
       .select()
       .single()

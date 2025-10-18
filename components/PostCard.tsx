@@ -5,6 +5,9 @@ import { MessageCircle, Phone, MapPin, Eye, MousePointer, ChevronLeft, ChevronRi
 import { cn, formatPrice, generateWhatsAppUrl } from '@/lib/utils'
 import { usePageView, trackWhatsAppClick, trackPhoneClick } from '@/lib/analytics'
 import { HoverGallery } from './HoverGallery'
+import { HorizontalSlider } from './HorizontalSlider'
+import { VerticalSlider } from './VerticalSlider'
+import { PremiumGallery } from './PremiumGallery'
 
 interface Post {
   id: string
@@ -14,8 +17,10 @@ interface Post {
   description?: string | null
   emoji_tags: string[]
   media_urls: string[]
+  media_descriptions?: string[]
   whatsapp_number?: string | null
   location?: string | null
+  display_type?: string | null
   views: number
   clicks: number
   created_at: string
@@ -81,19 +86,28 @@ export function PostCard({
 
   return (
     <div className={cn(
-      'bg-white rounded-xl shadow-lg overflow-hidden max-w-md mx-auto relative',
+      'bg-white rounded-xl shadow-lg overflow-hidden mx-auto relative',
+      post.display_type === 'vertical' ? 'max-w-2xl' : 'max-w-md',
       className
     )}>
-      {/* Hover Gallery */}
+      {/* Gallery - render based on display_type */}
       <div className="group relative">
-        <HoverGallery 
-          images={post.media_urls}
-          alt={post.title}
-          aspectRatio="square"
-          className="rounded-t-xl"
-        />
+        {post.display_type === 'slider' ? (
+          <HorizontalSlider images={post.media_urls} alt={post.title} className="rounded-t-xl" />
+        ) : post.display_type === 'vertical' ? (
+          <VerticalSlider images={post.media_urls} alt={post.title} className="rounded-t-xl" />
+        ) : post.display_type === 'premium' ? (
+          <PremiumGallery images={post.media_urls} descriptions={post.media_descriptions} className="rounded-t-xl" />
+        ) : (
+          <HoverGallery 
+            images={post.media_urls}
+            alt={post.title}
+            aspectRatio="square"
+            className="rounded-t-xl"
+          />
+        )}
         {/* Price badge */}
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-4 right-4 z-10">
           <div className="bg-emerald-500 text-white px-3 py-1 rounded-full font-bold text-lg shadow-lg">
             {formatPrice(post.price_cents, post.currency)}
           </div>
@@ -157,13 +171,14 @@ export function PostCard({
             className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center"
           >
             <MessageCircle className="h-5 w-5 mr-2" />
-            Chat on WhatsApp
+            Contact Seller
           </button>
           
           {post.whatsapp_number && (
             <button
               onClick={handleCallClick}
               className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center"
+              title="Call seller"
             >
               <Phone className="h-5 w-5" />
             </button>

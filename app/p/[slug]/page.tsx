@@ -70,22 +70,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 async function incrementViews(postId: string) {
-  // This runs on the server, so we increment views directly
-  const { data: currentPost } = await supabase
-    .from('posts')
-    .select('views')
-    .eq('id', postId)
-    .single()
-
-  if (currentPost) {
-    await supabase
-      .from('posts')
-      .update({ 
-        views: (currentPost.views || 0) + 1,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', postId)
-  }
+  'use server'
+  try {
+    const base =
+      process.env.NEXT_PUBLIC_SELLR_BASE_URL ||
+      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
+    await fetch(`${base}/api/posts/${postId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'view' }),
+      // Don't revalidate cache on this analytics call
+      cache: 'no-store',
+    })
+  } catch {}
 }
 
 async function handleAnalytics(postId: string, action: 'view' | 'click') {
@@ -105,8 +102,8 @@ export default async function PublicPostPage({ params }: PageProps) {
     notFound()
   }
 
-  // Increment views (server-side)
-  await incrementViews(post.id)
+  // Increment views (server-side) without blocking the render
+  incrementViews(post.id)
 
   const handleWhatsAppClick = async () => {
     'use server'

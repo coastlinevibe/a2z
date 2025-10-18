@@ -8,7 +8,12 @@ export default function CreatePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen py-8" style={{
+        backgroundImage: 'linear-gradient(rgba(249, 250, 251, 0.95), rgba(249, 250, 251, 0.95)), url(/images/hero/bg3.png)',
+        backgroundSize: 'auto, 150px 150px',
+        backgroundRepeat: 'no-repeat, repeat',
+        backgroundColor: '#f9fafb'
+      }}>
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-200 rounded w-1/3 mb-8"></div>
@@ -23,7 +28,12 @@ export default function CreatePage() {
   }
 
   return (
-    <div className="py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8" style={{
+      backgroundImage: 'linear-gradient(rgba(249, 250, 251, 0.95), rgba(249, 250, 251, 0.95)), url(/images/hero/bg3.png)',
+      backgroundSize: 'auto, 150px 150px',
+      backgroundRepeat: 'no-repeat, repeat',
+      backgroundColor: '#f9fafb'
+    }}>
       <CreatePostForm />
     </div>
   )
