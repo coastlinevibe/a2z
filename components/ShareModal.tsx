@@ -12,11 +12,13 @@ interface ShareModalProps {
     price_cents: number
     currency: string
     slug: string
+    username?: string
   }
+  username?: string
   className?: string
 }
 
-export function ShareModal({ isOpen, onClose, post, className }: ShareModalProps) {
+export function ShareModal({ isOpen, onClose, post, username, className }: ShareModalProps) {
   const [copied, setCopied] = useState(false)
 
   if (!isOpen) return null
@@ -25,7 +27,10 @@ export function ShareModal({ isOpen, onClose, post, className }: ShareModalProps
   const baseUrl =
     process.env.NEXT_PUBLIC_SELLR_BASE_URL ||
     (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000')
-  const publicUrl = `${baseUrl}/p/${post.slug}`
+  
+  // Use username from prop or post object
+  const userSlug = username || post.username
+  const publicUrl = userSlug ? `${baseUrl}/${userSlug}/${post.slug}` : `${baseUrl}/p/${post.slug}`
   const price = formatPrice(post.price_cents, post.currency)
   const shareMessage = `${post.title} — ${price}\n${publicUrl}`
 
