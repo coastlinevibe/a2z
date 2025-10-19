@@ -38,7 +38,7 @@ export const createPostSchemaBase = z.object({
       message: 'Invalid SA phone number (use format: 0712345678 or +27712345678)'
     }),
   location: z.string().min(3, 'Location is required (minimum 3 characters)'),
-  display_type: z.enum(['hover', 'slider', 'vertical', 'premium']).default('hover'),
+  display_type: z.enum(['hover', 'slider', 'vertical', 'premium', 'video', 'before_after']).default('hover'),
 })
 
 // Function to create tier-specific schema
@@ -46,10 +46,10 @@ export function createPostSchema(tier: 'free' | 'premium' | 'business' = 'free')
   const maxImages = tier === 'free' ? 5 : tier === 'premium' ? 8 : 20
   const maxVideos = tier === 'free' ? 0 : tier === 'premium' ? 1 : -1
   const allowedGalleryTypes = tier === 'free' 
-    ? ['hover', 'slider'] as const
+    ? ['hover', 'slider', 'vertical', 'gallery'] as const
     : tier === 'premium' 
-    ? ['hover', 'slider', 'vertical', 'premium'] as const
-    : ['hover', 'slider', 'vertical', 'premium'] as const
+    ? ['hover', 'slider', 'vertical', 'gallery', 'before_after', 'comparison', 'video'] as const
+    : ['hover', 'slider', 'vertical', 'gallery', 'before_after', 'comparison', 'expanding', 'video'] as const
 
   return createPostSchemaBase.extend({
     media_urls: z.array(z.string().url())

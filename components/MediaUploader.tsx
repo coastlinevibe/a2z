@@ -9,7 +9,7 @@ interface MediaUploaderProps {
   onMediaChange: (urls: string[]) => void
   maxFiles?: number
   className?: string
-  displayType?: 'hover' | 'slider' | 'vertical' | 'premium'
+  displayType?: 'hover' | 'slider' | 'vertical' | 'premium' | 'video' | 'before_after'
   mediaDescriptions?: Record<string, string>
   onDescriptionsChange?: (descriptions: Record<string, string>) => void
 }

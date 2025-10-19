@@ -27,7 +27,7 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
   const [showPreview, setShowPreview] = useState(false)
   const [currentStep, setCurrentStep] = useState<0 | 1 | 2>(0)
   const [previewLayout, setPreviewLayout] = useState<'square' | 'portrait' | 'landscape'>('square')
-  const [displayType, setDisplayType] = useState<'hover' | 'slider' | 'vertical' | 'premium'>('hover')
+  const [displayType, setDisplayType] = useState<'hover' | 'slider' | 'vertical' | 'premium' | 'video' | 'before_after'>('hover')
   const [mediaDescriptions, setMediaDescriptions] = useState<Record<string, string>>({})
   const [priceDisplay, setPriceDisplay] = useState<string>('')
   const [tierLimits, setTierLimits] = useState<TierLimits | null>(null)
@@ -186,9 +186,15 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
             {/* Image Display Options */}
             <div className="mt-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Image Display
+                Media Display
+                {/* Debug: Show available gallery types */}
+                {process.env.NODE_ENV === 'development' && tierLimits && (
+                  <span className="text-xs text-gray-500 ml-2">
+                    (Available: {tierLimits.gallery_types?.join(', ')})
+                  </span>
+                )}
               </label>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-6 gap-2">
                 {/* Hover Gallery */}
                 <div className="flex flex-col items-center">
                   <button
@@ -284,6 +290,58 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
                   </button>
                   <p className="text-[10px] text-gray-500 mt-1 text-center">1080×1080px</p>
                 </div>
+
+                {/* Before/After - Premium+ Only */}
+                {tierLimits?.gallery_types.includes('before_after') && (
+                  <div className="flex flex-col items-center">
+                    <button
+                      type="button"
+                      onClick={() => setDisplayType('before_after')}
+                      className={cn(
+                        'p-2 border-2 rounded-lg transition-colors w-full',
+                        displayType === 'before_after'
+                          ? 'border-emerald-600 bg-emerald-100'
+                          : 'border-gray-200 hover:border-gray-300 bg-emerald-50'
+                      )}
+                    >
+                      <div className="flex flex-col items-center space-y-1">
+                        <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                          <span className="text-lg">⚖️</span>
+                        </div>
+                        <div className="font-medium text-gray-900 text-xs text-center">
+                          Before/After
+                        </div>
+                      </div>
+                    </button>
+                    <p className="text-[10px] text-gray-500 mt-1 text-center">1080×1080px</p>
+                  </div>
+                )}
+
+                {/* Video Player - Premium+ Only */}
+                {tierLimits?.gallery_types.includes('video') && (
+                  <div className="flex flex-col items-center">
+                    <button
+                      type="button"
+                      onClick={() => setDisplayType('video')}
+                      className={cn(
+                        'p-2 border-2 rounded-lg transition-colors w-full',
+                        displayType === 'video'
+                          ? 'border-emerald-600 bg-emerald-100'
+                          : 'border-gray-200 hover:border-gray-300 bg-emerald-50'
+                      )}
+                    >
+                      <div className="flex flex-col items-center space-y-1">
+                        <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                          <span className="text-lg">🎥</span>
+                        </div>
+                        <div className="font-medium text-gray-900 text-xs text-center">
+                          Video
+                        </div>
+                      </div>
+                    </button>
+                    <p className="text-[10px] text-gray-500 mt-1 text-center">1920×1080px</p>
+                  </div>
+                )}
               </div>
             </div>
 

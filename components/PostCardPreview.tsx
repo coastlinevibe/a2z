@@ -3,10 +3,12 @@
 import { useState } from 'react'
 import { MessageCircle, ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn, formatPrice } from '@/lib/utils'
-import { HoverGallery } from './HoverGallery'
-import { HorizontalSlider } from './HorizontalSlider'
-import { VerticalSlider } from './VerticalSlider'
-import { PremiumGallery } from './PremiumGallery'
+import { HoverGallery } from '@/components/HoverGallery'
+import { HorizontalSlider } from '@/components/HorizontalSlider'
+import { VerticalSlider } from '@/components/VerticalSlider'
+import { PremiumGallery } from '@/components/PremiumGallery'
+import SimpleVideoPlayer from '@/components/ui/SimpleVideoPlayer'
+import { BeforeAfterSlider } from '@/components/BeforeAfterSlider'
 
 interface Post {
   id: string
@@ -24,7 +26,7 @@ interface Post {
 interface PostCardPreviewProps {
   post: Post
   layout?: 'square' | 'portrait' | 'landscape'
-  displayType?: 'hover' | 'slider' | 'vertical' | 'premium'
+  displayType?: 'hover' | 'slider' | 'vertical' | 'premium' | 'video' | 'before_after'
   className?: string
 }
 
@@ -91,6 +93,19 @@ export function PostCardPreview({
           <VerticalSlider 
             images={post.media_urls}
             alt={post.title}
+            className="rounded-t-xl"
+          />
+        ) : displayType === 'video' ? (
+          <SimpleVideoPlayer 
+            src={post.media_urls[0]}
+            className="rounded-t-xl aspect-video"
+          />
+        ) : displayType === 'before_after' ? (
+          <BeforeAfterSlider 
+            beforeImage={post.media_urls[0] || ''}
+            afterImage={post.media_urls[1] || post.media_urls[0] || ''}
+            beforeLabel="Before"
+            afterLabel="After"
             className="rounded-t-xl"
           />
         ) : (

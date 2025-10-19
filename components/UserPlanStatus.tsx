@@ -7,7 +7,7 @@ import { Crown, Users, Calendar, CheckCircle } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 
 interface UserProfile {
-  tier: 'free' | 'premium' | 'business'
+  subscription_tier: 'free' | 'premium' | 'business'
   subscription_status: 'active' | 'inactive' | 'trial' | 'expired'
   subscription_end_date: string | null
   verified_seller: boolean
@@ -32,7 +32,7 @@ export default function UserPlanStatus() {
       console.log('Fetching profile for user:', user?.id)
       const { data, error } = await supabase
         .from('profiles')
-        .select('tier, subscription_status, subscription_end_date, verified_seller, early_adopter')
+        .select('subscription_tier, subscription_status, subscription_end_date, verified_seller, early_adopter')
         .eq('id', user?.id)
         .single()
 
@@ -40,7 +40,7 @@ export default function UserPlanStatus() {
         console.error('Error fetching user profile:', error)
         // Set default profile for free users if no profile exists
         setProfile({
-          tier: 'free',
+          subscription_tier: 'free',
           subscription_status: 'active',
           subscription_end_date: null,
           verified_seller: false,
@@ -80,7 +80,7 @@ export default function UserPlanStatus() {
   }
 
   const getPlanIcon = () => {
-    switch (profile.tier) {
+    switch (profile.subscription_tier) {
       case 'premium':
         return <Crown className="w-4 h-4 text-emerald-500" />
       case 'business':
@@ -91,7 +91,7 @@ export default function UserPlanStatus() {
   }
 
   const getPlanName = () => {
-    switch (profile.tier) {
+    switch (profile.subscription_tier) {
       case 'premium':
         return 'Premium'
       case 'business':
@@ -102,7 +102,7 @@ export default function UserPlanStatus() {
   }
 
   const getPlanColor = () => {
-    switch (profile.tier) {
+    switch (profile.subscription_tier) {
       case 'premium':
         return 'text-emerald-600 bg-emerald-50 border-emerald-200'
       case 'business':
@@ -114,7 +114,7 @@ export default function UserPlanStatus() {
 
   const getExpiryInfo = () => {
     if (!profile.subscription_end_date) {
-      return profile.tier === 'free' ? 'Forever free' : 'No expiry'
+      return profile.subscription_tier === 'free' ? 'Forever free' : 'No expiry'
     }
 
     const endDate = new Date(profile.subscription_end_date)
