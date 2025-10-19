@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowRight, Smartphone, Share2, MessageCircle, Zap, Shield, Globe } from 'lucide-react'
+import { ArrowRight, Smartphone, Share2, MessageCircle, Zap, Shield, Globe, Star, Crown, Users, Check } from 'lucide-react'
 import { useAuth } from '@/lib/auth'
 
 export default function HomePage() {
@@ -13,6 +13,13 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-b from-emerald-950/85 via-emerald-950/65 to-emerald-950/85 backdrop-blur-[1px] md:backdrop-blur-sm"></div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
+            {/* Early Adopter Banner */}
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-6 py-3 rounded-full mb-8 font-semibold shadow-lg">
+              <Star className="w-5 h-5" />
+              <span>🎉 Early Adopter: Up to 45% off for 12 months!</span>
+              <Star className="w-5 h-5" />
+            </div>
+            
             {user ? (
               <>
                 <h1 className="text-4xl sm:text-6xl font-bold text-white mb-6 drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
@@ -45,22 +52,30 @@ export default function HomePage() {
                   Everything A to Z.<br />
                   <span className="text-emerald-300 drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)]">No Store Needed.</span>
                 </h1>
-                <p className="text-xl text-emerald-50 mb-8 max-w-2xl mx-auto drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
-                  Turn your photo into a sale. Create beautiful listings and share them instantly across all platforms.
+                <p className="text-xl text-emerald-50 mb-6 max-w-3xl mx-auto drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
+                  Turn your photos into sales in minutes. Create beautiful listings and share them instantly on WhatsApp, Facebook, Instagram, and more.
                 </p>
+                <div className="text-emerald-200 mb-8 max-w-2xl mx-auto">
+                  <div className="flex flex-wrap justify-center gap-6 text-sm">
+                    <span>✓ Start Free Forever</span>
+                    <span>✓ No Transaction Fees</span>
+                    <span>✓ WhatsApp Native</span>
+                    <span>✓ Built for SA Sellers</span>
+                  </div>
+                </div>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Link
-                    href="/auth/signup-animated"
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-4 px-8 rounded-xl transition-colors flex items-center justify-center"
+                    href="/auth/signup-animated?plan=free"
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-4 px-8 rounded-xl transition-colors flex items-center justify-center shadow-lg"
                   >
-                    Get Started Free
+                    Start Free Trial
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                   <Link
-                    href="/auth/login-animated"
+                    href="/pricing"
                     className="bg-white hover:bg-gray-50 text-gray-900 font-semibold py-4 px-8 rounded-xl border border-gray-300 transition-colors"
                   >
-                    Sign In
+                    View Pricing
                   </Link>
                 </div>
               </>
@@ -121,6 +136,139 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Pricing Preview */}
+      <section className="py-20 bg-gradient-to-br from-emerald-50 to-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Simple Pricing for Every Seller
+            </h2>
+            <p className="text-lg text-gray-600 mb-8">
+              Start free, upgrade when you're ready. No hidden fees, no commissions.
+            </p>
+            {/* Early Adopter Badge */}
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-4 py-2 rounded-full font-semibold text-sm">
+              <Star className="w-4 h-4" />
+              <span>Early Adopter: Up to 45% off for 12 months!</span>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {/* Free Tier */}
+            <div className="bg-white rounded-2xl border-2 border-gray-200 p-6 text-center">
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Free</h3>
+              <div className="text-3xl font-bold text-gray-900 mb-4">R0</div>
+              <div className="space-y-3 mb-6 text-sm text-gray-600">
+                <div className="flex items-center justify-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-500" />
+                  <span>3 active listings</span>
+                </div>
+                <div className="flex items-center justify-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-500" />
+                  <span>5 images per listing</span>
+                </div>
+                <div className="flex items-center justify-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-500" />
+                  <span>7-day duration</span>
+                </div>
+              </div>
+              <Link
+                href="/auth/signup-animated?plan=free"
+                className="w-full py-2 px-4 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors inline-block"
+              >
+                Get Started Free
+              </Link>
+            </div>
+
+            {/* Premium Tier */}
+            <div className="bg-white rounded-2xl border-2 border-emerald-500 p-6 text-center relative">
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                <div className="bg-emerald-500 text-white px-3 py-1 rounded-full text-xs font-medium">
+                  Most Popular
+                </div>
+              </div>
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Crown className="w-5 h-5 text-emerald-500" />
+                <h3 className="text-xl font-bold text-gray-900">Premium</h3>
+              </div>
+              <div className="mb-2">
+                <div className="text-3xl font-bold text-gray-900">R29</div>
+                <div className="text-sm text-emerald-600 font-medium">41% off for 12 months • Then R49</div>
+              </div>
+              <div className="space-y-3 mb-6 text-sm text-gray-600">
+                <div className="flex items-center justify-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-500" />
+                  <span>Unlimited listings</span>
+                </div>
+                <div className="flex items-center justify-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-500" />
+                  <span>8 images + videos</span>
+                </div>
+                <div className="flex items-center justify-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-500" />
+                  <span>Verified badge ✓</span>
+                </div>
+                <div className="flex items-center justify-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-500" />
+                  <span>35-day duration</span>
+                </div>
+              </div>
+              <Link
+                href="/auth/signup-animated?plan=premium"
+                className="w-full py-2 px-4 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors inline-block"
+              >
+                Start Premium
+              </Link>
+            </div>
+
+            {/* Business Tier */}
+            <div className="bg-white rounded-2xl border-2 border-blue-500 p-6 text-center">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Users className="w-5 h-5 text-blue-500" />
+                <h3 className="text-xl font-bold text-gray-900">Business</h3>
+              </div>
+              <div className="mb-2">
+                <div className="text-3xl font-bold text-gray-900">R99</div>
+                <div className="text-sm text-blue-600 font-medium">45% off for 12 months • Then R179</div>
+              </div>
+              <div className="space-y-3 mb-6 text-sm text-gray-600">
+                <div className="flex items-center justify-center gap-2">
+                  <Check className="w-4 h-4 text-blue-500" />
+                  <span>Everything in Premium</span>
+                </div>
+                <div className="flex items-center justify-center gap-2">
+                  <Check className="w-4 h-4 text-blue-500" />
+                  <span>20 images + videos</span>
+                </div>
+                <div className="flex items-center justify-center gap-2">
+                  <Check className="w-4 h-4 text-blue-500" />
+                  <span>Custom branding</span>
+                </div>
+                <div className="flex items-center justify-center gap-2">
+                  <Check className="w-4 h-4 text-blue-500" />
+                  <span>Team collaboration</span>
+                </div>
+              </div>
+              <Link
+                href="/auth/signup-animated?plan=business"
+                className="w-full py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors inline-block"
+              >
+                Start Business
+              </Link>
+            </div>
+          </div>
+
+          <div className="text-center mt-8">
+            <Link
+              href="/choose-plan"
+              className="text-emerald-600 hover:text-emerald-700 font-medium"
+            >
+              Full plan pricing details →
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Features */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -157,10 +305,10 @@ export default function HomePage() {
             <div className="bg-white p-6 rounded-xl shadow-sm">
               <Shield className="h-8 w-8 text-purple-600 mb-4" />
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Always Free
+                Start Free
               </h3>
               <p className="text-gray-600">
-                No hidden costs, no transaction fees. Just simple, honest selling tools.
+                Begin with 3 free listings forever. Upgrade when you're ready to grow. No transaction fees ever.
               </p>
             </div>
 
@@ -198,21 +346,33 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-emerald-600">
+      <section className="py-20 bg-gradient-to-r from-emerald-600 to-blue-600">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+          <div className="inline-flex items-center gap-2 bg-yellow-400 text-black px-4 py-2 rounded-full font-semibold text-sm mb-6">
+            <Star className="w-4 h-4" />
+            <span>Early Adopter: Up to 45% off for 12 months!</span>
+          </div>
           <h2 className="text-3xl font-bold text-white mb-4">
-            Ready to Start Selling?
+            Ready to Start Selling Smarter?
           </h2>
           <p className="text-xl text-emerald-100 mb-8">
-            Join thousands of South Africans who are already selling smarter with a2z.
+            Join the A2Z revolution. Start free, grow with confidence, and keep 100% of your profits.
           </p>
-          <Link
-            href="/create"
-            className="bg-white hover:bg-gray-100 text-emerald-600 font-semibold py-4 px-8 rounded-xl transition-colors inline-flex items-center"
-          >
-            Create Your First Listing
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href="/auth/signup-animated?plan=free"
+              className="bg-white hover:bg-gray-100 text-emerald-600 font-semibold py-4 px-8 rounded-xl transition-colors inline-flex items-center justify-center"
+            >
+              Start Free Trial
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Link>
+            <Link
+              href="/pricing"
+              className="border-2 border-white text-white hover:bg-white hover:text-emerald-600 font-semibold py-4 px-8 rounded-xl transition-colors inline-flex items-center justify-center"
+            >
+              View Pricing
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -222,9 +382,9 @@ export default function HomePage() {
           <div className="text-center">
             <div className="flex items-center justify-center space-x-2 mb-4">
               <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">S</span>
+                <span className="text-white font-bold text-sm">A</span>
               </div>
-              <span className="text-xl font-bold">a2z</span>
+              <span className="text-xl font-bold">A2Z</span>
             </div>
             <p className="text-gray-400 mb-4">
               Everything A to Z. No Store Needed.

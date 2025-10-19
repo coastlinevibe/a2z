@@ -6,15 +6,13 @@ export const mediaItemSchema = z.object({
   description: z.string().max(100, 'Description must be less than 100 characters').optional(),
 })
 
-// Post creation schema
-export const createPostSchema = z.object({
+// Dynamic post creation schema that adapts to user tier
+export const createPostSchemaBase = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters').max(80, 'Title must be less than 80 characters'),
   price_cents: z.number().min(0, 'Price must be positive'),
   currency: z.string().default('ZAR'),
   description: z.string().min(10, 'Description must be at least 10 characters').max(600, 'Description must be less than 600 characters'),
   emoji_tags: z.array(z.string()).min(1, 'At least 1 emoji tag is required').max(4, 'Maximum 4 emoji tags allowed'),
-  media_urls: z.array(z.string().url()).min(1, 'At least one image is required').max(8, 'Maximum 8 images allowed'),
-  media_items: z.array(mediaItemSchema).max(8, 'Maximum 8 images allowed').optional(),
   whatsapp_number: z.string()
     .min(1, 'Contact number is required')
     .transform((val) => {
@@ -43,9 +41,35 @@ export const createPostSchema = z.object({
   display_type: z.enum(['hover', 'slider', 'vertical', 'premium']).default('hover'),
 })
 
+// Function to create tier-specific schema
+export function createPostSchema(tier: 'free' | 'premium' | 'business' = 'free') {
+  const maxImages = tier === 'free' ? 5 : tier === 'premium' ? 8 : 20
+  const maxVideos = tier === 'free' ? 0 : tier === 'premium' ? 1 : -1
+  const allowedGalleryTypes = tier === 'free' 
+    ? ['hover', 'slider'] as const
+    : tier === 'premium' 
+    ? ['hover', 'slider', 'vertical', 'premium'] as const
+    : ['hover', 'slider', 'vertical', 'premium'] as const
+
+  return createPostSchemaBase.extend({
+    media_urls: z.array(z.string().url())
+      .min(1, 'At least one image is required')
+      .max(maxImages, `Maximum ${maxImages} images allowed for ${tier} tier`),
+    media_items: z.array(mediaItemSchema)
+      .max(maxImages, `Maximum ${maxImages} images allowed for ${tier} tier`)
+      .optional(),
+    display_type: z.enum(allowedGalleryTypes).default('hover'),
+  })
+}
+
+// Default schema for backward compatibility
+export const createPostSchemaDefault = createPostSchema('free')
+
 // Post update schema
-export const updatePostSchema = createPostSchema.partial().extend({
+export const updatePostSchema = createPostSchemaBase.partial().extend({
   is_active: z.boolean().optional(),
+  media_urls: z.array(z.string().url()).optional(),
+  media_items: z.array(mediaItemSchema).optional(),
 })
 
 // Analytics action schema
@@ -53,6 +77,14 @@ export const analyticsActionSchema = z.object({
   action: z.enum(['view', 'click']),
 })
 
-export type CreatePostInput = z.infer<typeof createPostSchema>
+// Subscription tier schema
+export const subscriptionTierSchema = z.object({
+  tier: z.enum(['free', 'premium', 'business']),
+  billing_cycle: z.enum(['monthly', 'quarterly', 'annual']).optional(),
+  early_adopter: z.boolean().default(false),
+})
+
+export type CreatePostInput = z.infer<ReturnType<typeof createPostSchema>>
 export type UpdatePostInput = z.infer<typeof updatePostSchema>
 export type AnalyticsAction = z.infer<typeof analyticsActionSchema>
+export type SubscriptionTier = z.infer<typeof subscriptionTierSchema>

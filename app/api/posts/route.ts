@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { createPostSchema } from '@/lib/validators'
 import { generateUniqueSlug } from '@/lib/utils'
+import { getUserTierLimits } from '@/lib/subscription'
 
 // Create a server-side Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
@@ -12,27 +13,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     
-    // Validate input
-    const validationResult = createPostSchema.safeParse(body)
-    if (!validationResult.success) {
-      return NextResponse.json(
-        { error: 'Invalid input', details: validationResult.error.errors },
-        { status: 400 }
-      )
-    }
-
-    const data = validationResult.data
-
-    // Generate unique slug
-    const { data: existingPosts } = await supabaseAdmin
-      .from('posts')
-      .select('slug')
-      .ilike('slug', `${generateUniqueSlug(data.title)}%`)
-
-    const existingSlugs = existingPosts?.map((p: any) => p.slug) || []
-    const slug = generateUniqueSlug(data.title, existingSlugs)
-
-    // Get user from authorization header
+    // Get user from authorization header first
     const authHeader = request.headers.get('authorization')
     if (!authHeader) {
       return NextResponse.json(
@@ -52,8 +33,37 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Get user's tier limits to validate against
+    const { data: userProfile } = await supabaseAdmin
+      .from('profiles')
+      .select('subscription_tier')
+      .eq('id', user.id)
+      .single()
+
+    const userTier = userProfile?.subscription_tier || 'free'
+    
+    // Validate input with tier-specific schema
+    const validationResult = createPostSchema(userTier as 'free' | 'premium' | 'business').safeParse(body)
+    if (!validationResult.success) {
+      return NextResponse.json(
+        { error: 'Invalid input', details: validationResult.error.errors },
+        { status: 400 }
+      )
+    }
+
+    const data = validationResult.data
+
+    // Generate unique slug
+    const { data: existingPosts } = await supabaseAdmin
+      .from('posts')
+      .select('slug')
+      .ilike('slug', `${generateUniqueSlug(data.title)}%`)
+
+    const existingSlugs = existingPosts?.map((p: any) => p.slug) || []
+    const slug = generateUniqueSlug(data.title, existingSlugs)
+
     // Extract media descriptions from media_items
-    const media_descriptions = data.media_items?.map(item => item.description || '') || []
+    const media_descriptions = data.media_items?.map((item: any) => item.description || '') || []
 
     // Insert post
     const { data: post, error } = await supabaseAdmin
@@ -84,7 +94,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get user's username to add to the post
-    const { data: profile } = await supabaseAdmin
+    const { data: postProfile } = await supabaseAdmin
       .from('profiles')
       .select('username')
       .eq('id', user.id)
@@ -93,7 +103,7 @@ export async function POST(request: NextRequest) {
     // Add username to the post for immediate use in ShareModal
     const postWithUsername = {
       ...post,
-      username: profile?.username || null
+      username: postProfile?.username || null
     }
 
     return NextResponse.json({
@@ -139,16 +149,16 @@ export async function GET(request: NextRequest) {
 
     // Add username to posts that don't have it
     if (posts && owner) {
-      const { data: profile } = await supabaseAdmin
+      const { data: ownerProfile } = await supabaseAdmin
         .from('profiles')
         .select('username')
         .eq('id', owner)
         .single()
 
-      if (profile?.username) {
+      if (ownerProfile?.username) {
         posts = posts.map(post => ({
           ...post,
-          username: post.username || profile.username
+          username: post.username || ownerProfile.username
         }))
       }
     }

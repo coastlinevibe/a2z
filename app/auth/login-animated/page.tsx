@@ -1,11 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/lib/auth'
 import { AnimatedForm, AnimatedInput, AnimatedButton } from '@/components/ui/AnimatedForm'
-import { Home } from 'lucide-react'
+import { Home, Crown, Users, Check, Star } from 'lucide-react'
+import { formatPrice, TIER_PRICING, EARLY_ADOPTER_PRICING } from '@/lib/subscription'
 
 export default function AnimatedLoginPage() {
   const [email, setEmail] = useState('')
@@ -14,6 +15,11 @@ export default function AnimatedLoginPage() {
   const [error, setError] = useState('')
   const { signIn, user } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
+  
+  // Get selected plan from URL params
+  const selectedPlan = searchParams.get('plan')
+  const showPlanInfo = selectedPlan && selectedPlan !== 'free'
 
   useEffect(() => {
     if (user) {
@@ -61,6 +67,29 @@ export default function AnimatedLoginPage() {
           </p>
         </div>
 
+        {/* Plan Selection Info */}
+        {showPlanInfo && (
+          <div className="mb-6 p-4 rounded-xl border-2 border-yellow-500 bg-yellow-500/10">
+            <div className="flex items-center gap-2 mb-2">
+              <Star className="w-5 h-5 text-yellow-400" />
+              <span className="text-white font-semibold">
+                {selectedPlan === 'premium' ? 'Premium' : 'Business'} Plan Selected
+              </span>
+            </div>
+            <p className="text-gray-300 text-sm mb-3">
+              Sign in to upgrade to {selectedPlan === 'premium' ? 'Premium' : 'Business'} and unlock all features!
+            </p>
+            <div className="text-center">
+              <Link 
+                href="/choose-plan" 
+                className="text-yellow-400 hover:text-yellow-300 text-sm underline"
+              >
+                Change plan selection
+              </Link>
+            </div>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <AnimatedInput
             label="Email"
@@ -97,7 +126,7 @@ export default function AnimatedLoginPage() {
 
           <p className="text-center text-gray-400 text-sm">
             Don&apos;t have an account?{' '}
-            <Link href="/auth/signup-animated" className="text-emerald-400 hover:underline">
+            <Link href={`/auth/signup-animated${selectedPlan ? `?plan=${selectedPlan}` : ''}`} className="text-emerald-400 hover:underline">
               Sign up
             </Link>
           </p>

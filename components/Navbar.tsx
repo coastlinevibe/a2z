@@ -3,9 +3,10 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Plus, LayoutDashboard, Home, User, LogOut } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { useAuth } from '@/lib/auth'
 import { Button } from '@/components/ui/Button'
+import { useAuth } from '@/lib/auth'
+import { cn } from '@/lib/utils'
+import UserPlanStatus from '@/components/UserPlanStatus'
 
 export function Navbar() {
   const pathname = usePathname()
@@ -44,13 +45,18 @@ export function Navbar() {
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">A</span>
-            </div>
-            <span className="text-xl font-bold text-gray-900">a2z</span>
-          </Link>
+          {/* Logo and Plan Status */}
+          <div className="flex items-center space-x-4">
+            <Link href="/" className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">A</span>
+              </div>
+              <span className="text-xl font-bold text-gray-900">a2z</span>
+            </Link>
+            
+            {/* User Plan Status */}
+            {user && <UserPlanStatus />}
+          </div>
 
           {/* Desktop Navigation */}
           <div className="hidden sm:flex items-center space-x-4">
@@ -100,9 +106,9 @@ export function Navbar() {
                         Sign in
                       </Button>
                     </Link>
-                    <Link href="/auth/signup-animated">
+                    <Link href="/auth/signup-animated?plan=free">
                       <Button size="sm">
-                        Sign up
+                        Get Started Free
                       </Button>
                     </Link>
                   </div>
@@ -125,9 +131,9 @@ export function Navbar() {
                     <LogOut className="h-4 w-4" />
                   </Button>
                 ) : (
-                  <Link href="/auth/login-animated">
+                  <Link href="/auth/signup-animated?plan=free">
                     <Button size="sm">
-                      Sign in
+                      Get Started Free
                     </Button>
                   </Link>
                 )}

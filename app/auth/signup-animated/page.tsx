@@ -1,11 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/lib/auth'
 import { AnimatedForm, AnimatedInput, AnimatedButton } from '@/components/ui/AnimatedForm'
-import { Home } from 'lucide-react'
+import { Home, Crown, Users, Check, Star } from 'lucide-react'
+import { formatPrice, TIER_PRICING, EARLY_ADOPTER_PRICING } from '@/lib/subscription'
 
 export default function AnimatedSignupPage() {
   const [email, setEmail] = useState('')
@@ -18,12 +19,55 @@ export default function AnimatedSignupPage() {
   const [success, setSuccess] = useState(false)
   const { signUp, user } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
+  
+  // Get selected plan from URL params
+  const selectedPlan = searchParams.get('plan') || 'free'
+  const isEarlyAdopter = true // For first 500 users
 
   useEffect(() => {
     if (user) {
       router.push('/dashboard')
     }
   }, [user, router])
+
+  // Plan configuration
+  const getPlanConfig = (plan: string) => {
+    switch (plan) {
+      case 'premium':
+        return {
+          name: 'Premium',
+          icon: Crown,
+          color: 'emerald',
+          price: isEarlyAdopter ? EARLY_ADOPTER_PRICING.premium.monthly : TIER_PRICING.premium.monthly,
+          originalPrice: TIER_PRICING.premium.monthly,
+          features: ['Unlimited listings', '8 images + videos', 'Verified badge ✓', '35-day duration'],
+          discount: isEarlyAdopter ? '41% off' : null
+        }
+      case 'business':
+        return {
+          name: 'Business',
+          icon: Users,
+          color: 'blue',
+          price: isEarlyAdopter ? EARLY_ADOPTER_PRICING.business.monthly : TIER_PRICING.business.monthly,
+          originalPrice: TIER_PRICING.business.monthly,
+          features: ['Everything in Premium', '20 images + videos', 'Custom branding', 'Team collaboration'],
+          discount: isEarlyAdopter ? '45% off' : null
+        }
+      default:
+        return {
+          name: 'Free',
+          icon: Check,
+          color: 'gray',
+          price: 0,
+          originalPrice: 0,
+          features: ['3 active listings', '5 images per listing', '7-day duration', 'Basic features'],
+          discount: null
+        }
+    }
+  }
+
+  const planConfig = getPlanConfig(selectedPlan)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -43,7 +87,10 @@ export default function AnimatedSignupPage() {
     }
 
     const fullName = `${name.trim()} ${surname.trim()}`.trim()
-    const { error } = await signUp(email, password, { full_name: fullName })
+    const { error } = await signUp(email, password, { 
+      full_name: fullName,
+      selected_plan: selectedPlan
+    })
     
     if (error) {
       setError(error.message)
@@ -114,6 +161,70 @@ export default function AnimatedSignupPage() {
           </p>
         </div>
 
+        {/* Plan Confirmation */}
+        <div className={`mb-6 p-4 rounded-xl border-2 ${
+          planConfig.color === 'emerald' ? 'border-emerald-500 bg-emerald-500/10' :
+          planConfig.color === 'blue' ? 'border-blue-500 bg-blue-500/10' :
+          'border-gray-500 bg-gray-500/10'
+        }`}>
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <planConfig.icon className={`w-5 h-5 ${
+                planConfig.color === 'emerald' ? 'text-emerald-400' :
+                planConfig.color === 'blue' ? 'text-blue-400' :
+                'text-gray-400'
+              }`} />
+              <span className="text-white font-semibold">
+                Registering for {planConfig.name} Plan
+              </span>
+            </div>
+            {planConfig.price > 0 && (
+              <div className="text-right">
+                <div className="text-white font-bold">
+                  {formatPrice(planConfig.price)}/month
+                </div>
+                {planConfig.discount && (
+                  <div className={`text-xs ${
+                    planConfig.color === 'emerald' ? 'text-emerald-400' :
+                    planConfig.color === 'blue' ? 'text-blue-400' :
+                    'text-gray-400'
+                  }`}>
+                    {planConfig.discount} for 12 months • Then {formatPrice(planConfig.originalPrice)}/month
+                  </div>
+                )}
+              </div>
+            )}
+            {planConfig.price === 0 && (
+              <div className="text-emerald-400 font-bold">FREE</div>
+            )}
+          </div>
+          
+          <div className="grid grid-cols-2 gap-2 text-sm">
+            {planConfig.features.map((feature, index) => (
+              <div key={index} className="flex items-center gap-2 text-gray-300">
+                <Check className="w-3 h-3 text-emerald-400 flex-shrink-0" />
+                <span>{feature}</span>
+              </div>
+            ))}
+          </div>
+
+          {isEarlyAdopter && planConfig.price > 0 && (
+            <div className="mt-3 flex items-center gap-2 text-yellow-400 text-sm">
+              <Star className="w-4 h-4" />
+              <span>Early Adopter: {planConfig.discount} for first 12 months!</span>
+            </div>
+          )}
+
+          <div className="mt-3 text-center">
+            <Link 
+              href="/choose-plan" 
+              className="text-emerald-400 hover:text-emerald-300 text-sm underline"
+            >
+              Want to change your plan?
+            </Link>
+          </div>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex gap-2">
             <AnimatedInput
@@ -170,7 +281,7 @@ export default function AnimatedSignupPage() {
 
           <p className="text-center text-gray-400 text-sm">
             Already have an account?{' '}
-            <Link href="/auth/login-animated" className="text-emerald-400 hover:underline">
+            <Link href={`/auth/login-animated${selectedPlan ? `?plan=${selectedPlan}` : ''}`} className="text-emerald-400 hover:underline">
               Signin
             </Link>
           </p>

@@ -1,0 +1,343 @@
+'use client'
+
+import { useState } from 'react'
+import Link from 'next/link'
+import { Check, X, Star, Zap, Crown, Users } from 'lucide-react'
+import { TIER_PRICING, EARLY_ADOPTER_PRICING, formatPrice } from '@/lib/subscription'
+
+export default function PricingPage() {
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly')
+  const isEarlyAdopter = true // For first 500 users
+
+  const getPrice = (tier: 'premium' | 'business', cycle: 'monthly' | 'annual') => {
+    if (isEarlyAdopter && cycle === 'monthly') {
+      return EARLY_ADOPTER_PRICING[tier].monthly
+    }
+    return TIER_PRICING[tier][cycle]
+  }
+
+  const getAnnualSavings = (tier: 'premium' | 'business') => {
+    const monthly = TIER_PRICING[tier].monthly * 12
+    const annual = TIER_PRICING[tier].annual
+    return monthly - annual
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 py-16">
+        {/* Header */}
+        <div className="text-center mb-16">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            Simple Pricing for Every Seller
+          </h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+            Start free, upgrade when you're ready. No hidden fees, no commissions.
+            Just beautiful listings that convert.
+          </p>
+
+          {/* Early Adopter Banner */}
+          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-blue-500 text-white px-6 py-3 rounded-full mb-8">
+            <Star className="w-5 h-5" />
+            <span className="font-semibold">Early Adopter Special</span>
+            <span>•</span>
+            <span>Up to 45% off for 12 months!</span>
+          </div>
+
+          {/* Billing Toggle */}
+          <div className="flex items-center justify-center gap-4 mb-12">
+            <span className={`${billingCycle === 'monthly' ? 'text-gray-900' : 'text-gray-500'}`}>
+              Monthly
+            </span>
+            <button
+              onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'annual' : 'monthly')}
+              className={`relative w-14 h-7 rounded-full transition-colors ${
+                billingCycle === 'annual' ? 'bg-emerald-500' : 'bg-gray-300'
+              }`}
+            >
+              <div
+                className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-transform ${
+                  billingCycle === 'annual' ? 'translate-x-8' : 'translate-x-1'
+                }`}
+              />
+            </button>
+            <span className={`${billingCycle === 'annual' ? 'text-gray-900' : 'text-gray-500'}`}>
+              Annual
+            </span>
+            {billingCycle === 'annual' && (
+              <span className="bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full text-sm font-medium">
+                Save 20%
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Pricing Cards */}
+        <div className="grid md:grid-cols-3 gap-8 mb-16">
+          {/* Free Tier */}
+          <div className="bg-white rounded-2xl border-2 border-gray-200 p-8">
+            <div className="text-center mb-8">
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Free</h3>
+              <p className="text-gray-600 mb-6">Try it out</p>
+              <div className="text-4xl font-bold text-gray-900 mb-2">R0</div>
+              <div className="text-gray-600">Forever free</div>
+            </div>
+
+            <div className="space-y-4 mb-8">
+              <div className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                <span className="text-gray-700">3 active listings</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                <span className="text-gray-700">5 images per listing</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                <span className="text-gray-700">Basic gallery types</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                <span className="text-gray-700">WhatsApp integration</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                <span className="text-gray-700">Basic analytics</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <X className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                <span className="text-gray-500">7-day listing duration</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <X className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                <span className="text-gray-500">A2z watermark</span>
+              </div>
+            </div>
+
+            <Link
+              href="/auth/signup-animated?plan=free"
+              className="w-full py-3 px-6 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors inline-block text-center"
+            >
+              Get Started Free
+            </Link>
+          </div>
+
+          {/* Premium Tier */}
+          <div className="bg-white rounded-2xl border-2 border-emerald-500 p-8 relative">
+            {/* Popular Badge */}
+            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+              <div className="bg-emerald-500 text-white px-4 py-2 rounded-full text-sm font-medium">
+                Most Popular
+              </div>
+            </div>
+
+            <div className="text-center mb-8">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Crown className="w-6 h-6 text-emerald-500" />
+                <h3 className="text-2xl font-bold text-gray-900">Premium</h3>
+              </div>
+              <p className="text-gray-600 mb-6">For serious sellers</p>
+              
+              <div className="mb-4">
+                <div className="text-4xl font-bold text-gray-900">
+                  {formatPrice(getPrice('premium', billingCycle))}
+                </div>
+                <div className="text-gray-600">
+                  /{billingCycle === 'monthly' ? 'month' : 'year'}
+                </div>
+              </div>
+
+              {billingCycle === 'monthly' && (
+                <div className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-sm font-medium mb-2">
+                  41% off for 12 months • Then {formatPrice(TIER_PRICING.premium.monthly)}
+                </div>
+              )}
+
+              {billingCycle === 'annual' && (
+                <div className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-sm font-medium mb-2">
+                  Save {formatPrice(getAnnualSavings('premium'))} per year
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-4 mb-8">
+              <div className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                <span className="text-gray-700">Unlimited listings</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                <span className="text-gray-700">8 images per listing</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                <span className="text-gray-700">Verified seller badge ✓</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                <span className="text-gray-700">35-day listing duration</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                <span className="text-gray-700">Video support</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                <span className="text-gray-700">Premium gallery types</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                <span className="text-gray-700">Advanced analytics</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                <span className="text-gray-700">No watermark</span>
+              </div>
+            </div>
+
+            <Link
+              href="/auth/signup-animated?plan=premium"
+              className="w-full py-3 px-6 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors flex items-center justify-center gap-2"
+            >
+              <Zap className="w-5 h-5" />
+              Start Premium
+            </Link>
+          </div>
+
+          {/* Business Tier */}
+          <div className="bg-white rounded-2xl border-2 border-blue-500 p-8">
+            <div className="text-center mb-8">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Users className="w-6 h-6 text-blue-500" />
+                <h3 className="text-2xl font-bold text-gray-900">Business</h3>
+              </div>
+              <p className="text-gray-600 mb-6">For professionals</p>
+              
+              <div className="mb-4">
+                <div className="text-4xl font-bold text-gray-900">
+                  {formatPrice(getPrice('business', billingCycle))}
+                </div>
+                <div className="text-gray-600">
+                  /{billingCycle === 'monthly' ? 'month' : 'year'}
+                </div>
+              </div>
+
+              {billingCycle === 'monthly' && (
+                <div className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-medium mb-2">
+                  45% off for 12 months • Then {formatPrice(TIER_PRICING.business.monthly)}
+                </div>
+              )}
+
+              {billingCycle === 'annual' && (
+                <div className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-medium mb-2">
+                  Save {formatPrice(getAnnualSavings('business'))} per year
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-4 mb-8">
+              <div className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                <span className="text-gray-700">Everything in Premium</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                <span className="text-gray-700">20 images per listing</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                <span className="text-gray-700">Multiple videos</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                <span className="text-gray-700">Custom branding</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                <span className="text-gray-700">Team collaboration (3 users)</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                <span className="text-gray-700">API access</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                <span className="text-gray-700">60-day listing duration</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                <span className="text-gray-700">Priority support</span>
+              </div>
+            </div>
+
+            <Link
+              href="/auth/signup-animated?plan=business"
+              className="w-full py-3 px-6 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors inline-block text-center"
+            >
+              Start Business
+            </Link>
+          </div>
+        </div>
+
+        {/* FAQ Section */}
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
+            Frequently Asked Questions
+          </h2>
+          
+          <div className="space-y-8">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                What payment methods do you accept?
+              </h3>
+              <p className="text-gray-600">
+                We accept EFT, Ozow (instant EFT), SnapScan, Zapper, and card payments via Yoco and PayFast.
+                All payments are processed securely in South African Rand (ZAR).
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Can I cancel my subscription anytime?
+              </h3>
+              <p className="text-gray-600">
+                Yes, you can cancel your subscription at any time. Your listings will remain active until 
+                the end of your billing period, after which they'll be converted to free tier limits.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                What happens to my listings if I downgrade?
+              </h3>
+              <p className="text-gray-600">
+                Your existing listings will remain active, but you won't be able to create new ones 
+                beyond the free tier limit (3 listings) until you upgrade again or deactivate some listings.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Do you charge transaction fees?
+              </h3>
+              <p className="text-gray-600">
+                No! Unlike other marketplaces, we don't charge any transaction fees or commissions. 
+                You keep 100% of your sales. We only charge the monthly subscription fee.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                How does the early adopter pricing work?
+              </h3>
+              <p className="text-gray-600">
+                The first 500 users get special pricing for 12 months: Premium for R29/month (41% off) and 
+                Business for R99/month (45% off). After 12 months, your subscription automatically continues 
+                at regular pricing (R49/month for Premium, R179/month for Business). You can cancel anytime.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
