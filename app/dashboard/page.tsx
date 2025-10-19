@@ -2,13 +2,14 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { Plus, Eye, MousePointer, Edit, Trash2, ExternalLink, Share2, ToggleLeft, ToggleRight, Grid, List } from 'lucide-react'
+import { Plus, Eye, MousePointer, Edit, Trash2, ExternalLink, Share2, ToggleLeft, ToggleRight, Grid, List, Crown, Calendar } from 'lucide-react'
 import { formatPrice, cn } from '@/lib/utils'
 import { ShareModal } from '@/components/ShareModal'
 import { PreviewModal } from '@/components/PreviewModal'
 import { DeleteConfirmModal } from '@/components/DeleteConfirmModal'
 import { ListingCardGrid } from '@/components/ListingCardGrid'
 import { useRequireAuth } from '@/lib/auth'
+import { useUserProfile } from '@/lib/useUserProfile'
 
 interface Post {
   id: string
@@ -30,6 +31,7 @@ interface Post {
 
 export default function DashboardPage() {
   const { user, session, loading: authLoading } = useRequireAuth()
+  const { profile, loading: profileLoading, getPlanDisplayName, getNextBillingDate } = useUserProfile()
   const [posts, setPosts] = useState<Post[]>([])
   const [loading, setLoading] = useState(true)
   const [sharePost, setSharePost] = useState<Post | null>(null)
@@ -233,8 +235,42 @@ export default function DashboardPage() {
         </svg>
 
         {/* Stats Overview */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {/* Subscription Plan */}
+          <div 
+            className="gooey-card gooey-card-gold group relative overflow-visible rounded-3xl bg-transparent p-8 transition-all duration-500 hover:scale-105"
+            style={{
+              '--x': '50',
+              '--y': '50',
+              '--hue': '45deg',
+            } as React.CSSProperties}
+          >
+            <div className="relative z-10 flex items-center gap-4">
+              <div className="rounded-2xl bg-white/20 backdrop-blur-sm p-3">
+                <Crown className="h-7 w-7 text-white" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-white/80">Current Plan</p>
+                <p className="text-2xl font-bold text-white tracking-tight">
+                  {profileLoading ? '...' : getPlanDisplayName()}
+                </p>
+                {profile && profile.subscription_tier !== 'free' && (
+                  <div className="flex items-center gap-1 mt-1">
+                    <Calendar className="h-3 w-3 text-white/60" />
+                    <p className="text-xs text-white/60">
+                      {getNextBillingDate() ? 
+                        `Next: ${getNextBillingDate()?.toLocaleDateString()}` : 
+                        'Active'
+                      }
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
         {posts.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+          <>
             {/* Views */}
             <div 
               ref={card1Ref}
@@ -306,8 +342,9 @@ export default function DashboardPage() {
                 </div>
               </div>
             </div>
-          </div>
+          </>
         )}
+        </div>
 
         <style jsx>{`
           @property --a {
@@ -353,6 +390,9 @@ export default function DashboardPage() {
             --a: 100%;
           }
 
+          .gooey-card-gold {
+            --hue: 45deg;
+          }
           .gooey-card-emerald {
             --hue: 170deg;
           }
