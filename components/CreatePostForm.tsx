@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
-import { createPostSchema, type CreatePostInput } from '@/lib/validators'
+import { createPostSchemaDefault, type CreatePostInput } from '@/lib/validators'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/lib/auth'
 import { MediaUploader } from './MediaUploader'
@@ -37,7 +37,7 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
     formState: { errors },
     reset,
   } = useForm<CreatePostInput>({
-    resolver: zodResolver(createPostSchema),
+    resolver: zodResolver(createPostSchemaDefault),
     defaultValues: {
       currency: 'ZAR',
       emoji_tags: [],
