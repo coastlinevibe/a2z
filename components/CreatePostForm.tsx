@@ -1,17 +1,19 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
-import { createPostSchemaDefault, type CreatePostInput } from '@/lib/validators'
+import { createPostSchema, createPostSchemaDefault, type CreatePostInput } from '@/lib/validators'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/lib/auth'
+import { getUserTierLimits, type TierLimits } from '@/lib/subscription'
 import { MediaUploader } from './MediaUploader'
 import { IconTagSelector } from './IconTagSelector'
 import { PostCardPreview } from './PostCardPreview'
 import { ShareModal } from './ShareModal'
 import { PreviewModal } from './PreviewModal'
+import TierLimitsCard from './TierLimitsCard'
 
 interface CreatePostFormProps {
   className?: string
@@ -28,6 +30,31 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
   const [displayType, setDisplayType] = useState<'hover' | 'slider' | 'vertical' | 'premium'>('hover')
   const [mediaDescriptions, setMediaDescriptions] = useState<Record<string, string>>({})
   const [priceDisplay, setPriceDisplay] = useState<string>('')
+  const [tierLimits, setTierLimits] = useState<TierLimits | null>(null)
+  const [loadingLimits, setLoadingLimits] = useState(true)
+
+  useEffect(() => {
+    const fetchTierLimits = async () => {
+      try {
+        const limits = await getUserTierLimits()
+        setTierLimits(limits)
+      } catch (error) {
+        console.error('Error fetching tier limits:', error)
+      } finally {
+        setLoadingLimits(false)
+      }
+    }
+
+    if (session) {
+      fetchTierLimits()
+    }
+  }, [session])
+
+  // Get the appropriate schema based on user's tier
+  const getCurrentSchema = () => {
+    if (!tierLimits) return createPostSchemaDefault
+    return createPostSchema(tierLimits.tier)
+  }
 
   const {
     register,
@@ -37,7 +64,7 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
     formState: { errors },
     reset,
   } = useForm<CreatePostInput>({
-    resolver: zodResolver(createPostSchemaDefault),
+    resolver: zodResolver(getCurrentSchema()),
     defaultValues: {
       currency: 'ZAR',
       emoji_tags: [],
@@ -61,6 +88,12 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
   }
 
   const onSubmit = async (data: CreatePostInput) => {
+    // Check if user can create listing
+    if (!tierLimits?.can_create_listing) {
+      alert('You have reached your listing limit. Please upgrade your plan or deactivate existing listings to create new ones.')
+      return
+    }
+
     if (data.media_urls.length === 0) {
       alert('Please upload at least one image or video.')
       return
@@ -127,6 +160,11 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
 
   return (
     <div className={cn('max-w-6xl mx-auto', className)}>
+      {/* Tier Limits Card */}
+      <div className="mb-6">
+        <TierLimitsCard />
+      </div>
+
       <div className="grid lg:grid-cols-2 gap-8">
         {/* Form */}
         <div className="space-y-6">
@@ -458,10 +496,10 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={isSubmitting || !isFormComplete()}
+              disabled={isSubmitting || !isFormComplete() || !tierLimits?.can_create_listing}
               className={cn(
                 "w-full font-medium py-3 px-4 rounded-lg transition-all flex items-center justify-center",
-                isFormComplete() && !isSubmitting
+                isFormComplete() && tierLimits?.can_create_listing && !isSubmitting
                   ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105"
                   : "bg-gray-300 cursor-not-allowed text-gray-500"
               )}
@@ -471,6 +509,8 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
                   <Loader2 className="h-5 w-5 mr-2 animate-spin" />
                   Creating Listing...
                 </>
+              ) : !tierLimits?.can_create_listing ? (
+                'Upgrade Required'
               ) : (
                 'Create Listing'
               )}
@@ -478,6 +518,11 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
             {!isFormComplete() && (
               <p className="text-sm text-gray-500 text-center mt-2">
                 Complete all fields to create your listing
+              </p>
+            )}
+            {!tierLimits?.can_create_listing && (
+              <p className="text-sm text-red-500 text-center mt-2">
+                You have reached your listing limit. Upgrade your plan to create more listings.
               </p>
             )}
           </form>
