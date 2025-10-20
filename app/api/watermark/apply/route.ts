@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     })
 
     // Return watermarked image
-    return new NextResponse(watermarkedBuffer, {
+    return new NextResponse(watermarkedBuffer as any, {
       headers: {
         'Content-Type': file.type || 'image/jpeg',
         'Content-Disposition': `attachment; filename="watermarked_${file.name}"`,
