@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { supabase } from '@/lib/supabaseClient'
+import { createSupabaseClient } from '@/lib/supabaseClient'
 import { updatePostSchema, analyticsActionSchema } from '@/lib/validators'
 
 // Create admin client for operations that bypass RLS
@@ -21,6 +21,7 @@ export async function PATCH(
 ) {
   try {
     const supabaseAdmin = getSupabaseAdmin()
+    const supabase = createSupabaseClient()
     const body = await request.json()
     const postId = params.id
 
@@ -122,6 +123,7 @@ export async function DELETE(
 ) {
   try {
     const supabaseAdmin = getSupabaseAdmin()
+    const supabase = createSupabaseClient()
     const postId = params.id
 
     // Get the authorization header
