@@ -290,7 +290,7 @@ export default function MediaUploader({
               className="flex overflow-x-auto gap-3 pb-2 scrollbar-hide scroll-smooth"
             >
               {/* Uploaded media */}
-              {mediaUrls.map((url, index) => (
+              {mediaUrls.filter(url => url && typeof url === 'string').map((url, index) => (
                 <div key={url} className="relative group flex-shrink-0 snap-start">
                   <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-100 border-2 border-transparent hover:border-emerald-300 transition-colors">
                     {url.includes('.mp4') || url.includes('.webm') ? (
@@ -360,7 +360,7 @@ export default function MediaUploader({
               Image Descriptions (Optional)
             </label>
             <div className="space-y-2">
-              {mediaUrls.map((url, index) => (
+              {mediaUrls.filter(url => url && typeof url === 'string').map((url, index) => (
                 <div key={url} className="flex items-start gap-3">
                   <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
                     {url.includes('.mp4') || url.includes('.webm') ? (
