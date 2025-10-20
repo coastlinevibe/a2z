@@ -3,13 +3,15 @@
 import { useState, useCallback, useRef } from 'react'
 import { Upload, X, Image, Video, Loader2, ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn, compressImage, isValidFileType, formatFileSize } from '@/lib/utils'
+import { useAuth } from '@/lib/auth'
+import { supabase } from '@/lib/supabaseClient'
 
 interface MediaUploaderProps {
   mediaUrls: string[]
   onMediaChange: (urls: string[]) => void
   maxFiles?: number
   className?: string
-  displayType?: 'hover' | 'slider' | 'vertical' | 'premium' | 'video' | 'before_after'
+  displayType?: 'hover' | 'horizontal' | 'vertical' | 'gallery' | 'premium' | 'video' | 'before_after'
   mediaDescriptions?: Record<string, string>
   onDescriptionsChange?: (descriptions: Record<string, string>) => void
 }
@@ -22,28 +24,38 @@ interface UploadingFile {
   error?: string
 }
 
-export function MediaUploader({ 
+export default function MediaUploader({ 
   mediaUrls, 
   onMediaChange, 
-  maxFiles = 9,
+  maxFiles = 8,
   className,
-  displayType = 'hover',
+  displayType,
   mediaDescriptions = {},
   onDescriptionsChange
 }: MediaUploaderProps) {
-  const [uploadingFiles, setUploadingFiles] = useState<UploadingFile[]>([])
+  const { user } = useAuth()
   const [dragActive, setDragActive] = useState(false)
+  const [uploadingFiles, setUploadingFiles] = useState<UploadingFile[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   const uploadFile = async (file: File): Promise<string> => {
+    // Get user session token
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) {
+      throw new Error('User not authenticated')
+    }
+
     // Create form data
     const formData = new FormData()
     formData.append('file', file)
 
-    // Upload directly
+    // Upload directly with auth header
     const response = await fetch('/api/upload-direct', {
       method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${session.access_token}`
+      },
       body: formData,
     })
 
@@ -67,7 +79,10 @@ export function MediaUploader({
 
     const totalFiles = mediaUrls.length + uploadingFiles.length + validFiles.length
     if (totalFiles > maxFiles) {
-      alert(`Maximum ${maxFiles} images allowed. Please remove some files first.`)
+      const tierMessage = maxFiles === 5 
+        ? 'Free tier allows maximum 5 images. Upgrade to Premium for 8 images per listing!' 
+        : `Maximum ${maxFiles} images allowed. Please remove some files first.`
+      alert(tierMessage)
       return
     }
 
@@ -196,6 +211,11 @@ export function MediaUploader({
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Media ({mediaUrls.length + uploadingFiles.length}/{maxFiles})
+          {maxFiles === 5 && (
+            <span className="ml-2 text-xs text-amber-600 bg-amber-100 px-2 py-1 rounded">
+              Free Tier Limit
+            </span>
+          )}
         </label>
 
         {/* Upload area */}
@@ -333,8 +353,8 @@ export function MediaUploader({
           </div>
         )}
 
-        {/* Image Descriptions for Premium Gallery Mode */}
-        {displayType === 'premium' && mediaUrls.length > 0 && (
+        {/* Image Descriptions for Gallery Mode */}
+        {(displayType === 'gallery' || displayType === 'premium') && mediaUrls.length > 0 && (
           <div className="mt-4 space-y-3">
             <label className="block text-sm font-medium text-gray-700">
               Image Descriptions (Optional)

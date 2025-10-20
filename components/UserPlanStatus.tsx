@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '@/lib/auth'
 import { supabase } from '@/lib/supabaseClient'
 import { Crown, Users, Calendar, CheckCircle } from 'lucide-react'
-import { formatDistanceToNow } from 'date-fns'
+import { formatRelativeTime } from '@/lib/utils'
+import { useHydrated } from '@/hooks/useHydrated'
 
 interface UserProfile {
   subscription_tier: 'free' | 'premium' | 'business'
@@ -18,6 +19,7 @@ export default function UserPlanStatus() {
   const { user } = useAuth()
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
+  const hydrated = useHydrated()
 
   console.log('UserPlanStatus component rendering, user:', user?.id)
 
@@ -124,13 +126,25 @@ export default function UserPlanStatus() {
       return 'Expired'
     }
 
-    const timeUntilExpiry = formatDistanceToNow(endDate, { addSuffix: true })
+    // Calculate days until expiry
+    const diffInDays = Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
     
-    if (profile.subscription_status === 'trial') {
-      return `Trial ends ${timeUntilExpiry}`
+    let timeText = ''
+    if (diffInDays === 1) {
+      timeText = 'tomorrow'
+    } else if (diffInDays <= 7) {
+      timeText = `in ${diffInDays} days`
+    } else if (diffInDays <= 30) {
+      timeText = `in ${Math.ceil(diffInDays / 7)} weeks`
+    } else {
+      timeText = `in ${Math.ceil(diffInDays / 30)} months`
     }
     
-    return `Renews ${timeUntilExpiry}`
+    if (profile.subscription_status === 'trial') {
+      return `Trial ends ${timeText}`
+    }
+    
+    return `Renews ${timeText}`
   }
 
   const isExpiringSoon = () => {
@@ -158,7 +172,7 @@ export default function UserPlanStatus() {
       <div className="hidden md:flex items-center gap-1 text-sm text-gray-600">
         <Calendar className="w-4 h-4" />
         <span className={isExpiringSoon() ? 'text-orange-600 font-medium' : ''}>
-          {getExpiryInfo()}
+          {hydrated ? getExpiryInfo() : 'Loading...'}
         </span>
       </div>
 

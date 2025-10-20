@@ -389,6 +389,19 @@ export default function HomePage() {
             <p className="text-gray-400 mb-4">
               Everything A to Z. No Store Needed.
             </p>
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <Link href="/help" className="text-sm text-gray-400 hover:text-gray-300 transition-colors">
+                Help
+              </Link>
+              <span className="text-gray-600">•</span>
+              <Link href="/pricing" className="text-sm text-gray-400 hover:text-gray-300 transition-colors">
+                Pricing
+              </Link>
+              <span className="text-gray-600">•</span>
+              <Link href="/admin" className="text-sm text-gray-600 hover:text-gray-400 transition-colors">
+                Admin
+              </Link>
+            </div>
             <p className="text-sm text-gray-500">
               © 2024 a2z. Made with ❤️ for South African sellers.
             </p>

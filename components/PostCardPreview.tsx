@@ -26,7 +26,7 @@ interface Post {
 interface PostCardPreviewProps {
   post: Post
   layout?: 'square' | 'portrait' | 'landscape'
-  displayType?: 'hover' | 'slider' | 'vertical' | 'premium' | 'video' | 'before_after'
+  displayType?: 'hover' | 'horizontal' | 'vertical' | 'gallery' | 'premium' | 'video' | 'before_after'
   className?: string
 }
 
@@ -83,7 +83,7 @@ export function PostCardPreview({
             aspectRatio={layout}
             className="rounded-t-xl"
           />
-        ) : displayType === 'slider' ? (
+        ) : displayType === 'horizontal' ? (
           <HorizontalSlider 
             images={post.media_urls}
             alt={post.title}
@@ -106,6 +106,11 @@ export function PostCardPreview({
             afterImage={post.media_urls[1] || post.media_urls[0] || ''}
             beforeLabel="Before"
             afterLabel="After"
+            className="rounded-t-xl"
+          />
+        ) : displayType === 'gallery' ? (
+          <PremiumGallery 
+            images={post.media_urls}
             className="rounded-t-xl"
           />
         ) : (

@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { MessageCircle, Phone, MapPin, Eye, MousePointer, ChevronLeft, ChevronRight } from 'lucide-react'
-import { cn, formatPrice, generateWhatsAppUrl } from '@/lib/utils'
+import { MessageCircle, Phone, MapPin, Eye, MousePointer, ChevronLeft, ChevronRight, BadgeCheck } from 'lucide-react'
+import { cn, formatPrice, generateWhatsAppUrl, formatRelativeTime } from '@/lib/utils'
+import { useHydrated } from '@/hooks/useHydrated'
 import { usePageView, trackWhatsAppClick, trackPhoneClick } from '@/lib/analytics'
 import { HoverGallery } from '@/components/HoverGallery'
 import { HorizontalSlider } from '@/components/HorizontalSlider'
@@ -26,6 +27,8 @@ interface Post {
   views: number
   clicks: number
   created_at: string
+  verified_seller?: boolean
+  seller_name?: string
 }
 
 interface PostCardProps {
@@ -46,6 +49,7 @@ export function PostCard({
   className 
 }: PostCardProps) {
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0)
+  const hydrated = useHydrated()
 
   // Track page views if enabled
   usePageView(trackViews ? post.id : null)
@@ -94,7 +98,7 @@ export function PostCard({
     )}>
       {/* Gallery - render based on display_type */}
       <div className="group relative">
-        {post.display_type === 'slider' ? (
+        {post.display_type === 'horizontal' ? (
           <HorizontalSlider images={post.media_urls} alt={post.title} className="rounded-t-xl" />
         ) : post.display_type === 'vertical' ? (
           <VerticalSlider images={post.media_urls} alt={post.title} className="rounded-t-xl" />
@@ -111,6 +115,12 @@ export function PostCard({
             afterImage={post.media_urls[1] || post.media_urls[0] || ''}
             beforeLabel="Before"
             afterLabel="After"
+            className="rounded-t-xl"
+          />
+        ) : post.display_type === 'gallery' ? (
+          <PremiumGallery 
+            images={post.media_urls}
+            descriptions={post.media_descriptions}
             className="rounded-t-xl"
           />
         ) : (
@@ -131,10 +141,17 @@ export function PostCard({
 
       {/* Content */}
       <div className="p-6">
-        {/* Title */}
-        <h2 className="text-xl font-bold text-gray-900 mb-2">
-          {post.title}
-        </h2>
+        {/* Title with Verified Badge */}
+        <div className="flex items-center gap-2 mb-2">
+          <h2 className="text-xl font-bold text-gray-900">
+            {post.title}
+          </h2>
+          {post.verified_seller && (
+            <div className="flex items-center" title="Verified Seller">
+              <BadgeCheck className="w-5 h-5 text-blue-500 flex-shrink-0" />
+            </div>
+          )}
+        </div>
 
         {/* Emoji tags */}
         {post.emoji_tags && post.emoji_tags.length > 0 && (
@@ -202,7 +219,7 @@ export function PostCard({
 
         {/* Timestamp */}
         <div className="text-xs text-gray-400 mt-4 text-center">
-          Posted {new Date(post.created_at).toLocaleDateString()}
+          Posted {hydrated ? formatRelativeTime(post.created_at) : 'recently'}
         </div>
       </div>
     </div>

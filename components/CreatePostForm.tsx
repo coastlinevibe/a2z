@@ -8,7 +8,7 @@ import { createPostSchema, createPostSchemaDefault, type CreatePostInput } from 
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/lib/auth'
 import { getUserTierLimits, type TierLimits } from '@/lib/subscription'
-import { MediaUploader } from './MediaUploader'
+import MediaUploader from './MediaUploader'
 import { IconTagSelector } from './IconTagSelector'
 import { PostCardPreview } from './PostCardPreview'
 import { ShareModal } from './ShareModal'
@@ -27,7 +27,7 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
   const [showPreview, setShowPreview] = useState(false)
   const [currentStep, setCurrentStep] = useState<0 | 1 | 2>(0)
   const [previewLayout, setPreviewLayout] = useState<'square' | 'portrait' | 'landscape'>('square')
-  const [displayType, setDisplayType] = useState<'hover' | 'slider' | 'vertical' | 'premium' | 'video' | 'before_after'>('hover')
+  const [displayType, setDisplayType] = useState<'hover' | 'horizontal' | 'vertical' | 'gallery' | 'premium' | 'video' | 'before_after'>('hover')
   const [mediaDescriptions, setMediaDescriptions] = useState<Record<string, string>>({})
   const [priceDisplay, setPriceDisplay] = useState<string>('')
   const [tierLimits, setTierLimits] = useState<TierLimits | null>(null)
@@ -115,6 +115,10 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
         }))
       }
 
+      console.log('Submitting post data:', postData)
+      console.log('Display type:', displayType)
+      console.log('Tier limits:', tierLimits)
+
       const response = await fetch('/api/posts', {
         method: 'POST',
         headers: {
@@ -180,19 +184,13 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
               displayType={displayType}
               mediaDescriptions={mediaDescriptions}
               onDescriptionsChange={setMediaDescriptions}
-              maxFiles={8}
+              maxFiles={tierLimits?.max_images || 5}
             />
 
             {/* Image Display Options */}
             <div className="mt-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Media Display
-                {/* Debug: Show available gallery types */}
-                {process.env.NODE_ENV === 'development' && tierLimits && (
-                  <span className="text-xs text-gray-500 ml-2">
-                    (Available: {tierLimits.gallery_types?.join(', ')})
-                  </span>
-                )}
               </label>
               <div className="grid grid-cols-6 gap-2">
                 {/* Hover Gallery */}
@@ -223,10 +221,10 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
                 <div className="flex flex-col items-center">
                   <button
                     type="button"
-                    onClick={() => setDisplayType('slider')}
+                    onClick={() => setDisplayType('horizontal')}
                     className={cn(
                       'p-2 border-2 rounded-lg transition-colors w-full',
-                      displayType === 'slider'
+                      displayType === 'horizontal'
                         ? 'border-emerald-600 bg-emerald-100'
                         : 'border-gray-200 hover:border-gray-300 bg-emerald-50'
                     )}
@@ -267,14 +265,14 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
                   <p className="text-[10px] text-gray-500 mt-1 text-center">900×1200px</p>
                 </div>
 
-                {/* Premium Gallery */}
+                {/* Gallery */}
                 <div className="flex flex-col items-center">
                   <button
                     type="button"
-                    onClick={() => setDisplayType('premium')}
+                    onClick={() => setDisplayType('gallery')}
                     className={cn(
                       'p-2 border-2 rounded-lg transition-colors w-full',
-                      displayType === 'premium'
+                      displayType === 'gallery'
                         ? 'border-emerald-600 bg-emerald-100'
                         : 'border-gray-200 hover:border-gray-300 bg-emerald-50'
                     )}

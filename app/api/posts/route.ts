@@ -43,8 +43,10 @@ export async function POST(request: NextRequest) {
     const userTier = userProfile?.subscription_tier || 'free'
     
     // Validate input with tier-specific schema
+    console.log('Validating post data:', { userTier, body })
     const validationResult = createPostSchema(userTier as 'free' | 'premium' | 'business').safeParse(body)
     if (!validationResult.success) {
+      console.error('Validation failed:', validationResult.error.errors)
       return NextResponse.json(
         { error: 'Invalid input', details: validationResult.error.errors },
         { status: 400 }
@@ -65,23 +67,27 @@ export async function POST(request: NextRequest) {
     // Extract media descriptions from media_items
     const media_descriptions = data.media_items?.map((item: any) => item.description || '') || []
 
+    const insertData = {
+      owner: user.id,
+      title: data.title,
+      price_cents: data.price_cents,
+      currency: data.currency,
+      description: data.description,
+      emoji_tags: data.emoji_tags,
+      media_urls: data.media_urls,
+      media_descriptions,
+      slug,
+      whatsapp_number: data.whatsapp_number,
+      location: data.location,
+      display_type: data.display_type || 'hover',
+    }
+
+    console.log('Inserting post data:', insertData)
+
     // Insert post
     const { data: post, error } = await supabaseAdmin
       .from('posts')
-      .insert({
-        owner: user.id,
-        title: data.title,
-        price_cents: data.price_cents,
-        currency: data.currency,
-        description: data.description,
-        emoji_tags: data.emoji_tags,
-        media_urls: data.media_urls,
-        media_descriptions,
-        slug,
-        whatsapp_number: data.whatsapp_number,
-        location: data.location,
-        display_type: data.display_type || 'hover',
-      })
+      .insert(insertData)
       .select()
       .single()
 

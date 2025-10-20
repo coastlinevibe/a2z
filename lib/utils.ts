@@ -31,12 +31,52 @@ export function generateUniqueSlug(title: string, existingSlugs: string[] = []):
 // Format price for display
 export function formatPrice(cents: number, currency: string = 'ZAR'): string {
   const amount = cents / 100
-  return new Intl.NumberFormat('en-ZA', {
-    style: 'currency',
-    currency: currency,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(amount)
+  
+  // Use a consistent format to avoid hydration issues
+  if (currency === 'ZAR') {
+    return `R ${amount.toFixed(2)}`
+  }
+  
+  // Fallback for other currencies
+  try {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency,
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount)
+  } catch {
+    return `${currency} ${amount.toFixed(2)}`
+  }
+}
+
+// Format date consistently to avoid hydration issues
+export function formatDate(date: string | Date): string {
+  const d = new Date(date)
+  // Use ISO format parts to avoid locale differences
+  const year = d.getFullYear()
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  
+  return `${day}/${month}/${year}`
+}
+
+// Format relative time consistently
+export function formatRelativeTime(date: string | Date): string {
+  const d = new Date(date)
+  const now = new Date()
+  const diffInHours = Math.floor((now.getTime() - d.getTime()) / (1000 * 60 * 60))
+  
+  if (diffInHours < 1) {
+    return 'Just now'
+  } else if (diffInHours < 24) {
+    return `${diffInHours}h ago`
+  } else if (diffInHours < 24 * 7) {
+    const days = Math.floor(diffInHours / 24)
+    return `${days}d ago`
+  } else {
+    return formatDate(d)
+  }
 }
 
 // Generate WhatsApp share URL

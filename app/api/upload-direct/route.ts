@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { v4 as uuidv4 } from 'uuid'
+import { cookies } from 'next/headers'
 
 // Create admin client for server-side operations
 const supabaseAdmin = createClient(
@@ -10,8 +11,28 @@ const supabaseAdmin = createClient(
 
 export async function POST(request: NextRequest) {
   try {
+    // Get user session from Authorization header
+    const authHeader = request.headers.get('Authorization')
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json(
+        { error: 'Unauthorized - No token provided' },
+        { status: 401 }
+      )
+    }
+
+    const token = authHeader.replace('Bearer ', '')
+    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token)
+    
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
     const formData = await request.formData()
     const file = formData.get('file') as File
+    const postId = formData.get('postId') as string | null
     
     if (!file) {
       return NextResponse.json(
@@ -74,9 +95,28 @@ export async function POST(request: NextRequest) {
       .from('posts')
       .getPublicUrl(filePath)
 
+    // Register file in media_files table with expiration
+    const { data: mediaFileData, error: mediaFileError } = await supabaseAdmin
+      .rpc('set_image_expiration', {
+        p_file_url: publicUrlData.publicUrl,
+        p_file_path: filePath,
+        p_file_name: file.name,
+        p_file_size: file.size,
+        p_mime_type: file.type,
+        p_post_id: postId || null
+      })
+
+    if (mediaFileError) {
+      console.error('Error registering media file:', mediaFileError)
+      // Don't fail the upload, just log the error
+    }
+
     return NextResponse.json({
       publicUrl: publicUrlData.publicUrl,
       filePath: data.path,
+      mediaFileId: mediaFileData?.media_file_id,
+      expiresAt: mediaFileData?.expires_at,
+      userTier: mediaFileData?.user_tier
     })
   } catch (error) {
     console.error('Upload API error:', error)

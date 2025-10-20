@@ -27,10 +27,16 @@ async function getPost(username: string, slug: string) {
     return null
   }
 
-  // Then get the post
+  // Then get the post with profile data
   const { data: post, error } = await supabase
     .from('posts')
-    .select('*')
+    .select(`
+      *,
+      profiles!posts_owner_fkey (
+        verified_seller,
+        display_name
+      )
+    `)
     .eq('slug', slug)
     .eq('owner', profile.id)
     .eq('is_active', true)
@@ -40,7 +46,13 @@ async function getPost(username: string, slug: string) {
     return null
   }
 
-  return { ...post, username }
+  // Flatten the profile data
+  return { 
+    ...post, 
+    username,
+    verified_seller: post.profiles?.verified_seller || false,
+    seller_name: post.profiles?.display_name || null
+  }
 }
 
 async function incrementViews(postId: string) {

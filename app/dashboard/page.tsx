@@ -8,6 +8,7 @@ import { ShareModal } from '@/components/ShareModal'
 import { PreviewModal } from '@/components/PreviewModal'
 import { DeleteConfirmModal } from '@/components/DeleteConfirmModal'
 import { ListingCardGrid } from '@/components/ListingCardGrid'
+import { MediaExpirationWarning } from '@/components/MediaExpirationWarning'
 import { useRequireAuth } from '@/lib/auth'
 
 interface Post {
@@ -217,6 +218,11 @@ export default function DashboardPage() {
               New Listing
             </Link>
           </div>
+        </div>
+
+        {/* Media Expiration Warning */}
+        <div className="mb-8">
+          <MediaExpirationWarning />
         </div>
 
         {/* SVG Filter for Gooey Effect */}

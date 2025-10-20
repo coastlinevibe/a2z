@@ -77,6 +77,55 @@ export async function getUserSubscription(userId?: string): Promise<UserSubscrip
 }
 
 /**
+ * Get default tier limits based on tier
+ */
+function getDefaultTierLimits(tier: 'free' | 'premium' | 'business'): TierLimits {
+  const baseLimits = {
+    tier,
+    current_listings: 0,
+    can_create_listing: true,
+    verified_badge: false,
+    watermark_removed: false,
+  }
+
+  switch (tier) {
+    case 'free':
+      return {
+        ...baseLimits,
+        max_listings: 3,
+        max_images: 5,
+        max_videos: 0,
+        listing_duration_days: 7,
+        gallery_types: ['hover', 'horizontal', 'vertical', 'gallery']
+      }
+    case 'premium':
+      return {
+        ...baseLimits,
+        max_listings: -1,
+        max_images: 8,
+        max_videos: 1,
+        listing_duration_days: 35,
+        verified_badge: true,
+        watermark_removed: true,
+        gallery_types: ['hover', 'horizontal', 'vertical', 'gallery', 'before_after', 'video']
+      }
+    case 'business':
+      return {
+        ...baseLimits,
+        max_listings: -1,
+        max_images: 20,
+        max_videos: 5,
+        listing_duration_days: 60,
+        verified_badge: true,
+        watermark_removed: true,
+        gallery_types: ['hover', 'horizontal', 'vertical', 'gallery', 'before_after', 'video', 'premium']
+      }
+    default:
+      return getDefaultTierLimits('free')
+  }
+}
+
+/**
  * Get tier limits for a user
  */
 export async function getUserTierLimits(userId?: string): Promise<TierLimits | null> {
@@ -90,11 +139,24 @@ export async function getUserTierLimits(userId?: string): Promise<TierLimits | n
       user_id: targetUserId
     })
 
-    if (error) throw error
+    if (error) {
+      console.error('Error fetching tier limits, using defaults:', error)
+      // Fallback: get user profile to determine tier
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('subscription_tier')
+        .eq('id', targetUserId)
+        .single()
+      
+      const tier = profile?.subscription_tier || 'free'
+      return getDefaultTierLimits(tier as 'free' | 'premium' | 'business')
+    }
+    
     return data as TierLimits
   } catch (error) {
     console.error('Error fetching tier limits:', error)
-    return null
+    // Ultimate fallback: assume free tier
+    return getDefaultTierLimits('free')
   }
 }
 

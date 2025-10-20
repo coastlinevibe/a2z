@@ -6,6 +6,7 @@ import { Plus, LayoutDashboard, Home, User, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { useAuth } from '@/lib/auth'
 import { cn } from '@/lib/utils'
+import { UserProfileDropdown } from '@/components/UserProfileDropdown'
 import UserPlanStatus from '@/components/UserPlanStatus'
 
 export function Navbar() {
@@ -85,20 +86,7 @@ export function Navbar() {
             {!loading && (
               <div className="flex items-center space-x-2">
                 {user ? (
-                  <div className="flex items-center space-x-2">
-                    <span className="text-sm text-gray-600">
-                      {user.user_metadata?.full_name || user.email}
-                    </span>
-                    <Button
-                      onClick={handleSignOut}
-                      variant="ghost"
-                      size="sm"
-                      className="flex items-center space-x-1"
-                    >
-                      <LogOut className="h-4 w-4" />
-                      <span>Sign out</span>
-                    </Button>
-                  </div>
+                  <UserProfileDropdown />
                 ) : (
                   <div className="flex items-center space-x-2">
                     <Link href="/auth/login-animated">
@@ -122,14 +110,7 @@ export function Navbar() {
             {!loading && (
               <>
                 {user ? (
-                  <Button
-                    onClick={handleSignOut}
-                    variant="ghost"
-                    size="sm"
-                    className="flex items-center space-x-1"
-                  >
-                    <LogOut className="h-4 w-4" />
-                  </Button>
+                  <UserProfileDropdown />
                 ) : (
                   <Link href="/auth/signup-animated?plan=free">
                     <Button size="sm">
