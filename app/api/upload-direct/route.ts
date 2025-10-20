@@ -95,28 +95,9 @@ export async function POST(request: NextRequest) {
       .from('posts')
       .getPublicUrl(filePath)
 
-    // Register file in media_files table with expiration
-    const { data: mediaFileData, error: mediaFileError } = await supabaseAdmin
-      .rpc('set_image_expiration', {
-        p_file_url: publicUrlData.publicUrl,
-        p_file_path: filePath,
-        p_file_name: file.name,
-        p_file_size: file.size,
-        p_mime_type: file.type,
-        p_post_id: postId || null
-      })
-
-    if (mediaFileError) {
-      console.error('Error registering media file:', mediaFileError)
-      // Don't fail the upload, just log the error
-    }
-
     return NextResponse.json({
       publicUrl: publicUrlData.publicUrl,
-      filePath: data.path,
-      mediaFileId: mediaFileData?.media_file_id,
-      expiresAt: mediaFileData?.expires_at,
-      userTier: mediaFileData?.user_tier
+      filePath: data.path
     })
   } catch (error) {
     console.error('Upload API error:', error)
