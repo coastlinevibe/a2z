@@ -3,13 +3,16 @@ import { createClient } from '@supabase/supabase-js'
 import { verifyPayFastSignature, verifyPayFastIP, parsePayFastStatus } from '@/lib/payments/payfast'
 
 // Use service role for webhook (bypasses RLS)
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
 
 export async function POST(request: NextRequest) {
   try {
+    const supabase = getSupabase()
     const body = await request.text()
     const params = new URLSearchParams(body)
     const data: any = {}

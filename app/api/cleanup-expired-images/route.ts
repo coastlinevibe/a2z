@@ -2,13 +2,20 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
 // Create admin client for server-side operations
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+function getSupabaseAdmin() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  
+  if (!supabaseUrl || !supabaseServiceKey) {
+    throw new Error('Missing Supabase environment variables')
+  }
+  
+  return createClient(supabaseUrl, supabaseServiceKey)
+}
 
 export async function POST(request: NextRequest) {
   try {
+    const supabaseAdmin = getSupabaseAdmin()
     // Verify authorization (you might want to add API key protection)
     const authHeader = request.headers.get('Authorization')
     const apiKey = request.headers.get('X-API-Key')
@@ -63,6 +70,7 @@ export async function POST(request: NextRequest) {
 // GET endpoint to check cleanup status
 export async function GET() {
   try {
+    const supabaseAdmin = getSupabaseAdmin()
     // Get recent cleanup stats from database
     const { data, error } = await supabaseAdmin
       .from('media_files')

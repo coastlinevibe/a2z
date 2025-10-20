@@ -2,13 +2,16 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { addWatermarkServer } from '@/lib/watermark/server'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+}
 
 export async function POST(request: NextRequest) {
   try {
+    const supabase = getSupabase()
     const formData = await request.formData()
     const file = formData.get('file') as File
     const userId = formData.get('user_id') as string
@@ -71,6 +74,7 @@ export async function POST(request: NextRequest) {
 // Get watermark status for a user
 export async function GET(request: NextRequest) {
   try {
+    const supabase = getSupabase()
     const { searchParams } = new URL(request.url)
     const userId = searchParams.get('user_id')
 
