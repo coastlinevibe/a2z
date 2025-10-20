@@ -28,7 +28,7 @@ export async function addWatermark(
   imageFile: File,
   options: WatermarkOptions = {}
 ): Promise<Blob> {
-  const opts = { ...DEFAULT_OPTIONS, ...options }
+  const opts: Required<WatermarkOptions> = { ...DEFAULT_OPTIONS, ...options } as Required<WatermarkOptions>
 
   return new Promise((resolve, reject) => {
     const img = new Image()
