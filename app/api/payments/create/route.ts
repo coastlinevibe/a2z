@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     // Get user profile to check early adopter status
     const { data: profile } = await supabase
       .from('profiles')
-      .select('early_adopter, subscription_tier')
+      .select('early_adopter, subscription_tier, display_name')
       .eq('id', user.id)
       .single()
 
