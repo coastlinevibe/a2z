@@ -1,12 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey)
+function getSupabaseAdmin() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  
+  if (!supabaseUrl || !supabaseServiceKey) {
+    throw new Error('Missing Supabase environment variables')
+  }
+  
+  return createClient(supabaseUrl, supabaseServiceKey)
+}
 
 export async function GET(request: NextRequest) {
   try {
+    const supabaseAdmin = getSupabaseAdmin()
     const authHeader = request.headers.get('authorization')
     if (!authHeader) {
       return NextResponse.json(
@@ -16,7 +24,10 @@ export async function GET(request: NextRequest) {
     }
 
     // Verify user
-    const supabase = createClient(supabaseUrl, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
     const { data: { user }, error: authError } = await supabase.auth.getUser(authHeader.replace('Bearer ', ''))
     
     if (authError || !user) {
@@ -52,6 +63,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const supabaseAdmin = getSupabaseAdmin()
     const authHeader = request.headers.get('authorization')
     if (!authHeader) {
       return NextResponse.json(
@@ -61,7 +73,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify user
-    const supabase = createClient(supabaseUrl, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
     const { data: { user }, error: authError } = await supabase.auth.getUser(authHeader.replace('Bearer ', ''))
     
     if (authError || !user) {

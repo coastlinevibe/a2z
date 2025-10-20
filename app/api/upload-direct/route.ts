@@ -4,10 +4,16 @@ import { v4 as uuidv4 } from 'uuid'
 import { cookies } from 'next/headers'
 
 // Create admin client for server-side operations
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+function getSupabaseAdmin() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  
+  if (!supabaseUrl || !supabaseServiceKey) {
+    throw new Error('Missing Supabase environment variables')
+  }
+  
+  return createClient(supabaseUrl, supabaseServiceKey)
+}
 
 // Handle OPTIONS for CORS preflight
 export async function OPTIONS(request: NextRequest) {
@@ -23,15 +29,8 @@ export async function OPTIONS(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    // Log environment check
-    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      console.error('SUPABASE_SERVICE_ROLE_KEY is not set!')
-      return NextResponse.json(
-        { error: 'Server configuration error' },
-        { status: 500 }
-      )
-    }
-
+    const supabaseAdmin = getSupabaseAdmin()
+    
     // Get user session from Authorization header
     const authHeader = request.headers.get('Authorization')
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
