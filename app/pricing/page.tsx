@@ -290,7 +290,7 @@ export default function PricingPage() {
                 What payment methods do you accept?
               </h3>
               <p className="text-gray-600">
-                We accept EFT, Ozow (instant EFT), SnapScan, Zapper, and card payments via Yoco and PayFast.
+                We accept EFT, SnapScan, Zapper, and card payments via PayFast.
                 All payments are processed securely in South African Rand (ZAR).
               </p>
             </div>

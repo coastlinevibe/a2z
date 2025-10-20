@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { tier, provider = 'ozow' } = body
+    const { tier, provider = 'payfast' } = body
 
     // Validate tier
     if (!['premium', 'business'].includes(tier)) {

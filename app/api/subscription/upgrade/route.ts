@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
     }
 
     // For now, we'll simulate payment success
-    // In production, you would integrate with Ozow, PayFast, or other SA payment providers
+    // In production, you would integrate with PayFast or other SA payment providers
     const paymentSuccessful = true // This would come from your payment provider
 
     if (!paymentSuccessful) {
