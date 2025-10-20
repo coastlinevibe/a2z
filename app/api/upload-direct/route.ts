@@ -9,6 +9,18 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
+// Handle OPTIONS for CORS preflight
+export async function OPTIONS(request: NextRequest) {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+  })
+}
+
 export async function POST(request: NextRequest) {
   try {
     // Get user session from Authorization header
@@ -85,7 +97,7 @@ export async function POST(request: NextRequest) {
     if (error) {
       console.error('Supabase upload error:', error)
       return NextResponse.json(
-        { error: 'Failed to upload file' },
+        { error: `Failed to upload file: ${error.message}` },
         { status: 500 }
       )
     }
@@ -99,10 +111,10 @@ export async function POST(request: NextRequest) {
       publicUrl: publicUrlData.publicUrl,
       filePath: data.path
     })
-  } catch (error) {
+  } catch (error: any) {
     console.error('Upload API error:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: error?.message || 'Internal server error' },
       { status: 500 }
     )
   }
