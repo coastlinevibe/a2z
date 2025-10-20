@@ -17,6 +17,7 @@ function getSupabaseAdmin() {
 
 // Handle OPTIONS for CORS preflight
 export async function OPTIONS(request: NextRequest) {
+  console.log('🔥 OPTIONS handler called')
   return new NextResponse(null, {
     status: 200,
     headers: {
@@ -29,11 +30,19 @@ export async function OPTIONS(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('🔥 UPLOAD API v2.2 - Vercel debug')
+    console.log('Method:', request.method)
+    console.log('Headers:', Object.fromEntries(request.headers.entries()))
+    
     const supabaseAdmin = getSupabaseAdmin()
+    console.log('✅ Supabase admin client created')
     
     // Get user session from Authorization header
     const authHeader = request.headers.get('Authorization')
+    console.log('Auth header present:', !!authHeader)
+    
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.log('❌ Invalid auth header')
       return NextResponse.json(
         { error: 'Unauthorized - No token provided' },
         { status: 401 }
