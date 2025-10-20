@@ -3,6 +3,9 @@ import { createClient } from '@supabase/supabase-js'
 import { v4 as uuidv4 } from 'uuid'
 import { cookies } from 'next/headers'
 
+// Force Node.js runtime instead of Edge
+export const runtime = 'nodejs'
+
 // Create admin client for server-side operations
 function getSupabaseAdmin() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
