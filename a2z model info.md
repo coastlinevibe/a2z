@@ -202,8 +202,8 @@ Business: R99/month (45% off) – 12 Months
 Refer a paying subscriber:
 - You: 1 month free
 Refer 5 subscribers:
-- Upgrade to Business free for 6 months
-Refer 10 subscribers:
+- Upgrade to Premium free for 6 months
+Refer 15 subscribers:
 - Free Premium for life
 ```
 

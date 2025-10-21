@@ -58,7 +58,7 @@ export default function SignupPage() {
             </p>
             <p className="mt-4 text-sm text-gray-600">
               Already confirmed?{' '}
-              <Link href="/auth/login" className="font-medium text-blue-600 hover:text-blue-500">
+              <Link href="/auth/login-animated" className="font-medium text-blue-600 hover:text-blue-500">
                 Sign in here
               </Link>
             </p>
@@ -77,7 +77,7 @@ export default function SignupPage() {
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             Or{' '}
-            <Link href="/auth/login" className="font-medium text-blue-600 hover:text-blue-500">
+            <Link href="/auth/login-animated" className="font-medium text-blue-600 hover:text-blue-500">
               sign in to your existing account
             </Link>
           </p>

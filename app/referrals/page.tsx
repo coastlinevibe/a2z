@@ -15,7 +15,7 @@ export default function ReferralsPage() {
 
   useEffect(() => {
     if (!user) {
-      router.push('/login')
+      router.push('/auth/login-animated')
       return
     }
     // Generate referral code from user ID

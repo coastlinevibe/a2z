@@ -36,7 +36,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (!user) {
-      router.push('/login')
+      router.push('/auth/login-animated')
       return
     }
     fetchProfile()
