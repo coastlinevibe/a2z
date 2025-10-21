@@ -167,6 +167,11 @@ export default function DashboardPage() {
       backgroundColor: '#f9fafb'
     }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Media Expiration Warning */}
+        <div className="mb-6">
+          <MediaExpirationWarning />
+        </div>
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
           <div>
@@ -212,11 +217,6 @@ export default function DashboardPage() {
               New Listing
             </Link>
           </div>
-        </div>
-
-        {/* Media Expiration Warning */}
-        <div className="mb-8">
-          <MediaExpirationWarning />
         </div>
 
         {/* SVG Filter for Gooey Effect */}
@@ -464,40 +464,12 @@ export default function DashboardPage() {
                             <MousePointer className="h-4 w-4 mr-1" />
                             {post.clicks} clicks
                           </div>
-                          <div className={cn(
-                            'flex items-center',
-                            post.is_active ? 'text-emerald-600' : 'text-gray-400'
-                          )}>
-                            {post.is_active ? (
-                              <ToggleRight className="h-4 w-4 mr-1" />
-                            ) : (
-                              <ToggleLeft className="h-4 w-4 mr-1" />
-                            )}
-                            {post.is_active ? 'Active' : 'Inactive'}
-                          </div>
                         </div>
                       </div>
                     </div>
 
                     {/* Actions */}
                     <div className="flex items-center space-x-2 mt-4 lg:mt-0">
-                      <button
-                        onClick={() => togglePostStatus(post.id, post.is_active)}
-                        className={cn(
-                          'p-2 rounded-lg transition-colors',
-                          post.is_active
-                            ? 'bg-emerald-100 text-emerald-600 hover:bg-emerald-200'
-                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                        )}
-                        title={post.is_active ? 'Deactivate' : 'Activate'}
-                      >
-                        {post.is_active ? (
-                          <ToggleRight className="h-4 w-4" />
-                        ) : (
-                          <ToggleLeft className="h-4 w-4" />
-                        )}
-                      </button>
-
                       <button
                         onClick={() => setSharePost(post)}
                         className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"

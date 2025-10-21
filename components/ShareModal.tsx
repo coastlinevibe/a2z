@@ -102,22 +102,6 @@ export function ShareModal({ isOpen, onClose, post, username, className }: Share
                 readOnly
                 className="flex-1 px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm"
               />
-              <button
-                onClick={() => copyToClipboard(publicUrl)}
-                className="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors flex items-center"
-              >
-                {copied ? (
-                  <Check className="h-4 w-4 text-green-600" />
-                ) : (
-                  <Copy className="h-4 w-4" />
-                )}
-              </button>
-              <button
-                onClick={openPublicPage}
-                className="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
-              >
-                <ExternalLink className="h-4 w-4" />
-              </button>
             </div>
           </div>
 
@@ -139,14 +123,6 @@ export function ShareModal({ isOpen, onClose, post, username, className }: Share
                 </>
               )}
             </button>
-
-            <button
-              onClick={openPublicPage}
-              className="w-full flex items-center justify-center px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition-colors"
-            >
-              <ExternalLink className="h-5 w-5 mr-2" />
-              Open Listing
-            </button>
           </div>
 
           {/* Share message preview */}
@@ -159,12 +135,6 @@ export function ShareModal({ isOpen, onClose, post, username, className }: Share
                 {shareMessage}
               </pre>
             </div>
-            <button
-              onClick={() => copyToClipboard(shareMessage)}
-              className="mt-2 text-sm text-emerald-600 hover:text-emerald-700 font-medium"
-            >
-              Copy text with link
-            </button>
           </div>
 
           {/* Tips */}

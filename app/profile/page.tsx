@@ -231,40 +231,40 @@ export default function ProfilePage() {
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           {/* Profile Header */}
-          <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-8">
-            <div className="flex items-center gap-4">
+          <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-4">
+            <div className="flex items-center gap-3">
               {avatarUrl ? (
                 <img 
                   src={avatarUrl} 
                   alt="Profile" 
-                  className="w-20 h-20 rounded-full object-cover border-4 border-white"
+                  className="w-16 h-16 rounded-full object-cover border-2 border-white"
                   onError={(e) => {
                     e.currentTarget.style.display = 'none'
                     e.currentTarget.nextElementSibling?.classList.remove('hidden')
                   }}
                 />
               ) : null}
-              <div className={`w-20 h-20 rounded-full bg-white flex items-center justify-center text-2xl font-bold text-emerald-600 ${avatarUrl ? 'hidden' : ''}`}>
+              <div className={`w-16 h-16 rounded-full bg-white flex items-center justify-center text-xl font-bold text-emerald-600 ${avatarUrl ? 'hidden' : ''}`}>
                 {displayName ? displayName[0].toUpperCase() : user?.email?.[0].toUpperCase() || 'U'}
               </div>
               <div className="flex-1">
-                <h1 className="text-2xl font-bold text-white">
+                <h1 className="text-xl font-bold text-white">
                   {displayName || user?.email?.split('@')[0] || 'User'}
                 </h1>
-                <p className="text-emerald-100">
+                <p className="text-emerald-100 text-sm">
                   {user?.email}
                 </p>
-                <div className="flex items-center gap-2 mt-2">
-                  <Badge className={`${tierBadge.className} border-0`}>
+                <div className="flex items-center gap-1.5 mt-1.5">
+                  <Badge className={`${tierBadge.className} border-0 text-xs py-0.5`}>
                     {tierBadge.text}
                   </Badge>
                   {profile?.verified_seller && (
-                    <Badge className="bg-blue-100 text-blue-700 border-0">
+                    <Badge className="bg-blue-100 text-blue-700 border-0 text-xs py-0.5">
                       Verified Seller
                     </Badge>
                   )}
                   {profile?.early_adopter && (
-                    <Badge className="bg-amber-100 text-amber-700 border-0">
+                    <Badge className="bg-amber-100 text-amber-700 border-0 text-xs py-0.5">
                       Early Adopter
                     </Badge>
                   )}
@@ -274,10 +274,10 @@ export default function ProfilePage() {
           </div>
 
           {/* Form */}
-          <div className="p-6 space-y-6">
+          <div className="p-6">
             {/* Message */}
             {message && (
-              <div className={`p-4 rounded-lg ${
+              <div className={`p-4 rounded-lg mb-6 ${
                 message.type === 'success' 
                   ? 'bg-green-50 text-green-800 border border-green-200' 
                   : 'bg-red-50 text-red-800 border border-red-200'
@@ -286,63 +286,70 @@ export default function ProfilePage() {
               </div>
             )}
 
-            {/* Display Name */}
-            <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                <User className="w-4 h-4" />
-                Display Name
-              </label>
-              <input
-                type="text"
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                placeholder="Enter your display name"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                This is how your name will appear to other users
-              </p>
-            </div>
+            {/* Two Column Layout */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Left Column */}
+              <div className="space-y-6">
+                {/* Display Name */}
+                <div>
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                    <User className="w-4 h-4" />
+                    Display Name
+                  </label>
+                  <input
+                    type="text"
+                    value={displayName}
+                    onChange={(e) => setDisplayName(e.target.value)}
+                    placeholder="Enter your display name"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    This is how your name will appear to other users
+                  </p>
+                </div>
 
-            {/* Username */}
-            <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                <AtSign className="w-4 h-4" />
-                Username
-              </label>
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
-                placeholder="username"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                Your unique username for your listing URL: a2z.co.za/{username || 'username'}
-              </p>
-            </div>
+                {/* Username */}
+                <div>
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                    <AtSign className="w-4 h-4" />
+                    Username
+                  </label>
+                  <input
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
+                    placeholder="username"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Your unique username for your listing URL: a2z.co.za/{username || 'username'}
+                  </p>
+                </div>
 
-            {/* Bio */}
-            <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                <FileText className="w-4 h-4" />
-                Bio
-              </label>
-              <textarea
-                value={bio}
-                onChange={(e) => setBio(e.target.value)}
-                placeholder="Tell us about yourself..."
-                rows={4}
-                maxLength={500}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none resize-none"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                {bio.length}/500 characters
-              </p>
-            </div>
+                {/* Bio */}
+                <div>
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                    <FileText className="w-4 h-4" />
+                    Bio
+                  </label>
+                  <textarea
+                    value={bio}
+                    onChange={(e) => setBio(e.target.value)}
+                    placeholder="Tell us about yourself..."
+                    rows={4}
+                    maxLength={500}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none resize-none"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    {bio.length}/500 characters
+                  </p>
+                </div>
+              </div>
 
-            {/* Avatar Upload */}
-            <div>
+              {/* Right Column */}
+              <div className="space-y-6">
+                {/* Avatar Upload */}
+                <div>
               <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                 <Upload className="w-4 h-4" />
                 Profile Picture
@@ -413,25 +420,27 @@ export default function ProfilePage() {
               </p>
             </div>
 
-            {/* Account Email (Read-only) */}
-            <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                <Mail className="w-4 h-4" />
-                Email Address
-              </label>
-              <input
-                type="email"
-                value={user?.email || ''}
-                disabled
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed"
-              />
-              <p className="text-xs text-gray-500 mt-1">
-                Email cannot be changed
-              </p>
+                {/* Account Email (Read-only) */}
+                <div>
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                    <Mail className="w-4 h-4" />
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    value={user?.email || ''}
+                    disabled
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Email cannot be changed
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Actions */}
-            <div className="flex items-center gap-3 pt-4 border-t border-gray-200">
+            <div className="flex items-center gap-3 pt-6 border-t border-gray-200 mt-6">
               <Button
                 onClick={handleSave}
                 disabled={saving}

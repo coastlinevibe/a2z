@@ -19,13 +19,6 @@ export function Navbar() {
 
   // Only show protected routes if user is authenticated
   const navItems = [
-    // Only show Home link if not on home page
-    ...(pathname !== '/' ? [{
-      href: '/',
-      label: 'Home',
-      icon: Home,
-      active: pathname === '/',
-    }] : []),
     ...(user ? [
       {
         href: '/create',
