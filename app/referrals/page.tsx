@@ -22,7 +22,7 @@ export default function ReferralsPage() {
     setReferralCode(user.id.slice(0, 8).toUpperCase())
   }, [user])
 
-  const referralUrl = `https://a2z.co.za/signup?ref=${referralCode}`
+  const referralUrl = `https://a2z-hzdiuakms-riegals-projects.vercel.app/auth/signup-animated?ref=${referralCode}`
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(referralUrl)
@@ -178,32 +178,58 @@ export default function ReferralsPage() {
           <h2 className="text-xl font-bold text-gray-900 mb-6">Referral Rewards</h2>
           
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-              <div>
-                <h3 className="font-semibold text-gray-900">Premium Referral</h3>
-                <p className="text-sm text-gray-600">When your referral upgrades to Premium</p>
+            <div className="flex items-start gap-4 p-4 bg-gradient-to-r from-emerald-50 to-emerald-100 rounded-lg border border-emerald-200">
+              <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-white">
+                1
               </div>
-              <div className="text-right">
-                <p className="text-2xl font-bold text-emerald-600">R10</p>
-                <p className="text-xs text-gray-500">per referral</p>
+              <div className="flex-1">
+                <h3 className="font-bold text-gray-900 mb-1">Refer 1 Paying Subscriber</h3>
+                <p className="text-sm text-gray-600 mb-2">Get 1 month FREE on your current plan</p>
+                <div className="inline-block px-3 py-1 bg-emerald-500 text-white text-xs font-semibold rounded-full">
+                  Worth R49 - R179
+                </div>
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-              <div>
-                <h3 className="font-semibold text-gray-900">Business Referral</h3>
-                <p className="text-sm text-gray-600">When your referral upgrades to Business</p>
+            <div className="flex items-start gap-4 p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg border border-blue-200">
+              <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-white">
+                5
               </div>
-              <div className="text-right">
-                <p className="text-2xl font-bold text-emerald-600">R25</p>
-                <p className="text-xs text-gray-500">per referral</p>
+              <div className="flex-1">
+                <h3 className="font-bold text-gray-900 mb-1">Refer 5 Paying Subscribers</h3>
+                <p className="text-sm text-gray-600 mb-2">Get Premium tier FREE for 6 months</p>
+                <div className="inline-block px-3 py-1 bg-blue-500 text-white text-xs font-semibold rounded-full">
+                  Worth R294 (R49 × 6)
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4 p-4 bg-gradient-to-r from-amber-50 to-amber-100 rounded-lg border-2 border-amber-300">
+              <div className="w-10 h-10 bg-gradient-to-r from-amber-400 to-amber-500 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-white">
+                15
+              </div>
+              <div className="flex-1">
+                <h3 className="font-bold text-gray-900 mb-1 flex items-center gap-2">
+                  Refer 15 Paying Subscribers
+                  <span className="text-xs bg-amber-500 text-white px-2 py-0.5 rounded-full">🏆 LIFETIME</span>
+                </h3>
+                <p className="text-sm text-gray-600 mb-2">Get Premium tier FREE FOR LIFE</p>
+                <div className="inline-block px-3 py-1 bg-gradient-to-r from-amber-400 to-amber-500 text-white text-xs font-semibold rounded-full">
+                  Worth R588/year FOREVER
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-sm text-blue-800">
+              <strong>💡 Important:</strong> Only paying subscribers (Premium or Business) count toward your referral rewards. Free tier signups don't count.
+            </p>
+          </div>
+
+          <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
             <p className="text-sm text-amber-800">
-              <strong>Note:</strong> Referral rewards are currently in beta. Rewards will be credited to your account once the program officially launches.
+              <strong>Note:</strong> Referral rewards program launches in Phase 2 (Month 3-6). Start collecting referrals now!
             </p>
           </div>
         </div>
