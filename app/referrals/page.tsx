@@ -73,7 +73,7 @@ export default function ReferralsPage() {
               />
               <Button
                 onClick={copyToClipboard}
-                className="bg-white text-emerald-600 hover:bg-emerald-50 flex items-center gap-2"
+                className="bg-white text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-2 font-semibold"
               >
                 {copied ? (
                   <>
@@ -224,12 +224,6 @@ export default function ReferralsPage() {
           <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <p className="text-sm text-blue-800">
               <strong>💡 Important:</strong> Only paying subscribers (Premium or Business) count toward your referral rewards. Free tier signups don't count.
-            </p>
-          </div>
-
-          <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-            <p className="text-sm text-amber-800">
-              <strong>Note:</strong> Referral rewards program launches in Phase 2 (Month 3-6). Start collecting referrals now!
             </p>
           </div>
         </div>
