@@ -214,7 +214,7 @@ export function HoverGallery({
       {/* Image counter overlay */}
       {images.length > 1 && (
         <div className={cn(
-          "absolute top-2 right-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded-full transition-opacity duration-200",
+          "absolute top-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded-full transition-opacity duration-200",
           isMobile ? "opacity-100" : "opacity-0 group-hover:opacity-100"
         )}>
           {currentIndex + 1}/{images.length}
