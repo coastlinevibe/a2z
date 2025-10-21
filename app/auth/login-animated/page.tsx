@@ -18,7 +18,7 @@ export default function AnimatedLoginPage() {
   const searchParams = useSearchParams()
   
   // Get selected plan from URL params
-  const selectedPlan = searchParams.get('plan')
+  const selectedPlan = searchParams?.get('plan')
   const showPlanInfo = selectedPlan && selectedPlan !== 'free'
 
   useEffect(() => {
