@@ -16,6 +16,12 @@ const nextConfig = {
   },
   // Disable standalone output to avoid build trace issues
   // output: 'standalone',
+  experimental: {
+    // Exclude node_modules from file tracing to prevent stack overflow
+    outputFileTracingExcludes: {
+      '*': ['node_modules/@swc/core-linux-x64-gnu', 'node_modules/@swc/core-linux-x64-musl'],
+    },
+  },
 }
 
 module.exports = nextConfig
