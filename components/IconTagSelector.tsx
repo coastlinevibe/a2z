@@ -77,20 +77,32 @@ export function IconTagSelector({ selectedTags, onChange, maxTags = 5 }: IconTag
   const [customTagLabel, setCustomTagLabel] = useState('')
   const [customTags, setCustomTags] = useState<Tag[]>([])
 
-  const allTags = [...AVAILABLE_TAGS, ...customTags]
+  // Reconstruct custom tags from selectedTags that aren't in AVAILABLE_TAGS
+  const reconstructedCustomTags = selectedTags
+    .filter(tagId => !AVAILABLE_TAGS.find(t => t.id === tagId))
+    .filter(tagId => !customTags.find(t => t.id === tagId))
+    .map(tagId => ({
+      id: tagId,
+      icon: Tag,
+      label: tagId,
+      color: 'from-emerald-400 to-teal-600'
+    }))
+
+  const allTags = [...AVAILABLE_TAGS, ...customTags, ...reconstructedCustomTags]
 
   const addCustomTag = () => {
     if (!customTagLabel.trim()) return
     
+    const tagLabel = customTagLabel.trim()
     const newTag: Tag = {
-      id: `custom-${Date.now()}`,
+      id: tagLabel, // Use the label as ID instead of custom-timestamp
       icon: Tag,
-      label: customTagLabel.trim(),
+      label: tagLabel,
       color: 'from-emerald-400 to-teal-600'
     }
     
     setCustomTags([...customTags, newTag])
-    onChange([...selectedTags, newTag.id])
+    onChange([...selectedTags, tagLabel]) // Store the label directly
     setCustomTagLabel('')
     setShowAddTag(false)
   }
