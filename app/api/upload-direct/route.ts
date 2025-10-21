@@ -30,12 +30,20 @@ export async function OPTIONS(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('🔥 UPLOAD API v2.4 - Full Supabase upload')
+    console.log('🔥 UPLOAD API v2.5 - Full Supabase upload with enhanced logging')
+    console.log('Environment check:', {
+      hasUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+      hasKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY
+    })
+    
     const supabaseAdmin = getSupabaseAdmin()
     
     // Get user session from Authorization header
     const authHeader = request.headers.get('Authorization')
+    console.log('Auth header present:', !!authHeader)
+    
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.error('Missing or invalid auth header')
       return NextResponse.json(
         { error: 'Unauthorized - No token provided' },
         { status: 401 }
@@ -46,17 +54,27 @@ export async function POST(request: NextRequest) {
     const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token)
     
     if (authError || !user) {
+      console.error('Auth error:', authError)
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       )
     }
 
+    console.log('User authenticated:', user.id)
+
     const formData = await request.formData()
     const file = formData.get('file') as File
     const postId = formData.get('postId') as string | null
     
+    console.log('File received:', {
+      name: file?.name,
+      type: file?.type,
+      size: file?.size
+    })
+    
     if (!file) {
+      console.error('No file in form data')
       return NextResponse.json(
         { error: 'No file provided' },
         { status: 400 }
@@ -96,6 +114,8 @@ export async function POST(request: NextRequest) {
     // Convert file to buffer
     const fileBuffer = await file.arrayBuffer()
 
+    console.log('Starting upload to Supabase Storage:', filePath)
+    
     // Upload directly to Supabase Storage
     const { data, error } = await supabaseAdmin.storage
       .from('posts')
@@ -112,10 +132,14 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    console.log('Upload successful:', data.path)
+
     // Get public URL
     const { data: publicUrlData } = supabaseAdmin.storage
       .from('posts')
       .getPublicUrl(filePath)
+
+    console.log('Generated public URL:', publicUrlData.publicUrl)
 
     return NextResponse.json({
       publicUrl: publicUrlData.publicUrl,

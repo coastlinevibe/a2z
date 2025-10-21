@@ -59,12 +59,35 @@ export default function MediaUploader({
       body: formData,
     })
 
+    // Get response text first to handle empty responses
+    const responseText = await response.text()
+    
     if (!response.ok) {
-      const errorData = await response.json()
-      throw new Error(errorData.error || 'Failed to upload file')
+      console.error('Upload failed:', response.status, responseText)
+      let errorMessage = 'Failed to upload file'
+      try {
+        const errorData = JSON.parse(responseText)
+        errorMessage = errorData.error || errorMessage
+      } catch (e) {
+        errorMessage = responseText || `Server error: ${response.status}`
+      }
+      throw new Error(errorMessage)
     }
 
-    const { publicUrl } = await response.json()
+    // Parse the response
+    let data
+    try {
+      data = JSON.parse(responseText)
+    } catch (e) {
+      console.error('Failed to parse response:', responseText)
+      throw new Error('Invalid server response')
+    }
+
+    const { publicUrl } = data
+    if (!publicUrl) {
+      throw new Error('No URL returned from server')
+    }
+    
     return publicUrl
   }
 
