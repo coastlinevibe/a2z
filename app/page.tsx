@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { ArrowRight, Smartphone, Share2, MessageCircle, Zap, Shield, Globe, Star, Crown, Users, Check } from 'lucide-react'
 import { useAuth } from '@/lib/auth'
+import { MovingBorderButton } from '@/components/ui/moving-border'
 
 export default function HomePage() {
   const { user, loading } = useAuth()
@@ -14,10 +15,24 @@ export default function HomePage() {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             {/* Early Adopter Banner */}
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-6 py-3 rounded-full mb-8 font-semibold shadow-lg">
-              <Star className="w-5 h-5" />
-              <span>🎉 Early Adopter: Up to 45% off for 12 months!</span>
-              <Star className="w-5 h-5" />
+            <div className="flex justify-center mb-8">
+              <MovingBorderButton
+                borderRadius="1rem"
+                duration={4000}
+                className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-8 py-4"
+                containerClassName="inline-block"
+              >
+                <div className="flex items-center gap-3">
+                  <Star className="w-6 h-6" fill="white" />
+                  <span className="font-bold text-lg">Early Adopter: Up to 45% off for 12 months!</span>
+                  <Link href="/auth/signup-animated?plan=free">
+                    <button className="ml-2 inline-flex items-center gap-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 text-base font-bold transition-all shadow-lg hover:shadow-xl hover:scale-105 border-2 border-emerald-400">
+                      Try Free Plan Now!
+                      <ArrowRight className="h-5 w-5" strokeWidth={3} />
+                    </button>
+                  </Link>
+                </div>
+              </MovingBorderButton>
             </div>
             
             {user ? (
@@ -147,9 +162,24 @@ export default function HomePage() {
               Start free, upgrade when you're ready. No hidden fees, no commissions.
             </p>
             {/* Early Adopter Badge */}
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-4 py-2 rounded-full font-semibold text-sm">
-              <Star className="w-4 h-4" />
-              <span>Early Adopter: Up to 45% off for 12 months!</span>
+            <div className="flex justify-center">
+              <MovingBorderButton
+                borderRadius="0.75rem"
+                duration={4000}
+                className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-6 py-3"
+                containerClassName="inline-block"
+              >
+                <div className="flex items-center gap-3">
+                  <Star className="w-5 h-5" fill="white" />
+                  <span className="font-bold text-base">Early Adopter: Up to 45% off for 12 months!</span>
+                  <Link href="/auth/signup-animated?plan=free">
+                    <button className="ml-2 inline-flex items-center gap-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 text-sm font-bold transition-all shadow-lg hover:shadow-xl hover:scale-105 border border-emerald-400">
+                      Try Free Plan Now!
+                      <ArrowRight className="h-4 w-4" strokeWidth={3} />
+                    </button>
+                  </Link>
+                </div>
+              </MovingBorderButton>
             </div>
           </div>
 
@@ -348,9 +378,24 @@ export default function HomePage() {
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-emerald-600 to-blue-600">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <div className="inline-flex items-center gap-2 bg-yellow-400 text-black px-4 py-2 rounded-full font-semibold text-sm mb-6">
-            <Star className="w-4 h-4" />
-            <span>Early Adopter: Up to 45% off for 12 months!</span>
+          <div className="flex justify-center mb-6">
+            <MovingBorderButton
+              borderRadius="0.75rem"
+              duration={3000}
+              className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-6 py-3"
+              containerClassName="inline-block"
+            >
+              <div className="flex items-center gap-3">
+                <Star className="w-5 h-5" fill="white" />
+                <span className="font-bold text-base">Early Adopter: Up to 45% off for 12 months!</span>
+                <Link href="/auth/signup-animated?plan=free">
+                  <button className="ml-2 inline-flex items-center gap-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 text-sm font-bold transition-all shadow-lg hover:shadow-xl hover:scale-105 border border-emerald-400">
+                    Try Free Plan Now!
+                    <ArrowRight className="h-4 w-4" strokeWidth={3} />
+                  </button>
+                </Link>
+              </div>
+            </MovingBorderButton>
           </div>
           <h2 className="text-3xl font-bold text-white mb-4">
             Ready to Start Selling Smarter?

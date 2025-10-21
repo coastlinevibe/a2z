@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Check, Star, Crown, Users, ArrowRight } from 'lucide-react'
 import { TIER_PRICING, EARLY_ADOPTER_PRICING, formatPrice } from '@/lib/subscription'
+import { MovingBorderButton } from '@/components/ui/moving-border'
 
 export default function ChoosePlanPage() {
   const [selectedPlan, setSelectedPlan] = useState<'free' | 'premium' | 'business'>('free')
@@ -18,10 +19,24 @@ export default function ChoosePlanPage() {
       <div className="max-w-6xl mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-6 py-3 rounded-full mb-8 font-semibold shadow-lg">
-            <Star className="w-5 h-5" />
-            <span>🎉 Early Adopter: Up to 45% off for 12 months!</span>
-            <Star className="w-5 h-5" />
+          <div className="flex justify-center mb-8">
+            <MovingBorderButton
+              borderRadius="1rem"
+              duration={4000}
+              className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-8 py-4"
+              containerClassName="inline-block"
+            >
+              <div className="flex items-center gap-3">
+                <Star className="w-6 h-6" fill="white" />
+                <span className="font-bold text-lg">Early Adopter: Up to 45% off for 12 months!</span>
+                <Link href="/auth/signup-animated?plan=free">
+                  <button className="ml-2 inline-flex items-center gap-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 text-base font-bold transition-all shadow-lg hover:shadow-xl hover:scale-105 border-2 border-emerald-400">
+                    Try Free Plan Now!
+                    <ArrowRight className="h-5 w-5" strokeWidth={3} />
+                  </button>
+                </Link>
+              </div>
+            </MovingBorderButton>
           </div>
           
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">

@@ -73,7 +73,7 @@ export default function ReferralsPage() {
               />
               <Button
                 onClick={copyToClipboard}
-                className="bg-white hover:bg-emerald-50 flex items-center gap-2 font-semibold !text-emerald-600"
+                className="bg-white text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-2 font-semibold"
               >
                 {copied ? (
                   <>
