@@ -14,6 +14,7 @@ interface UserProfile {
   early_adopter: boolean;
   display_name: string | null;
   username: string | null;
+  avatar_url: string | null;
 }
 
 export function UserProfileDropdown() {
@@ -25,6 +26,27 @@ export function UserProfileDropdown() {
   useEffect(() => {
     if (user) {
       fetchUserProfile();
+      
+      // Subscribe to profile changes
+      const subscription = supabase
+        .channel('profile-dropdown-changes')
+        .on('postgres_changes', 
+          { 
+            event: 'UPDATE', 
+            schema: 'public', 
+            table: 'profiles',
+            filter: `id=eq.${user.id}`
+          }, 
+          (payload) => {
+            console.log('Profile updated in dropdown:', payload)
+            fetchUserProfile()
+          }
+        )
+        .subscribe()
+
+      return () => {
+        subscription.unsubscribe()
+      }
     }
   }, [user]);
 
@@ -32,7 +54,7 @@ export function UserProfileDropdown() {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('subscription_tier, subscription_status, subscription_end_date, verified_seller, early_adopter, display_name, username')
+        .select('subscription_tier, subscription_status, subscription_end_date, verified_seller, early_adopter, display_name, username, avatar_url')
         .eq('id', user?.id)
         .single();
 
@@ -45,7 +67,8 @@ export function UserProfileDropdown() {
           verified_seller: false,
           early_adopter: false,
           display_name: null,
-          username: null
+          username: null,
+          avatar_url: null
         });
       } else {
         setProfile(data);
@@ -119,7 +142,7 @@ export function UserProfileDropdown() {
   const userData = {
     name: profile.display_name || user.email?.split('@')[0] || 'User',
     username: getUsername(),
-    avatar: user.user_metadata?.avatar_url || '',
+    avatar: profile.avatar_url || '',
     initials: getInitials(),
     tier: profile.subscription_tier
   };

@@ -13,6 +13,8 @@ interface UserProfile {
   subscription_end_date: string | null
   verified_seller: boolean
   early_adopter: boolean
+  avatar_url: string | null
+  display_name: string | null
 }
 
 export default function UserPlanStatus() {
@@ -26,6 +28,27 @@ export default function UserPlanStatus() {
   useEffect(() => {
     if (user) {
       fetchUserProfile()
+      
+      // Subscribe to profile changes
+      const subscription = supabase
+        .channel('profile-changes')
+        .on('postgres_changes', 
+          { 
+            event: 'UPDATE', 
+            schema: 'public', 
+            table: 'profiles',
+            filter: `id=eq.${user.id}`
+          }, 
+          (payload) => {
+            console.log('Profile updated:', payload)
+            fetchUserProfile()
+          }
+        )
+        .subscribe()
+
+      return () => {
+        subscription.unsubscribe()
+      }
     }
   }, [user])
 
@@ -34,7 +57,7 @@ export default function UserPlanStatus() {
       console.log('Fetching profile for user:', user?.id)
       const { data, error } = await supabase
         .from('profiles')
-        .select('subscription_tier, subscription_status, subscription_end_date, verified_seller, early_adopter')
+        .select('subscription_tier, subscription_status, subscription_end_date, verified_seller, early_adopter, avatar_url, display_name')
         .eq('id', user?.id)
         .single()
 
@@ -46,7 +69,9 @@ export default function UserPlanStatus() {
           subscription_status: 'active',
           subscription_end_date: null,
           verified_seller: false,
-          early_adopter: false
+          early_adopter: false,
+          avatar_url: null,
+          display_name: null
         })
         return
       }
@@ -159,6 +184,22 @@ export default function UserPlanStatus() {
 
   return (
     <div className="flex items-center gap-2 ml-4">
+      {/* Avatar */}
+      {profile.avatar_url ? (
+        <img 
+          src={profile.avatar_url} 
+          alt={profile.display_name || 'Profile'} 
+          className="w-8 h-8 rounded-full object-cover border-2 border-gray-200"
+          onError={(e) => {
+            e.currentTarget.style.display = 'none'
+          }}
+        />
+      ) : (
+        <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white text-sm font-bold">
+          {profile.display_name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U'}
+        </div>
+      )}
+      
       {/* Plan Badge */}
       <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm font-medium ${getPlanColor()}`}>
         {getPlanIcon()}

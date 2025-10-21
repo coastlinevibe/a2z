@@ -24,8 +24,11 @@ export default function ProfilePage() {
   const { user } = useAuth()
   const router = useRouter()
   const [profile, setProfile] = useState<UserProfile | null>(null)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [uploading, setUploading] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   // Form fields
@@ -65,6 +68,16 @@ export default function ProfilePage() {
     }
   }
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setSelectedFile(file)
+      // Create preview URL immediately
+      const preview = URL.createObjectURL(file)
+      setPreviewUrl(preview)
+    }
+  }
+
   const handleSave = async () => {
     if (!user) return
 
@@ -94,6 +107,89 @@ export default function ProfilePage() {
       })
     } finally {
       setSaving(false)
+    }
+  }
+
+  const handleImageUpload = async () => {
+    if (!selectedFile || !user) return
+
+    console.log('Starting upload:', { fileName: selectedFile.name, fileSize: selectedFile.size, fileType: selectedFile.type })
+
+    // Validate file type
+    if (!selectedFile.type.startsWith('image/')) {
+      setMessage({ type: 'error', text: 'Please upload an image file' })
+      return
+    }
+
+    // Validate file size (max 5MB)
+    if (selectedFile.size > 5 * 1024 * 1024) {
+      setMessage({ type: 'error', text: 'Image must be less than 5MB' })
+      return
+    }
+
+    setUploading(true)
+    setMessage(null)
+
+    try {
+      // Create unique filename
+      const fileExt = selectedFile.name.split('.').pop()
+      const fileName = `${user.id}-${Date.now()}.${fileExt}`
+      const filePath = `avatars/${fileName}`
+
+      console.log('Uploading to:', filePath)
+
+      // First check if bucket exists
+      const { data: buckets, error: bucketError } = await supabase.storage.listBuckets()
+      console.log('Available buckets:', buckets?.map(b => b.name))
+
+      // Upload to Supabase Storage (profile bucket has RLS restrictions)
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('posts')
+        .upload(filePath, selectedFile, {
+          cacheControl: '3600',
+          upsert: false
+        })
+
+      console.log('Upload result:', { uploadData, uploadError })
+
+      if (uploadError) throw uploadError
+
+      // Get public URL
+      const { data } = supabase.storage
+        .from('posts')
+        .getPublicUrl(filePath)
+
+      console.log('Public URL:', data.publicUrl)
+
+      // Clean up preview URL and set final URL
+      if (previewUrl) URL.revokeObjectURL(previewUrl)
+
+      // Update avatar URL in state
+      setAvatarUrl(data.publicUrl)
+      
+      // Automatically save to database
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: data.publicUrl })
+        .eq('id', user.id)
+
+      if (updateError) throw updateError
+
+      // Clean up and refresh
+      setSelectedFile(null)
+      setPreviewUrl(null)
+      setMessage({ type: 'success', text: 'Avatar updated successfully!' })
+      
+      // Refresh profile data
+      fetchProfile()
+    } catch (error: any) {
+      console.error('Error uploading image:', error)
+      setMessage({ 
+        type: 'error', 
+        text: error.message || 'Failed to upload image' 
+      })
+    } finally {
+      setUploading(false)
     }
   }
 
@@ -137,7 +233,18 @@ export default function ProfilePage() {
           {/* Profile Header */}
           <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-8">
             <div className="flex items-center gap-4">
-              <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center text-2xl font-bold text-emerald-600">
+              {avatarUrl ? (
+                <img 
+                  src={avatarUrl} 
+                  alt="Profile" 
+                  className="w-20 h-20 rounded-full object-cover border-4 border-white"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none'
+                    e.currentTarget.nextElementSibling?.classList.remove('hidden')
+                  }}
+                />
+              ) : null}
+              <div className={`w-20 h-20 rounded-full bg-white flex items-center justify-center text-2xl font-bold text-emerald-600 ${avatarUrl ? 'hidden' : ''}`}>
                 {displayName ? displayName[0].toUpperCase() : user?.email?.[0].toUpperCase() || 'U'}
               </div>
               <div className="flex-1">
@@ -234,21 +341,75 @@ export default function ProfilePage() {
               </p>
             </div>
 
-            {/* Avatar URL */}
+            {/* Avatar Upload */}
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                 <Upload className="w-4 h-4" />
-                Avatar URL
+                Profile Picture
               </label>
-              <input
-                type="url"
-                value={avatarUrl}
-                onChange={(e) => setAvatarUrl(e.target.value)}
-                placeholder="https://example.com/avatar.jpg"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
-              />
+              
+              {/* Preview Thumbnail */}
+              {(previewUrl || avatarUrl) && (
+                <div className="mb-3 flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <img 
+                    src={previewUrl || avatarUrl} 
+                    alt="Avatar preview" 
+                    className="w-16 h-16 rounded-full object-cover border-2 border-emerald-500"
+                    onError={(e) => {
+                      e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="64" height="64"%3E%3Crect fill="%23ddd" width="64" height="64"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%23999" font-size="14"%3EError%3C/text%3E%3C/svg%3E'
+                    }}
+                  />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-900">
+                      {previewUrl ? 'Ready to Upload' : 'Current Avatar'}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {previewUrl 
+                        ? 'Click "Upload" to save to your profile' 
+                        : 'Your current profile picture'
+                      }
+                    </p>
+                  </div>
+                  {previewUrl && (
+                    <button 
+                      onClick={handleImageUpload}
+                      disabled={uploading}
+                      className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors disabled:opacity-50"
+                    >
+                      {uploading ? 'Uploading...' : 'Submit'}
+                    </button>
+                  )}
+                </div>
+              )}
+              
+              <div className="flex gap-2">
+                <input
+                  type="url"
+                  value={avatarUrl}
+                  onChange={(e) => setAvatarUrl(e.target.value)}
+                  placeholder="https://example.com/avatar.jpg"
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
+                />
+                <label className="cursor-pointer">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleFileSelect}
+                    disabled={uploading}
+                  />
+                  <div className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-2 ${
+                    uploading 
+                      ? 'bg-gray-400 cursor-not-allowed' 
+                      : 'bg-emerald-600 hover:bg-emerald-700 cursor-pointer'
+                  } text-white`}>
+                    <Upload className="w-4 h-4" />
+                    Select Image
+                  </div>
+                </label>
+              </div>
               <p className="text-xs text-gray-500 mt-1">
-                Enter a URL to your profile picture
+                Enter a URL or upload an image (max 5MB)
               </p>
             </div>
 
