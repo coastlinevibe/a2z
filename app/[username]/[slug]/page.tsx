@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@supabase/supabase-js'
-import { PostCard } from '@/components/PostCard'
+import { PublicListingCard } from '@/components/PublicListingCard'
 import { ShareSection } from '@/components/ShareSection'
 import { formatPrice } from '@/lib/utils'
 import type { Metadata } from 'next'
@@ -146,9 +146,8 @@ export default async function UserListingPage({ params }: PageProps) {
         </div>
 
         {/* Post Card */}
-        <PostCard 
+        <PublicListingCard 
           post={post}
-          trackViews={false}
         />
 
         {/* Share Section */}

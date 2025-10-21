@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { supabase } from '@/lib/supabaseClient'
-import { PostCard } from '@/components/PostCard'
+import { PublicListingCard } from '@/components/PublicListingCard'
 import { formatPrice, generateShareMessage } from '@/lib/utils'
 import type { Metadata } from 'next'
 
@@ -119,11 +119,8 @@ export default async function PublicPostPage({ params }: PageProps) {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Post Card */}
-        <PostCard 
+        <PublicListingCard 
           post={post}
-          trackViews={true}
-          onWhatsAppClick={handleWhatsAppClick}
-          onCallClick={handleCallClick}
         />
 
         {/* Share Section */}

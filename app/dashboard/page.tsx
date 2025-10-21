@@ -517,6 +517,14 @@ export default function DashboardPage() {
             isOpen={!!previewPost}
             onClose={() => setPreviewPost(null)}
             post={previewPost}
+            onShare={() => {
+              setSharePost(previewPost)
+              setPreviewPost(null)
+            }}
+            onDelete={() => {
+              setDeletePostId(previewPost.id)
+              setPreviewPost(null)
+            }}
           />
         )}
 
