@@ -16,10 +16,6 @@ const nextConfig = {
   },
   // Disable standalone output to avoid build trace issues
   // output: 'standalone',
-  experimental: {
-    // Skip build trace to avoid stack overflow
-    outputFileTracingIgnores: ['**/*'],
-  },
 }
 
 module.exports = nextConfig
