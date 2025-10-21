@@ -184,22 +184,6 @@ export default function UserPlanStatus() {
 
   return (
     <div className="flex items-center gap-2 ml-4">
-      {/* Avatar */}
-      {profile.avatar_url ? (
-        <img 
-          src={profile.avatar_url} 
-          alt={profile.display_name || 'Profile'} 
-          className="w-8 h-8 rounded-full object-cover border-2 border-gray-200"
-          onError={(e) => {
-            e.currentTarget.style.display = 'none'
-          }}
-        />
-      ) : (
-        <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white text-sm font-bold">
-          {profile.display_name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U'}
-        </div>
-      )}
-      
       {/* Plan Badge */}
       <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm font-medium ${getPlanColor()}`}>
         {getPlanIcon()}

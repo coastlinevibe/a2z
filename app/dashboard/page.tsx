@@ -37,7 +37,7 @@ export default function DashboardPage() {
   const [previewPost, setPreviewPost] = useState<Post | null>(null)
   const [deletePostId, setDeletePostId] = useState<string | null>(null)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
-  const [username, setUsername] = useState<string>('riegaldutoit')
+  const [username, setUsername] = useState<string>('')
   const card1Ref = useRef<HTMLDivElement>(null)
   const card2Ref = useRef<HTMLDivElement>(null)
   const card3Ref = useRef<HTMLDivElement>(null)
@@ -51,18 +51,12 @@ export default function DashboardPage() {
 
   const fetchUsername = async () => {
     try {
-      const response = await fetch('/api/profile', {
-        headers: {
-          'Authorization': `Bearer ${session?.access_token}`
-        }
-      })
-      if (response.ok) {
-        const data = await response.json()
-        setUsername(data.username || 'riegaldutoit')
+      // Use user ID directly
+      if (user?.id) {
+        setUsername(user.id)
       }
     } catch (error) {
-      console.error('Failed to fetch username:', error)
-      setUsername('riegaldutoit') // Fallback
+      console.error('Failed to set username:', error)
     }
   }
 

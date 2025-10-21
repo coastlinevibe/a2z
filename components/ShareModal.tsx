@@ -28,18 +28,21 @@ export function ShareModal({ isOpen, onClose, post, username, className }: Share
     process.env.NEXT_PUBLIC_SELLR_BASE_URL ||
     (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3004')
   
-  // Use username from prop or post object
+  // Extract only the numeric part before first dash from UUID
   const userSlug = username || post.username
+  const numericId = userSlug ? userSlug.replace(/^@?user/, '').split('-')[0] : null
+  const userIdSlug = numericId ? `user${numericId}` : null
   
   // Debug logging
   console.log('ShareModal Debug:', {
     username,
     postUsername: post.username,
     userSlug,
+    userIdSlug,
     slug: post.slug
   })
   
-  const publicUrl = userSlug ? `${baseUrl}/${userSlug}/${post.slug}` : `${baseUrl}/p/${post.slug}`
+  const publicUrl = userIdSlug ? `${baseUrl}/${userIdSlug}/${post.slug}` : `${baseUrl}/p/${post.slug}`
   const price = formatPrice(post.price_cents, post.currency)
   const shareMessage = `${post.title} — ${price}\n${publicUrl}`
 
