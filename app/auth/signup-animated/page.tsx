@@ -22,7 +22,7 @@ export default function AnimatedSignupPage() {
   const searchParams = useSearchParams()
   
   // Get selected plan from URL params
-  const selectedPlan = searchParams.get('plan') || 'free'
+  const selectedPlan = searchParams?.get('plan') || 'free'
   const isEarlyAdopter = true // For first 500 users
 
   useEffect(() => {
