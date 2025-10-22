@@ -16,40 +16,43 @@ interface PageProps {
 }
 
 async function getPost(username: string, slug: string) {
-  console.log('Fetching post:', { username, slug })
+  // Extract numeric ID from user{numericid} format
+  const numericId = username.startsWith('user') ? username.replace('user', '') : username
   
-  // First, get the user ID from the username
-  const { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .select('id, verified_seller, display_name')
-    .eq('username', username)
-    .single()
+  console.log('Fetching post:', { username, slug, numericId })
   
-  if (profileError || !profile) {
-    console.error('Profile fetch error:', { profileError, username })
-    return null
-  }
-  
-  // Now get the post by slug and owner
-  const { data: post, error: postError } = await supabase
+  // Get all posts with this slug, then filter by owner ID in JavaScript
+  const { data: posts, error } = await supabase
     .from('posts')
     .select('*')
     .eq('slug', slug)
-    .eq('owner', profile.id)
     .eq('is_active', true)
-    .single()
   
-  if (postError || !post) {
-    console.error('Post fetch error:', { postError, slug, owner: profile.id })
+  console.log('Query result:', { posts, error, count: posts?.length })
+  
+  // Filter posts where owner UUID starts with numericId
+  const post = posts?.find(p => p.owner.toString().startsWith(numericId))
+  
+  if (error || !post) {
+    console.error('Post fetch error:', { error, slug, numericId, foundPosts: posts?.length })
     return null
   }
+  
+  const userId = post.owner
+
+  // Get profile data separately
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('verified_seller, display_name')
+    .eq('id', userId)
+    .single()
 
   // Combine post and profile data
   return { 
     ...post, 
     username,
-    verified_seller: profile.verified_seller || false,
-    seller_name: profile.display_name || null
+    verified_seller: profile?.verified_seller || false,
+    seller_name: profile?.display_name || null
   }
 }
 

@@ -1,9 +1,16 @@
 'use client'
 
 import { useState } from 'react'
-import { Eye, MousePointer, X } from 'lucide-react'
+import { Eye, MousePointer, X, Phone, MapPin } from 'lucide-react'
 import { formatPrice } from '@/lib/utils'
 import { PostCard } from './PostCard'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { PremiumGallery } from '@/components/PremiumGallery'
+import { HorizontalSlider } from '@/components/HorizontalSlider'
+import { VerticalSlider } from '@/components/VerticalSlider'
+import { HoverGallery } from '@/components/HoverGallery'
+import SimpleVideoPlayer from '@/components/ui/SimpleVideoPlayer'
+import { BeforeAfterSlider } from '@/components/BeforeAfterSlider'
 
 interface Post {
   id: string
@@ -35,6 +42,7 @@ interface ListingCardGridProps {
 
 export function ListingCardGrid({ posts, onEdit, onShare, onPreview, onDelete }: ListingCardGridProps) {
   const [expandedPost, setExpandedPost] = useState<Post | null>(null)
+  const [openCardId, setOpenCardId] = useState<string>('')
 
   const openGallery = (post: Post) => {
     setExpandedPost(post)
@@ -44,83 +52,172 @@ export function ListingCardGrid({ posts, onEdit, onShare, onPreview, onDelete }:
     setExpandedPost(null)
   }
 
-  // Group posts into rows of 3
-  const rows = []
-  for (let i = 0; i < posts.length; i += 3) {
-    rows.push(posts.slice(i, i + 3))
+  const handleContactSeller = (post: Post) => {
+    const contactNumber = post.whatsapp_number || '0000000000'
+    const message = encodeURIComponent(`Hi, I'm interested in: ${post.title}`)
+    window.open(`https://wa.me/${contactNumber}?text=${message}`, '_blank')
+  }
+
+  const handleCallSeller = (post: Post) => {
+    const contactNumber = post.whatsapp_number || '0000000000'
+    window.location.href = `tel:${contactNumber}`
+  }
+
+  const renderMedia = (post: Post) => {
+    if (!post.media_urls || post.media_urls.length === 0) {
+      return (
+        <div className="w-full aspect-square bg-gray-100 rounded-t-lg flex items-center justify-center">
+          <span className="text-gray-400 text-4xl">📷</span>
+        </div>
+      )
+    }
+
+    const displayType = post.display_type || 'gallery'
+
+    switch (displayType) {
+      case 'hover':
+        return <HoverGallery images={post.media_urls} alt={post.title} className="rounded-t-lg aspect-square" />
+      case 'horizontal':
+        return <HorizontalSlider images={post.media_urls} alt={post.title} className="rounded-t-lg aspect-square" />
+      case 'vertical':
+        return <VerticalSlider images={post.media_urls} alt={post.title} className="rounded-t-lg aspect-square" />
+      case 'video':
+        return <SimpleVideoPlayer src={post.media_urls[0]} className="rounded-t-lg aspect-square" />
+      case 'before_after':
+      case 'before-after':
+        return (
+          <BeforeAfterSlider
+            beforeImage={post.media_urls[0]}
+            afterImage={post.media_urls[1]}
+            className="rounded-t-lg aspect-square"
+          />
+        )
+      default:
+        return <PremiumGallery images={post.media_urls} descriptions={post.media_descriptions} className="rounded-t-lg aspect-square" />
+    }
   }
 
   return (
     <>
-      <div className="max-w-[50rem] mx-auto my-20">
-        {rows.map((row, rowIndex) => (
-          <div key={rowIndex} className="flex justify-between mb-10 gap-4">
-            {row.map((post) => (
-              <div
-                key={post.id}
-                className={`relative flex-[0_1_15rem] bg-white pb-20 transition-all duration-200 hover:bg-gray-50 cursor-pointer group ${
-                  expandedPost?.id === post.id ? 'card-active' : ''
-                }`}
-                onClick={() => openGallery(post)}
-              >
-                {/* Card Thumb with 3D effect */}
-                <div className="relative w-[15rem] h-[10rem] z-10 perspective-[600px]">
-                  {/* Shadows */}
-                  <div className="absolute w-[15rem] h-[10rem] bg-emerald-600 opacity-60 transition-all duration-200 group-hover:scale-[1.02] group-hover:translate-y-[-0.3rem]" />
-                  <div className="absolute w-[15rem] h-[10rem] bg-emerald-500 opacity-70 transition-all duration-200 group-hover:scale-[0.9] group-hover:translate-y-[1rem]" />
-                  <div className="absolute w-[15rem] h-[10rem] bg-emerald-400 opacity-80 transition-all duration-200 group-hover:scale-[0.82] group-hover:translate-y-[2.4rem]" />
-                  
-                  {/* Main Image */}
-                  <div
-                    className="absolute w-[15rem] h-[10rem] bg-cover bg-center bg-gray-400 transition-all duration-200 group-hover:scale-105 group-hover:translate-y-[-1rem]"
-                    style={{
-                      backgroundImage: post.media_urls[0] ? `url(${post.media_urls[0]})` : 'none',
-                    }}
-                  >
-                    <div className="absolute inset-0 bg-emerald-500 opacity-0 group-hover:opacity-40 transition-opacity duration-100" />
-                  </div>
-                </div>
-
-                {/* Card Title */}
-                <div className="absolute bottom-0 flex items-center w-full h-20 text-center transition-all duration-200 group-hover:opacity-0">
-                  <span className="flex-1 px-2 text-sm font-medium truncate">{post.title}</span>
-                </div>
-
-                {/* Card Explore */}
-                <div className="absolute bottom-0 flex items-center w-full h-20 text-center opacity-0 translate-y-[-1rem] group-hover:opacity-100 group-hover:translate-y-[1rem] transition-all duration-200">
-                  <span className="flex-1 px-2 text-xs uppercase tracking-wide text-emerald-600">
-                    {formatPrice(post.price_cents, post.currency)}
-                  </span>
-                </div>
-
-                {/* View More Button */}
-                <button
-                  className="absolute left-1/2 top-20 px-4 py-2 bg-white rounded-full border-2 border-emerald-500 text-emerald-500 text-xs font-semibold -translate-x-1/2 translate-y-8 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 z-10 hover:bg-emerald-500 hover:text-white"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    openGallery(post)
-                  }}
-                >
-                  view more
-                </button>
-
-                {/* Stats Badge */}
-                <div className="absolute top-2 right-2 flex gap-2 text-xs text-white z-20">
-                  <span className="flex items-center gap-1 bg-black/50 px-2 py-1 rounded">
-                    <Eye className="h-3 w-3" />
-                    {post.views}
-                  </span>
-                  <span className="flex items-center gap-1 bg-black/50 px-2 py-1 rounded">
-                    <MousePointer className="h-3 w-3" />
-                    {post.clicks}
-                  </span>
-                </div>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 max-w-7xl mx-auto p-2 items-start">
+        {posts.map((post, index) => (
+          <div
+            key={post.id}
+            className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 max-w-xs"
+          >
+            {/* Product Image */}
+            <div className="relative w-full">
+              {renderMedia(post)}
+              <div className="absolute top-2 left-2 bg-white/95 text-gray-800 text-xs font-semibold px-2 py-1 rounded shadow-md">
+                #{index + 1}
               </div>
-            ))}
-            {/* Fill empty slots */}
-            {row.length < 3 && Array.from({ length: 3 - row.length }).map((_, i) => (
-              <div key={`empty-${i}`} className="flex-[0_1_15rem]" />
-            ))}
+            </div>
+
+            {/* Listing Header */}
+            <button
+              className="w-full text-left px-3 py-2 bg-gray-50 hover:bg-gray-100 transition-colors"
+              onClick={() => setOpenCardId(openCardId === post.id ? '' : post.id)}
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs font-medium text-gray-800 truncate">{post.title}</span>
+                <span className="text-sm font-semibold text-emerald-600 whitespace-nowrap">
+                  {formatPrice(post.price_cents, post.currency)}
+                </span>
+              </div>
+            </button>
+
+            {/* Accordion */}
+            <div className="p-2">
+              <Accordion
+                type="single"
+                collapsible
+                className="w-full"
+                value={openCardId === post.id ? 'details' : ''}
+                onValueChange={(value) => {
+                  if (value === 'details') {
+                    setOpenCardId(post.id)
+                  } else if (openCardId === post.id) {
+                    setOpenCardId('')
+                  }
+                }}
+              >
+                <AccordionItem value="details" className="border-emerald-200">
+                  <AccordionTrigger className="hover:bg-emerald-50 p-0">
+                    <div className="flex items-center gap-1 w-full p-2">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleContactSeller(post)
+                        }}
+                        className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-1.5 px-2 rounded transition-colors flex items-center justify-center text-xs"
+                      >
+                        <Phone className="h-3 w-3 mr-1" />
+                        Contact
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleCallSeller(post)
+                        }}
+                        className="p-1.5 bg-gray-100 hover:bg-gray-200 rounded transition-colors"
+                      >
+                        <Phone className="h-3 w-3 text-gray-700" />
+                      </button>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-2">
+                      {/* Title, Price & Location */}
+                      <div className="flex items-center justify-between gap-1">
+                        <p className="text-gray-700 text-xs flex-1 truncate">{post.title}</p>
+                        <p className="text-sm font-bold text-emerald-600 whitespace-nowrap">
+                          {formatPrice(post.price_cents, post.currency)}
+                        </p>
+                        {post.location && (
+                          <div className="flex items-center text-xs text-gray-500 whitespace-nowrap">
+                            <MapPin className="h-2.5 w-2.5 mr-0.5" />
+                            {post.location}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Description */}
+                      {post.description && (
+                        <p className="text-gray-600 text-xs line-clamp-2">{post.description}</p>
+                      )}
+
+                      {/* Action Buttons */}
+                      <div className="flex gap-1 pt-1 border-t">
+                        {onShare && (
+                          <button
+                            onClick={() => onShare(post)}
+                            className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-medium py-1 px-2 rounded transition-colors text-xs"
+                          >
+                            Share
+                          </button>
+                        )}
+                        {onPreview && (
+                          <button
+                            onClick={() => onPreview(post)}
+                            className="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-medium py-1 px-2 rounded transition-colors text-xs"
+                          >
+                            Preview
+                          </button>
+                        )}
+                        {onDelete && (
+                          <button
+                            onClick={() => onDelete(post.id)}
+                            className="flex-1 bg-red-500 hover:bg-red-600 text-white font-medium py-1 px-2 rounded transition-colors text-xs"
+                          >
+                            Delete
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
           </div>
         ))}
       </div>
