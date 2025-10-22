@@ -89,6 +89,8 @@ export function ListingCardGrid({ posts, onEdit, onShare, onPreview, onDelete }:
           <BeforeAfterSlider
             beforeImage={post.media_urls[0]}
             afterImage={post.media_urls[1]}
+            beforeDescription={post.media_descriptions?.[0]}
+            afterDescription={post.media_descriptions?.[1]}
             className="rounded-t-lg aspect-square"
           />
         )

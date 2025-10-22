@@ -145,8 +145,12 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
     }
   }
 
+  const previewMediaDescriptions = (watchedValues.media_urls || []).map((url) => mediaDescriptions[url] || '')
+
+  type PreviewPost = React.ComponentProps<typeof PostCardPreview>['post']
+
   // Create preview post object
-  const previewPost = {
+  const previewPost: PreviewPost = {
     id: 'preview',
     title: watchedValues.title || 'Your Product Title',
     price_cents: watchedValues.price_cents || 0,
@@ -154,12 +158,10 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
     description: watchedValues.description || undefined,
     emoji_tags: watchedValues.emoji_tags || [],
     media_urls: watchedValues.media_urls || [],
-    media_descriptions: mediaDescriptions,
+    media_descriptions: previewMediaDescriptions,
     whatsapp_number: watchedValues.whatsapp_number || undefined,
     location: watchedValues.location || undefined,
-    views: 0,
-    clicks: 0,
-    created_at: new Date().toISOString(),
+    display_type: displayType,
   }
 
   return (

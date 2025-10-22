@@ -109,12 +109,14 @@ export function PostCard({
             src={post.media_urls[0]}
             className="rounded-t-xl aspect-video"
           />
-        ) : post.display_type === 'before_after' ? (
+        ) : (post.display_type === 'before_after' || post.display_type === 'before-after') ? (
           <BeforeAfterSlider 
             beforeImage={post.media_urls[0] || ''}
             afterImage={post.media_urls[1] || post.media_urls[0] || ''}
             beforeLabel="Before"
             afterLabel="After"
+            beforeDescription={post.media_descriptions?.[0]}
+            afterDescription={post.media_descriptions?.[1]}
             className="rounded-t-xl"
           />
         ) : post.display_type === 'gallery' ? (

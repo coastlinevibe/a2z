@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import { Upload, X, Image, Video, Loader2, ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn, compressImage, isValidFileType, formatFileSize } from '@/lib/utils'
 import { useAuth } from '@/lib/auth'
@@ -36,8 +36,43 @@ export default function MediaUploader({
   const { user } = useAuth()
   const [dragActive, setDragActive] = useState(false)
   const [uploadingFiles, setUploadingFiles] = useState<UploadingFile[]>([])
+  const [beforeDraft, setBeforeDraft] = useState('')
+  const [afterDraft, setAfterDraft] = useState('')
+  const [beforeConfirmed, setBeforeConfirmed] = useState(false)
+  const [afterConfirmed, setAfterConfirmed] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
+
+  const beforeUrl = displayType === 'before_after' ? mediaUrls[0] : undefined
+  const afterUrl = displayType === 'before_after' ? mediaUrls[1] : undefined
+
+  useEffect(() => {
+    if (displayType !== 'before_after') {
+      setBeforeDraft('')
+      setAfterDraft('')
+      setBeforeConfirmed(false)
+      setAfterConfirmed(false)
+      return
+    }
+
+    if (beforeUrl) {
+      const existing = mediaDescriptions[beforeUrl] || ''
+      setBeforeDraft(existing)
+      setBeforeConfirmed(existing.trim().length > 0)
+    } else {
+      setBeforeDraft('')
+      setBeforeConfirmed(false)
+    }
+
+    if (afterUrl) {
+      const existing = mediaDescriptions[afterUrl] || ''
+      setAfterDraft(existing)
+      setAfterConfirmed(existing.trim().length > 0)
+    } else {
+      setAfterDraft('')
+      setAfterConfirmed(false)
+    }
+  }, [displayType, beforeUrl, afterUrl, mediaDescriptions])
 
   const uploadFile = async (file: File): Promise<string> => {
     // Get user session token
@@ -193,8 +228,15 @@ export default function MediaUploader({
   }, [])
 
   const removeMedia = (index: number) => {
+    const removedUrl = mediaUrls[index]
     const newUrls = mediaUrls.filter((_, i) => i !== index)
     onMediaChange(newUrls)
+
+    if (onDescriptionsChange && removedUrl) {
+      const updated = { ...mediaDescriptions }
+      delete updated[removedUrl]
+      onDescriptionsChange(updated)
+    }
   }
 
   const removeUploadingFile = (id: string) => {
@@ -372,6 +414,116 @@ export default function MediaUploader({
                   </button>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* Before/After Guided Flow */}
+        {displayType === 'before_after' && (
+          <div className="mt-4 space-y-4">
+            <div className="rounded-xl border border-emerald-200 bg-white/80 p-4 space-y-3">
+              <p className="text-sm font-medium text-emerald-700">
+                Before & After Setup
+              </p>
+              {!beforeUrl && (
+                <p className="text-sm text-gray-600">
+                  Step 1: Select your <span className="font-semibold">"before"</span> image to begin.
+                </p>
+              )}
+
+              {beforeUrl && (
+                <div className="space-y-2">
+                  <p className="text-xs uppercase tracking-wide text-gray-500">Before Description</p>
+                  <div className="flex items-start gap-3">
+                    <div className="w-14 h-14 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                      {beforeUrl.includes('.mp4') || beforeUrl.includes('.webm') ? (
+                        <video src={beforeUrl} className="w-full h-full object-cover" muted />
+                      ) : (
+                        <img src={beforeUrl} alt="Before image" className="w-full h-full object-cover" />
+                      )}
+                    </div>
+                    <div className="flex-1 flex gap-2">
+                      <input
+                        type="text"
+                        value={beforeDraft}
+                        onChange={(e) => setBeforeDraft(e.target.value)}
+                        placeholder="Describe the BEFORE state"
+                        maxLength={125}
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!beforeUrl || !onDescriptionsChange) return
+                          onDescriptionsChange({
+                            ...mediaDescriptions,
+                            [beforeUrl]: beforeDraft.trim(),
+                          })
+                          setBeforeConfirmed(true)
+                        }}
+                        disabled={!beforeDraft.trim()}
+                        className="px-3 py-2 text-sm font-semibold rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 disabled:bg-gray-200 disabled:text-gray-500"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-500">{beforeDraft.length}/125 characters</p>
+                  {beforeConfirmed && (
+                    <p className="text-xs text-emerald-600 font-medium">Before description applied. Select your "after" image next.</p>
+                  )}
+                </div>
+              )}
+
+              {beforeConfirmed && !afterUrl && (
+                <p className="text-sm text-gray-600">
+                  Step 2: Select your <span className="font-semibold">"after"</span> image.
+                </p>
+              )}
+
+              {afterUrl && (
+                <div className="space-y-2">
+                  <p className="text-xs uppercase tracking-wide text-gray-500">After Description</p>
+                  <div className="flex items-start gap-3">
+                    <div className="w-14 h-14 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                      {afterUrl.includes('.mp4') || afterUrl.includes('.webm') ? (
+                        <video src={afterUrl} className="w-full h-full object-cover" muted />
+                      ) : (
+                        <img src={afterUrl} alt="After image" className="w-full h-full object-cover" />
+                      )}
+                    </div>
+                    <div className="flex-1 flex gap-2">
+                      <input
+                        type="text"
+                        value={afterDraft}
+                        onChange={(e) => setAfterDraft(e.target.value)}
+                        placeholder="Describe the AFTER state"
+                        maxLength={125}
+                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!afterUrl || !onDescriptionsChange) return
+                          onDescriptionsChange({
+                            ...mediaDescriptions,
+                            [afterUrl]: afterDraft.trim(),
+                          })
+                          setAfterConfirmed(true)
+                        }}
+                        disabled={!afterDraft.trim()}
+                        className="px-3 py-2 text-sm font-semibold rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 disabled:bg-gray-200 disabled:text-gray-500"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-500">{afterDraft.length}/125 characters</p>
+                  {afterConfirmed && (
+                    <p className="text-xs text-emerald-600 font-medium">After description applied. Preview is ready below.</p>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         )}

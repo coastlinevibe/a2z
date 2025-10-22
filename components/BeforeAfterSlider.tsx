@@ -10,6 +10,8 @@ interface BeforeAfterSliderProps {
   afterImage: string;
   beforeLabel?: string;
   afterLabel?: string;
+  beforeDescription?: string | null;
+  afterDescription?: string | null;
   className?: string;
 }
 
@@ -18,13 +20,15 @@ export function BeforeAfterSlider({
   afterImage,
   beforeLabel = "Before",
   afterLabel = "After",
+  beforeDescription,
+  afterDescription,
   className
 }: BeforeAfterSliderProps) {
-  const [inset, setInset] = useState<number>(50);
-  const [onMouseDown, setOnMouseDown] = useState<boolean>(false);
+  const [inset, setInset] = useState<number>(0);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
 
   const onMouseMove = (e: React.MouseEvent | React.TouchEvent) => {
-    if (!onMouseDown) return;
+    if (!isDragging) return;
 
     const rect = e.currentTarget.getBoundingClientRect();
     let x = 0;
@@ -39,15 +43,24 @@ export function BeforeAfterSlider({
     setInset(percentage);
   };
 
+  const normalizedInset = Math.max(0, Math.min(100, inset));
+  const showingAfter = normalizedInset >= 50;
+  const activeLabel = showingAfter ? afterLabel : beforeLabel;
+  const activeDescription = showingAfter ? afterDescription : beforeDescription;
+  const hasDescription = activeDescription && activeDescription.trim().length > 0;
+
   return (
-    <div className={cn("w-full", className)}>
+    <div className="relative w-full group">
       <div
-        className="relative aspect-square w-full h-full overflow-hidden rounded-xl select-none bg-gray-100 cursor-ew-resize"
+        className={cn(
+          "relative w-full aspect-square overflow-hidden rounded-xl select-none bg-gray-100 cursor-ew-resize",
+          className
+        )}
         onMouseMove={onMouseMove}
-        onMouseUp={() => setOnMouseDown(false)}
-        onMouseLeave={() => setOnMouseDown(false)}
+        onMouseUp={() => setIsDragging(false)}
+        onMouseLeave={() => setIsDragging(false)}
         onTouchMove={onMouseMove}
-        onTouchEnd={() => setOnMouseDown(false)}
+        onTouchEnd={() => setIsDragging(false)}
       >
         {/* Divider Line */}
         <div
@@ -60,48 +73,52 @@ export function BeforeAfterSlider({
           <button
             className="bg-white rounded-full hover:scale-110 transition-all w-8 h-8 select-none -translate-y-1/2 absolute top-1/2 -ml-4 z-30 cursor-ew-resize flex justify-center items-center shadow-lg border-2 border-gray-200"
             onTouchStart={(e) => {
-              setOnMouseDown(true);
+              setIsDragging(true);
               onMouseMove(e);
             }}
             onMouseDown={(e) => {
-              setOnMouseDown(true);
+              setIsDragging(true);
               onMouseMove(e);
             }}
-            onTouchEnd={() => setOnMouseDown(false)}
-            onMouseUp={() => setOnMouseDown(false)}
+            onTouchEnd={() => setIsDragging(false)}
+            onMouseUp={() => setIsDragging(false)}
           >
             <GripVertical className="h-4 w-4 select-none text-gray-600" />
           </button>
         </div>
 
-        {/* After Image (Right Side) */}
+        {/* Before Image (base layer) */}
+        <Image
+          src={beforeImage}
+          alt={beforeLabel}
+          fill
+          className="absolute left-0 top-0 w-full h-full object-cover rounded-xl select-none"
+          style={{
+            clipPath: `inset(0 ${Math.max(0, normalizedInset)}% 0 0)`,
+          }}
+        />
+
+        {/* After Image overlay */}
         <Image
           src={afterImage}
           alt={afterLabel}
           fill
           className="absolute left-0 top-0 z-10 w-full h-full object-cover rounded-xl select-none"
           style={{
-            clipPath: "inset(0 0 0 " + inset + "%)",
+            clipPath: `inset(0 0 0 ${Math.max(0, 100 - normalizedInset)}%)`,
           }}
         />
 
-        {/* Before Image (Left Side) */}
-        <Image
-          src={beforeImage}
-          alt={beforeLabel}
-          fill
-          className="absolute left-0 top-0 w-full h-full object-cover rounded-xl select-none"
-        />
-
         {/* Labels */}
-        <div className="absolute top-4 left-4 z-30">
-          <span className="bg-black/70 text-white px-2 py-1 rounded text-sm font-medium">
-            {beforeLabel}
-          </span>
-        </div>
-        <div className="absolute top-4 right-4 z-30">
-          <span className="bg-black/70 text-white px-2 py-1 rounded text-sm font-medium">
-            {afterLabel}
+        <div className="pointer-events-none absolute top-4 left-1/2 -translate-x-1/2 z-30">
+          <span className="px-3 py-1 rounded-full text-sm font-medium shadow-md text-white"
+            style={{
+              background: showingAfter
+                ? 'linear-gradient(135deg, #1d4ed8, #2563eb)'
+                : 'linear-gradient(135deg, #1d4ed8, #2563eb)'
+            }}
+          >
+            {showingAfter ? afterLabel : beforeLabel}
           </span>
         </div>
 
@@ -110,6 +127,21 @@ export function BeforeAfterSlider({
           <span className="bg-black/70 text-white px-3 py-1 rounded-full text-xs">
             Drag to compare
           </span>
+        </div>
+      </div>
+      <div
+        className={cn(
+          "pointer-events-none absolute inset-y-0 right-4 flex items-center transition-opacity duration-200",
+          isDragging || normalizedInset <= 5
+            ? "opacity-100"
+            : "opacity-0 group-hover:opacity-100 group-focus-within:opacity-100"
+        )}
+      >
+        <div className="max-w-[220px] rounded-xl border border-gray-200 bg-white/90 shadow-lg px-4 py-3">
+          <p className="text-sm font-semibold text-gray-800">{activeLabel}</p>
+          <p className="text-sm text-gray-600 mt-2 whitespace-pre-line">
+            {hasDescription ? activeDescription : 'Add a description to tell buyers about this view.'}
+          </p>
         </div>
       </div>
     </div>

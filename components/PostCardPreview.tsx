@@ -18,9 +18,10 @@ interface Post {
   description?: string | null
   emoji_tags: string[]
   media_urls: string[]
-  media_descriptions?: Record<string, string>
+  media_descriptions?: string[]
   whatsapp_number?: string | null
   location?: string | null
+  display_type?: string | null
 }
 
 interface PostCardPreviewProps {
@@ -106,6 +107,8 @@ export function PostCardPreview({
             afterImage={post.media_urls[1] || post.media_urls[0] || ''}
             beforeLabel="Before"
             afterLabel="After"
+            beforeDescription={Array.isArray(post.media_descriptions) ? post.media_descriptions[0] : undefined}
+            afterDescription={Array.isArray(post.media_descriptions) ? post.media_descriptions[1] : undefined}
             className="rounded-t-xl"
           />
         ) : displayType === 'gallery' ? (

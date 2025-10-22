@@ -82,10 +82,13 @@ export function PreviewModal({ isOpen, onClose, post, className, onShare, onDele
       case 'video':
         return <SimpleVideoPlayer src={post.media_urls[0]} className="rounded-t-2xl aspect-square" />
       case 'before-after':
+      case 'before_after':
         return (
           <BeforeAfterSlider
             beforeImage={post.media_urls[0]}
             afterImage={post.media_urls[1]}
+            beforeDescription={post.media_descriptions?.[0]}
+            afterDescription={post.media_descriptions?.[1]}
             className="rounded-t-2xl"
           />
         )
