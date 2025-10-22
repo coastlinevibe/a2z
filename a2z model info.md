@@ -10,16 +10,21 @@ A2z Model info
 ✅ **What You Get:**
 - 3 active listings
 - 5 images per listing
-- Basic gallery (Hover or Slider only)
+- Basic gallery (Hover,Vertical Slider, Horizontal Slider and Image gallery)
 - WhatsApp contact integration
 - Share links to WhatsApp groups/social media
 - Basic analytics (views & clicks)
 
-⚠️ **Limitations:**
-- **Images stored for 7 days only** (then auto-deleted)
-- Listings expire after 7 days
-- A2z watermark on images
-- Fast Support
+⚠️ **Limitations & 7-Day Reset Cycle:**
+- **Weekly account reset** - Every 7 days from registration date
+- **All listings and images automatically deleted** on reset day
+- **Profile data preserved** (name, email, username stay intact)
+- **Fresh start each cycle** - Can create new listings after reset
+- **A2z watermark** on all images
+- **Notifications:**
+  - Day 6: Warning "24 hours until reset"
+  - Day 7: "Cycle reset - start fresh or upgrade"
+- **Fast Support**
 
 💡 **Perfect for:** Testing the platform, occasional sellers, students
 
@@ -30,11 +35,10 @@ A2z Model info
 
 ✅ **Everything in Free, PLUS:**
 - **Unlimited active listings**
-- ** images - up to 8 per listing
-- **Permanent image storage** (no 7-day limit)
-- **Premium gallery types** (Hover, Slider, Vertical, Premium, Video)
+- **8 images** - up to 8 per listing
+- **Permanent image storage** (no 7-day reset cycle)
+- **Premium gallery types** (Hover, Horizontal Slider, Vertical Slider, Image Gallery , Before and After, Video)
 - **Verified Seller Badge** ✓ (blue checkmark)
-- **35-day listing duration**
 - **Video support** (1 video per listing)
 - **Remove A2z watermark**
 - **Advanced analytics:**
@@ -96,9 +100,9 @@ A2z Model info
 
 Feature	FREE	PREMIUM (R49)	BUSINESS (R179)
 Active Listings	3	Unlimited	Unlimited
-Images per Listing	5	8	12
-Image Storage	7 Days	Unlimited	Unlimited
-Listing Duration	7 days	35 days	60 days
+Images per Listing	5	8	20
+Image Storage	7-Day Reset Cycle	Permanent	Permanent
+Listing Duration	7-Day Reset Cycle	35 days	60 days
 Gallery Types	4	5	7
 Video Support	❌	1	Multiple videos
 Verified Badge	❌	✅	✅
@@ -135,6 +139,24 @@ Support	Fast	Priority	Dedicated
 
 ---
 💡 Key Features Explained
+
+### **Free Tier 7-Day Reset Cycle**
+**How it works:**
+- Every free user gets a 7-day usage cycle starting from their registration date
+- On day 7, all listings and images are automatically deleted
+- Profile information (name, email, username, settings) is preserved
+- User starts fresh the next day with zero listings
+
+**Notifications:**
+- **Day 6**: Warning banner "Your 7-day cycle ends in 24 hours"
+- **Day 7**: Reset notification "Cycle has reset - start fresh or upgrade"
+- **Dashboard**: Progress bar showing days remaining in current cycle
+
+**Why this system:**
+- Encourages users to upgrade to Premium for permanent storage
+- Keeps the platform clean and active
+- Provides fair trial experience without long-term commitment
+- Users can test all features before deciding to upgrade
 
 ### **Verified Seller Badge (Premium+)**
 - Phone verification (OTP)

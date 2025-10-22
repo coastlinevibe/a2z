@@ -63,7 +63,7 @@ export default function TierUpgradeModal({
               <span className="font-semibold">Early Adopter Special</span>
             </div>
             <p className="text-sm opacity-90">
-              You're one of the first 500 users! Get up to 45% off for 12 months.
+              You're one of the first 500 users! Get up to 45% off your Premium plan—after 12 months it continues at R49/month.
             </p>
           </div>
         )}
@@ -191,7 +191,7 @@ export default function TierUpgradeModal({
                 </div>
                 {isEarlyAdopter && billingCycle === 'monthly' && (
                   <div className="text-sm text-blue-600 font-medium">
-                    45% off • Was {formatPrice(TIER_PRICING.business.monthly)}
+                    45% off for 12 months • Then {formatPrice(TIER_PRICING.business.monthly)} / month
                   </div>
                 )}
               </div>

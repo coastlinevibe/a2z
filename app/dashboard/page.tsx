@@ -9,6 +9,7 @@ import { PreviewModal } from '@/components/PreviewModal'
 import { DeleteConfirmModal } from '@/components/DeleteConfirmModal'
 import { ListingCardGrid } from '@/components/ListingCardGrid'
 import { MediaExpirationWarning } from '@/components/MediaExpirationWarning'
+import FreeAccountNotifications from '@/components/FreeAccountNotifications'
 import { useRequireAuth } from '@/lib/auth'
 
 interface Post {
@@ -231,6 +232,9 @@ export default function DashboardPage() {
             </feComponentTransfer>
           </filter>
         </svg>
+
+        {/* Free Account Notifications */}
+        <FreeAccountNotifications />
 
         {/* Stats Overview */}
         {posts.length > 0 && (

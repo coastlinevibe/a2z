@@ -273,3 +273,12 @@ export function getTierColor(tier: string): string {
     default: return 'text-gray-600'
   }
 }
+
+/**
+ * Add last_free_reset field to profiles table (migration needed)
+ * This tracks when a free user's account was last reset
+ */
+export interface ProfileUpdate {
+  last_free_reset?: string
+  current_listings?: number
+}

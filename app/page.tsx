@@ -10,12 +10,12 @@ export default function HomePage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-black bg-[url('/images/hero/bg2.jpg')] bg-center bg-no-repeat bg-[length:65%] sm:bg-[length:75%] md:bg-[length:85%] lg:bg-[length:95%] xl:bg-cover py-28 md:py-32 lg:py-40">
+      <section className="relative bg-black bg-[url('/images/hero/bg2.jpg')] bg-center bg-no-repeat bg-[length:65%] sm:bg-[length:75%] md:bg-[length:85%] lg:bg-[length:95%] xl:bg-cover pt-[82px] pb-28 md:pt-[98px] md:pb-32 lg:pt-[130px] lg:pb-40">
         <div className="absolute inset-0 bg-gradient-to-b from-emerald-950/85 via-emerald-950/65 to-emerald-950/85 backdrop-blur-[1px] md:backdrop-blur-sm"></div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             {/* Early Adopter Banner */}
-            <div className="flex justify-center mb-8">
+            <div className="flex justify-center mb-12 -translate-y-6 sm:-translate-y-8">
               <MovingBorderButton
                 borderRadius="1rem"
                 duration={4000}
@@ -24,7 +24,7 @@ export default function HomePage() {
               >
                 <div className="flex items-center gap-3">
                   <Star className="w-6 h-6" fill="white" />
-                  <span className="font-bold text-lg">Early Adopter: Up to 45% off for 12 months!</span>
+                  <span className="font-bold text-lg">Early Adopter: 45% off the first 500 Premium accounts • Then just R49/month regular price.</span>
                   <Link href="/auth/signup-animated?plan=free">
                     <button className="ml-2 inline-flex items-center gap-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 text-base font-bold transition-all shadow-lg hover:shadow-xl hover:scale-105 border-2 border-emerald-400">
                       Try Free Plan Now!
@@ -171,7 +171,7 @@ export default function HomePage() {
               >
                 <div className="flex items-center gap-3">
                   <Star className="w-5 h-5" fill="white" />
-                  <span className="font-bold text-base">Early Adopter: Up to 45% off for 12 months!</span>
+                  <span className="font-bold text-base">Early Adopter: 45% off the first 500 Premium accounts • Then just R49/month regular price.</span>
                   <Link href="/auth/signup-animated?plan=free">
                     <button className="ml-2 inline-flex items-center gap-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 text-sm font-bold transition-all shadow-lg hover:shadow-xl hover:scale-105 border border-emerald-400">
                       Try Free Plan Now!
@@ -223,7 +223,9 @@ export default function HomePage() {
               </div>
               <div className="mb-2">
                 <div className="text-3xl font-bold text-gray-900">R29</div>
-                <div className="text-sm text-emerald-600 font-medium">41% off for 12 months • Then R49</div>
+                <div className="text-sm text-emerald-700 font-medium bg-emerald-50 px-3 py-1 rounded-full shadow-[0_0_18px_rgba(16,185,129,0.25)]">
+                  45% off the first 500 Premium accounts • Then just R49/month regular price
+                </div>
               </div>
               <div className="space-y-3 mb-6 text-sm text-gray-600">
                 <div className="flex items-center justify-center gap-2">
@@ -259,7 +261,7 @@ export default function HomePage() {
               </div>
               <div className="mb-2">
                 <div className="text-3xl font-bold text-gray-900">R99</div>
-                <div className="text-sm text-blue-600 font-medium">45% off for 12 months • Then R179</div>
+                <div className="text-sm text-blue-600 font-medium">45% off for 12 months • Then R179/month</div>
               </div>
               <div className="space-y-3 mb-6 text-sm text-gray-600">
                 <div className="flex items-center justify-center gap-2">
@@ -387,7 +389,7 @@ export default function HomePage() {
             >
               <div className="flex items-center gap-3">
                 <Star className="w-5 h-5" fill="white" />
-                <span className="font-bold text-base">Early Adopter: Up to 45% off for 12 months!</span>
+                <span className="font-bold text-base">Early Adopter: 45% off the first 500 Premium accounts • Then just R49/month regular price.</span>
                 <Link href="/auth/signup-animated?plan=free">
                   <button className="ml-2 inline-flex items-center gap-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 text-sm font-bold transition-all shadow-lg hover:shadow-xl hover:scale-105 border border-emerald-400">
                     Try Free Plan Now!

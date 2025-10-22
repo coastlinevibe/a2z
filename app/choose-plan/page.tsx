@@ -28,7 +28,7 @@ export default function ChoosePlanPage() {
             >
               <div className="flex items-center gap-3">
                 <Star className="w-6 h-6" fill="white" />
-                <span className="font-bold text-lg">Early Adopter: Up to 45% off for 12 months!</span>
+                <span className="font-bold text-lg">Early Adopter: 45% off the first 500 Premium accounts • Then just R49/month regular price.</span>
                 <Link href="/auth/signup-animated?plan=free">
                   <button className="ml-2 inline-flex items-center gap-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 text-base font-bold transition-all shadow-lg hover:shadow-xl hover:scale-105 border-2 border-emerald-400">
                     Try Free Plan Now!
@@ -123,8 +123,8 @@ export default function ChoosePlanPage() {
               </div>
 
               {isEarlyAdopter && (
-                <div className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-sm font-medium mb-2">
-                  41% off for 12 months • Then {formatPrice(TIER_PRICING.premium.monthly)}
+                <div className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-sm font-medium mb-2 shadow-[0_0_18px_rgba(16,185,129,0.25)]">
+                  45% off the first 500 Premium accounts • Then just {formatPrice(TIER_PRICING.premium.monthly)}/month regular price
                 </div>
               )}
             </div>

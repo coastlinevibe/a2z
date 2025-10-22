@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Check, X, Star, Zap, Crown, Users } from 'lucide-react'
 import { TIER_PRICING, EARLY_ADOPTER_PRICING, formatPrice } from '@/lib/subscription'
+import { MovingBorderButton } from '@/components/ui/moving-border'
 
 export default function PricingPage() {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly')
@@ -36,11 +37,23 @@ export default function PricingPage() {
           </p>
 
           {/* Early Adopter Banner */}
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-blue-500 text-white px-6 py-3 rounded-full mb-8">
-            <Star className="w-5 h-5" />
-            <span className="font-semibold">Early Adopter Special</span>
-            <span>•</span>
-            <span>Up to 45% off for 12 months!</span>
+          <div className="flex justify-center mb-8">
+            <MovingBorderButton
+              borderRadius="1rem"
+              duration={4000}
+              className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-6 py-3"
+              containerClassName="inline-block"
+            >
+              <div className="flex items-center gap-3">
+                <Star className="w-5 h-5" />
+                <span className="font-semibold">Early Adopter: 45% off the first 500 Premium accounts • Then just R49/month regular price.</span>
+                <Link href="/auth/signup-animated?plan=free">
+                  <button className="ml-2 inline-flex items-center gap-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 text-sm font-bold transition-all shadow-lg hover:shadow-xl hover:scale-105 border border-emerald-400">
+                    Try Free Plan Now!
+                  </button>
+                </Link>
+              </div>
+            </MovingBorderButton>
           </div>
 
           {/* Billing Toggle */}
@@ -148,7 +161,7 @@ export default function PricingPage() {
 
               {billingCycle === 'monthly' && (
                 <div className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-sm font-medium mb-2">
-                  41% off for 12 months • Then {formatPrice(TIER_PRICING.premium.monthly)}
+                  45% off the first 500 Premium accounts • Then just {formatPrice(TIER_PRICING.premium.monthly)}/month regular price
                 </div>
               )}
 

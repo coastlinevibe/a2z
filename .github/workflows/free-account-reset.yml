@@ -1,0 +1,26 @@
+name: Free Account Reset Cron Job
+
+on:
+  schedule:
+    # Run daily at midnight UTC
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  reset-free-accounts:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Reset Free Accounts
+        run: |
+          curl -X POST "${{ secrets.VERCEL_URL }}/api/cron/free-account-reset" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json" \
+            --fail-with-body \
+            --max-time 300
+        env:
+          VERCEL_URL: ${{ secrets.VERCEL_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+      
+      - name: Log completion
+        run: echo "Free account reset cron job completed at $(date)"
