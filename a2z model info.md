@@ -226,7 +226,7 @@ Refer a paying subscriber:
 Refer 5 subscribers:
 - Upgrade to Premium free for 6 months
 Refer 15 subscribers:
-- Free Premium for life
+- Upgrade to Premium free for 24 months
 ```
 
 ### **Township/Student Discount**

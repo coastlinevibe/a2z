@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/lib/auth'
 import { AnimatedForm, AnimatedInput, AnimatedButton } from '@/components/ui/AnimatedForm'
-import { Home, Crown, Users, Check, Star } from 'lucide-react'
+import { Home, Crown, Users, Check, Star, CheckCircle2, AlertTriangle, Info } from 'lucide-react'
 import { formatPrice, TIER_PRICING, EARLY_ADOPTER_PRICING } from '@/lib/subscription'
 
 export default function AnimatedSignupPage() {
@@ -17,6 +17,7 @@ export default function AnimatedSignupPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+  const [notification, setNotification] = useState<{ type: 'success' | 'error' | 'info'; title: string; description?: string } | null>(null)
   const { signUp, user } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -30,6 +31,16 @@ export default function AnimatedSignupPage() {
       router.push('/dashboard')
     }
   }, [user, router])
+
+  useEffect(() => {
+    if (!notification) return
+
+    const timeout = setTimeout(() => {
+      setNotification(null)
+    }, notification.type === 'success' ? 8000 : 6000)
+
+    return () => clearTimeout(timeout)
+  }, [notification])
 
   // Plan configuration
   const getPlanConfig = (plan: string) => {
@@ -69,22 +80,66 @@ export default function AnimatedSignupPage() {
 
   const planConfig = getPlanConfig(selectedPlan)
 
+  const NotificationAlert = () => {
+    if (!notification) return null
+
+    const base = 'mb-6 rounded-xl px-4 py-3 border text-left'
+    const variants = {
+      success: 'bg-emerald-500/10 border-emerald-400 text-emerald-100',
+      error: 'bg-red-500/10 border-red-500 text-red-100',
+      info: 'bg-blue-500/10 border-blue-400 text-blue-100',
+    } as const
+
+    const Icon = notification.type === 'success' ? CheckCircle2 : notification.type === 'error' ? AlertTriangle : Info
+
+    return (
+      <div className={`${base} ${variants[notification.type]}`} role={notification.type === 'error' ? 'alert' : 'status'}>
+        <div className="flex items-start gap-3">
+          <Icon className="h-5 w-5 mt-0.5" />
+          <div>
+            <p className="font-semibold leading-tight">{notification.title}</p>
+            {notification.description && (
+              <p className="text-sm mt-1 opacity-90 leading-snug">{notification.description}</p>
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
     setError('')
+    setNotification(null)
 
     if (password.length < 6) {
       setError('Password must be at least 6 characters long')
+      setNotification({
+        type: 'error',
+        title: 'Password too short',
+        description: 'Password must be at least 6 characters long.',
+      })
       setLoading(false)
       return
     }
 
     if (password !== confirmPassword) {
       setError('Passwords do not match')
+      setNotification({
+        type: 'error',
+        title: 'Passwords do not match',
+        description: 'Make sure your password and confirmation are identical.',
+      })
       setLoading(false)
       return
     }
+
+    setNotification({
+      type: 'info',
+      title: 'Submitting registration…',
+      description: 'Hang tight while we create your account.',
+    })
 
     const fullName = `${name.trim()} ${surname.trim()}`.trim()
     const { error } = await signUp(email, password, { 
@@ -94,8 +149,18 @@ export default function AnimatedSignupPage() {
     
     if (error) {
       setError(error.message)
+      setNotification({
+        type: 'error',
+        title: 'Registration failed',
+        description: error.message,
+      })
     } else {
       setSuccess(true)
+      setNotification({
+        type: 'success',
+        title: 'Registration done!',
+        description: `Email confirmation link sent to ${email}. Please verify to finish setting up your account.`,
+      })
     }
     
     setLoading(false)
@@ -114,6 +179,7 @@ export default function AnimatedSignupPage() {
         
         <div className="relative z-10">
         <AnimatedForm className="text-center">
+          <NotificationAlert />
           <div className="relative">
             <h2 className="text-3xl font-bold text-emerald-400 mb-2 flex items-center justify-center">
               <div className="w-4 h-4 bg-emerald-400 rounded-full mr-3 relative">
@@ -149,6 +215,7 @@ export default function AnimatedSignupPage() {
       
       <div className="relative z-10">
       <AnimatedForm>
+        <NotificationAlert />
         <div className="relative mb-6">
           <h2 className="text-3xl font-bold text-emerald-400 flex items-center">
             <div className="w-4 h-4 bg-emerald-400 rounded-full mr-3 relative">
@@ -269,7 +336,7 @@ export default function AnimatedSignupPage() {
             required
           />
 
-          {error && (
+          {error && !notification && (
             <div className="text-red-400 text-sm text-center bg-red-900/20 border border-red-800 rounded-lg p-2">
               {error}
             </div>

@@ -10,31 +10,10 @@ export default function HomePage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-black bg-[url('/images/hero/bg2.jpg')] bg-center bg-no-repeat bg-[length:65%] sm:bg-[length:75%] md:bg-[length:85%] lg:bg-[length:95%] xl:bg-cover pt-[82px] pb-28 md:pt-[98px] md:pb-32 lg:pt-[130px] lg:pb-40">
+      <section className="relative bg-black bg-[url('/images/hero/bg2.jpg')] bg-center bg-no-repeat bg-[length:65%] sm:bg-[length:75%] md:bg-[length:85%] lg:bg-[length:95%] xl:bg-cover pt-[52px] pb-28 md:pt-[68px] md:pb-32 lg:pt-[100px] lg:pb-40">
         <div className="absolute inset-0 bg-gradient-to-b from-emerald-950/85 via-emerald-950/65 to-emerald-950/85 backdrop-blur-[1px] md:backdrop-blur-sm"></div>
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            {/* Early Adopter Banner */}
-            <div className="flex justify-center mb-12 -translate-y-6 sm:-translate-y-8">
-              <MovingBorderButton
-                borderRadius="1rem"
-                duration={4000}
-                className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-8 py-4"
-                containerClassName="inline-block"
-              >
-                <div className="flex items-center gap-3">
-                  <Star className="w-6 h-6" fill="white" />
-                  <span className="font-bold text-lg">Early Adopter: 45% off the first 500 Premium accounts • Then just R49/month regular price.</span>
-                  <Link href="/auth/signup-animated?plan=free">
-                    <button className="ml-2 inline-flex items-center gap-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 text-base font-bold transition-all shadow-lg hover:shadow-xl hover:scale-105 border-2 border-emerald-400">
-                      Try Free Plan Now!
-                      <ArrowRight className="h-5 w-5" strokeWidth={3} />
-                    </button>
-                  </Link>
-                </div>
-              </MovingBorderButton>
-            </div>
-            
             {user ? (
               <>
                 <h1 className="text-4xl sm:text-6xl font-bold text-white mb-6 drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
@@ -64,13 +43,13 @@ export default function HomePage() {
             ) : (
               <>
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
-                  Everything A to Z.<br />
-                  <span className="text-emerald-300 drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)]">No Store Needed.</span>
+                  Point, shoot, profit.<br />
+                  <span className="text-emerald-300 drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)]">a2z turns any product or service into a live listing in under a minute—full sales engine, no store build.</span>
                 </h1>
                 <p className="text-xl text-emerald-50 mb-6 max-w-3xl mx-auto drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
-                  Turn your photos into sales in minutes. Create beautiful listings and share them instantly on WhatsApp, Facebook, Instagram, and more.
+                  Snap an image, launch a listing, and start selling across WhatsApp, Facebook, Instagram, and more in under sixty seconds.
                 </p>
-                <div className="text-emerald-200 mb-8 max-w-2xl mx-auto">
+                <div className="text-emerald-200 mb-[62px] max-w-2xl mx-auto">
                   <div className="flex flex-wrap justify-center gap-6 text-sm">
                     <span>✓ Start Free Forever</span>
                     <span>✓ No Transaction Fees</span>

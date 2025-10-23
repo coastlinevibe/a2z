@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import { createPostSchema, createPostSchemaDefault, type CreatePostInput } from '@/lib/validators'
@@ -14,6 +14,7 @@ import { PostCardPreview } from './PostCardPreview'
 import { ShareModal } from './ShareModal'
 import { PreviewModal } from './PreviewModal'
 import TierLimitsCard from './TierLimitsCard'
+import RichTextEditor from '@/components/ui/RichTextEditor'
 
 interface CreatePostFormProps {
   className?: string
@@ -48,6 +49,10 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
     if (session) {
       fetchTierLimits()
     }
+
+    return () => {
+      setTierLimits(null)
+    }
   }, [session])
 
   // Get the appropriate schema based on user's tier
@@ -61,6 +66,7 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
     handleSubmit,
     watch,
     setValue,
+    control,
     formState: { errors },
     reset,
   } = useForm<CreatePostInput>({
@@ -70,10 +76,14 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
       emoji_tags: [],
       media_urls: [],
       media_items: [],
+      description: '',
     },
   })
 
   const watchedValues = watch()
+  const watchedDescription = watch('description') || ''
+
+  const stripHtml = (html: string) => html.replace(/<[^>]*>/g, '').trim()
 
   // Check if all required fields are completed
   const isFormComplete = () => {
@@ -83,8 +93,9 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
     const hasTags = (watchedValues.emoji_tags?.length || 0) > 0
     const hasContact = !!watchedValues.whatsapp_number && watchedValues.whatsapp_number.trim().length > 0
     const hasLocation = !!watchedValues.location && watchedValues.location.trim().length > 0
-    
-    return hasMedia && hasTitle && hasPrice && hasTags && hasContact && hasLocation
+    const hasDescription = stripHtml(watchedDescription).length >= 10
+
+    return hasMedia && hasTitle && hasPrice && hasTags && hasContact && hasLocation && hasDescription
   }
 
   const onSubmit = async (data: CreatePostInput) => {
@@ -137,6 +148,28 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
       setCreatedPost(result.data)
       setShowShareModal(true)
       reset()
+      setPriceDisplay('')
+
+      setTierLimits((prev) => {
+        if (!prev) return prev
+        const updatedCount = prev.current_listings + 1
+        return {
+          ...prev,
+          current_listings: updatedCount,
+          can_create_listing: prev.max_listings === -1 ? true : updatedCount < prev.max_listings,
+        }
+      })
+
+      // Refresh tier limits to update listing counter immediately
+      setLoadingLimits(true)
+      try {
+        const limits = await getUserTierLimits()
+        setTierLimits(limits)
+      } catch (error) {
+        console.error('Error refreshing tier limits after post creation:', error)
+      } finally {
+        setLoadingLimits(false)
+      }
     } catch (error) {
       console.error('Error creating post:', error)
       alert(error instanceof Error ? error.message : 'Failed to create post')
@@ -155,7 +188,7 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
     title: watchedValues.title || 'Your Product Title',
     price_cents: watchedValues.price_cents || 0,
     currency: watchedValues.currency || 'ZAR',
-    description: watchedValues.description || undefined,
+    description: watchedDescription || undefined,
     emoji_tags: watchedValues.emoji_tags || [],
     media_urls: watchedValues.media_urls || [],
     media_descriptions: previewMediaDescriptions,
@@ -168,7 +201,11 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
     <div className={cn('max-w-6xl mx-auto', className)}>
       {/* Tier Limits Card */}
       <div className="mb-6">
-        <TierLimitsCard />
+        <TierLimitsCard
+          initialTierLimits={tierLimits}
+          loading={loadingLimits}
+          onTierLimitsRefresh={(limits) => setTierLimits(limits)}
+        />
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8">
@@ -487,11 +524,16 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Description <span className="text-red-500">*</span>
                       </label>
-                      <textarea
-                        {...register('description')}
-                        rows={3}
-                        placeholder="Describe your product, condition, features, etc. (required)"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 resize-none"
+                      <Controller
+                        name="description"
+                        control={control}
+                        render={({ field }) => (
+                          <RichTextEditor
+                            value={field.value || ''}
+                            onChange={(html) => field.onChange(html)}
+                            placeholder="Describe your product, condition, features, etc. (required)"
+                          />
+                        )}
                       />
                       {errors.description && (
                         <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>

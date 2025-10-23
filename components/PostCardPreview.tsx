@@ -9,6 +9,8 @@ import { VerticalSlider } from '@/components/VerticalSlider'
 import { PremiumGallery } from '@/components/PremiumGallery'
 import SimpleVideoPlayer from '@/components/ui/SimpleVideoPlayer'
 import { BeforeAfterSlider } from '@/components/BeforeAfterSlider'
+import { BUILTIN_TAGS } from '@/components/IconTagSelector'
+import { Tag as TagIcon } from 'lucide-react'
 
 interface Post {
   id: string
@@ -138,12 +140,25 @@ export function PostCardPreview({
 
         {/* Emoji tags */}
         {post.emoji_tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-3">
-            {post.emoji_tags.map((emoji, index) => (
-              <span key={index} className="text-lg">
-                {emoji}
-              </span>
-            ))}
+          <div className="flex flex-wrap gap-2 mb-3">
+            {post.emoji_tags.map((tagId) => {
+              const tagMeta = BUILTIN_TAGS.find((tag) => tag.id === tagId)
+              const Icon = tagMeta?.icon || TagIcon
+              const label = tagMeta?.label || tagId
+
+              return (
+                <span
+                  key={tagId}
+                  className={cn(
+                    'inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium shadow-sm border',
+                    tagMeta ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-gray-100 border-gray-200 text-gray-700'
+                  )}
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                  <span>{label}</span>
+                </span>
+              )
+            })}
           </div>
         )}
 

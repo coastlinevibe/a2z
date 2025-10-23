@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Eye, MousePointer, X, Phone, MapPin } from 'lucide-react'
+import { Eye, MousePointer, X, Phone, MapPin, Tag as TagIcon } from 'lucide-react'
 import { formatPrice } from '@/lib/utils'
 import { PostCard } from './PostCard'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
@@ -11,6 +11,8 @@ import { VerticalSlider } from '@/components/VerticalSlider'
 import { HoverGallery } from '@/components/HoverGallery'
 import SimpleVideoPlayer from '@/components/ui/SimpleVideoPlayer'
 import { BeforeAfterSlider } from '@/components/BeforeAfterSlider'
+import { BUILTIN_TAGS } from '@/components/IconTagSelector'
+import { cn } from '@/lib/utils'
 
 interface Post {
   id: string
@@ -126,6 +128,28 @@ export function ListingCardGrid({ posts, onEdit, onShare, onPreview, onDelete }:
                   {formatPrice(post.price_cents, post.currency)}
                 </span>
               </div>
+              {post.emoji_tags?.length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {post.emoji_tags.map((tagId) => {
+                    const tagMeta = BUILTIN_TAGS.find((tag) => tag.id === tagId)
+                    const Icon = tagMeta?.icon || TagIcon
+                    const label = tagMeta?.label || tagId
+
+                    return (
+                      <span
+                        key={tagId}
+                        className={cn(
+                          'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border',
+                          tagMeta ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-gray-100 border-gray-200 text-gray-600'
+                        )}
+                      >
+                        <Icon className="h-3 w-3" />
+                        <span>{label}</span>
+                      </span>
+                    )
+                  })}
+                </div>
+              )}
             </button>
 
             {/* Accordion */}

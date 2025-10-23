@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { Upload, X, Image, Video, Loader2, ChevronLeft, ChevronRight } from 'lucide-react'
-import { cn, compressImage, isValidFileType, formatFileSize } from '@/lib/utils'
+import { cn, compressImage, isValidFileType, formatFileSize, validateImageDimensions, validateFileSize, getImageDimensions, showNotification, GALLERY_DIMENSIONS } from '@/lib/utils'
 import { useAuth } from '@/lib/auth'
 import { supabase } from '@/lib/supabaseClient'
 
@@ -131,7 +131,7 @@ export default function MediaUploader({
     const validFiles = fileArray.filter(isValidFileType)
     
     if (validFiles.length === 0) {
-      alert('Please select valid image (JPEG, PNG, WebP) or video (MP4, WebM) files.')
+      showNotification('Please select valid image (JPEG, PNG, WebP) or video (MP4, WebM) files.', 'error')
       return
     }
 
@@ -140,12 +140,49 @@ export default function MediaUploader({
       const tierMessage = maxFiles === 5 
         ? 'Free tier allows maximum 5 images. Upgrade to Premium for 8 images per listing!' 
         : `Maximum ${maxFiles} images allowed. Please remove some files first.`
-      alert(tierMessage)
+      showNotification(tierMessage, 'warning')
       return
     }
 
+    // Validate each file
+    const validatedFiles: File[] = []
+    for (const file of validFiles) {
+      // Check file size
+      const sizeValidation = validateFileSize(file)
+      if (!sizeValidation.valid) {
+        showNotification(sizeValidation.message!, 'error')
+        continue
+      }
+
+      // Check dimensions for images (skip videos)
+      if (file.type.startsWith('image/') && displayType) {
+        try {
+          const dimensions = await getImageDimensions(file)
+          const dimensionValidation = validateImageDimensions(
+            dimensions.width,
+            dimensions.height,
+            displayType as keyof typeof GALLERY_DIMENSIONS
+          )
+          
+          if (!dimensionValidation.valid) {
+            showNotification(dimensionValidation.message!, 'error')
+            continue
+          }
+        } catch (error) {
+          showNotification(`Failed to validate image dimensions: ${file.name}`, 'error')
+          continue
+        }
+      }
+
+      validatedFiles.push(file)
+    }
+
+    if (validatedFiles.length === 0) {
+      return // All files failed validation
+    }
+
     // Create uploading file entries
-    const newUploadingFiles: UploadingFile[] = validFiles.map(file => ({
+    const newUploadingFiles: UploadingFile[] = validatedFiles.map(file => ({
       id: Math.random().toString(36).substr(2, 9),
       file,
       progress: 0,
@@ -153,7 +190,7 @@ export default function MediaUploader({
 
     setUploadingFiles(prev => [...prev, ...newUploadingFiles])
 
-    // Process all files in parallel
+    // Process all validated files in parallel
     const uploadPromises = newUploadingFiles.map(async (uploadingFile) => {
       try {
         // Update progress
@@ -307,6 +344,9 @@ export default function MediaUploader({
               </p>
               <p className="text-xs text-gray-500">
                 Images (JPEG, PNG, WebP) and videos (MP4, WebM) up to 10MB
+                {displayType && GALLERY_DIMENSIONS[displayType as keyof typeof GALLERY_DIMENSIONS] && (
+                  <><br />Recommended: {GALLERY_DIMENSIONS[displayType as keyof typeof GALLERY_DIMENSIONS].idealWidth}×{GALLERY_DIMENSIONS[displayType as keyof typeof GALLERY_DIMENSIONS].idealHeight}px</>
+                )}
               </p>
             </div>
             <input

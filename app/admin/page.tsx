@@ -28,7 +28,7 @@ interface AdminStats {
 }
 
 export default function AdminDashboard() {
-  const { user } = useAuth()
+  const { user, signOut } = useAuth()
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState<AdminStats | null>(null)
@@ -36,12 +36,11 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (!user) {
-      router.push('/auth/login-animated')
+      router.push('/admin/login')
       return
     }
     checkAdminAccess()
-    fetchStats()
-  }, [user])
+  }, [user, router])
 
   const checkAdminAccess = async () => {
     try {
@@ -56,12 +55,15 @@ export default function AdminDashboard() {
 
       if (profile?.is_admin) {
         setIsAdmin(true)
+        fetchStats()
       } else {
-        router.push('/dashboard')
+        await signOut()
+        router.push('/admin/login')
       }
     } catch (error) {
       console.error('Error checking admin access:', error)
-      router.push('/dashboard')
+      await signOut()
+      router.push('/admin/login')
     }
   }
 

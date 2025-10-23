@@ -31,14 +31,14 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-interface Tag {
+export interface Tag {
   id: string
   icon: React.ComponentType<{ className?: string }>
   label: string
   color: string
 }
 
-const AVAILABLE_TAGS: Tag[] = [
+export const BUILTIN_TAGS: Tag[] = [
   { id: 'home', icon: Home, label: 'Home & Garden', color: 'from-emerald-400 to-emerald-600' },
   { id: 'car', icon: Car, label: 'Vehicles', color: 'from-teal-400 to-teal-600' },
   { id: 'phone', icon: Smartphone, label: 'Electronics', color: 'from-cyan-400 to-cyan-600' },
@@ -79,7 +79,7 @@ export function IconTagSelector({ selectedTags, onChange, maxTags = 5 }: IconTag
 
   // Reconstruct custom tags from selectedTags that aren't in AVAILABLE_TAGS
   const reconstructedCustomTags = selectedTags
-    .filter(tagId => !AVAILABLE_TAGS.find(t => t.id === tagId))
+    .filter(tagId => !BUILTIN_TAGS.find(t => t.id === tagId))
     .filter(tagId => !customTags.find(t => t.id === tagId))
     .map(tagId => ({
       id: tagId,
@@ -88,7 +88,7 @@ export function IconTagSelector({ selectedTags, onChange, maxTags = 5 }: IconTag
       color: 'from-emerald-400 to-teal-600'
     }))
 
-  const allTags = [...AVAILABLE_TAGS, ...customTags, ...reconstructedCustomTags]
+  const allTags = [...BUILTIN_TAGS, ...customTags, ...reconstructedCustomTags]
 
   const addCustomTag = () => {
     if (!customTagLabel.trim()) return

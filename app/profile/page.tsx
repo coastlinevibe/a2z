@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth'
 import { supabase } from '@/lib/supabaseClient'
 import { Button } from '@/components/ui/Button'
-import { ArrowLeft, Upload, User, Mail, AtSign, FileText, Crown } from 'lucide-react'
+import { ArrowLeft, Upload, User, Mail, AtSign, FileText, Crown, CheckCircle2, AlertTriangle } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
 
@@ -85,17 +85,24 @@ export default function ProfilePage() {
     setMessage(null)
 
     try {
+      const updates = {
+        display_name: displayName.trim() || null,
+        username: username.trim() || null,
+        bio: bio.trim() || null,
+        avatar_url: avatarUrl.trim() || null,
+      }
+
       const { error } = await supabase
         .from('profiles')
-        .update({
-          display_name: displayName.trim() || null,
-          username: username.trim() || null,
-          bio: bio.trim() || null,
-          avatar_url: avatarUrl.trim() || null,
-        })
+        .update(updates)
         .eq('id', user.id)
 
-      if (error) throw error
+      if (error) {
+        if (error.code === '23505') {
+          throw new Error('Username already taken. Please choose another one.')
+        }
+        throw error
+      }
 
       setMessage({ type: 'success', text: 'Profile updated successfully!' })
       fetchProfile()
@@ -275,17 +282,6 @@ export default function ProfilePage() {
 
           {/* Form */}
           <div className="p-6">
-            {/* Message */}
-            {message && (
-              <div className={`p-4 rounded-lg mb-6 ${
-                message.type === 'success' 
-                  ? 'bg-green-50 text-green-800 border border-green-200' 
-                  : 'bg-red-50 text-red-800 border border-red-200'
-              }`}>
-                {message.text}
-              </div>
-            )}
-
             {/* Two Column Layout */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Left Column */}
@@ -438,6 +434,28 @@ export default function ProfilePage() {
                 </div>
               </div>
             </div>
+
+            {/* Feedback */}
+            {message && (
+              <div
+                className={`mt-6 mb-2 flex items-start gap-3 rounded-lg border px-4 py-3 text-sm ${
+                  message.type === 'success'
+                    ? 'border-emerald-500 bg-emerald-50 text-emerald-800'
+                    : 'border-red-500 bg-red-50 text-red-800'
+                }`}
+                role={message.type === 'error' ? 'alert' : 'status'}
+                aria-live="polite"
+              >
+                {message.type === 'success' ? (
+                  <CheckCircle2 className="mt-0.5 h-5 w-5" />
+                ) : (
+                  <AlertTriangle className="mt-0.5 h-5 w-5" />
+                )}
+                <div>
+                  <p className="font-semibold leading-snug">{message.text}</p>
+                </div>
+              </div>
+            )}
 
             {/* Actions */}
             <div className="flex items-center gap-3 pt-6 border-t border-gray-200 mt-6">

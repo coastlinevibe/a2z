@@ -165,3 +165,86 @@ export function formatFileSize(bytes: number): string {
   
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
+
+// Gallery dimension requirements
+export const GALLERY_DIMENSIONS = {
+  hover: { minWidth: 600, minHeight: 600, idealWidth: 800, idealHeight: 800, aspectRatio: '1:1' },
+  horizontal: { minWidth: 900, minHeight: 675, idealWidth: 1200, idealHeight: 900, aspectRatio: '4:3' },
+  vertical: { minWidth: 675, minHeight: 900, idealWidth: 900, idealHeight: 1200, aspectRatio: '3:4' },
+  gallery: { minWidth: 800, minHeight: 800, idealWidth: 1080, idealHeight: 1080, aspectRatio: '1:1' },
+  before_after: { minWidth: 800, minHeight: 800, idealWidth: 1080, idealHeight: 1080, aspectRatio: '1:1' },
+  video: { minWidth: 1280, minHeight: 720, idealWidth: 1920, idealHeight: 1080, aspectRatio: '16:9' }
+} as const
+
+// Maximum file size (10MB)
+export const MAX_FILE_SIZE = 10 * 1024 * 1024
+
+// Validate image dimensions for gallery type
+export function validateImageDimensions(
+  width: number,
+  height: number,
+  galleryType: keyof typeof GALLERY_DIMENSIONS
+): { valid: boolean; message?: string } {
+  const requirements = GALLERY_DIMENSIONS[galleryType]
+  
+  if (width < requirements.minWidth || height < requirements.minHeight) {
+    return {
+      valid: false,
+      message: `Image too small for ${galleryType} gallery. Minimum ${requirements.minWidth}×${requirements.minHeight}px required (ideal: ${requirements.idealWidth}×${requirements.idealHeight}px).`
+    }
+  }
+
+  // Check aspect ratio within tolerance (5%)
+  const expectedRatio = requirements.idealWidth / requirements.idealHeight
+  const actualRatio = width / height
+  const tolerance = 0.05 // 5%
+
+  if (Math.abs(actualRatio - expectedRatio) / expectedRatio > tolerance) {
+    return {
+      valid: false,
+      message: `Image aspect ratio should be close to ${requirements.aspectRatio}. Uploaded image is ${width}×${height}px.`
+    }
+  }
+  
+  return { valid: true }
+}
+
+// Validate file size
+export function validateFileSize(file: File): { valid: boolean; message?: string } {
+  if (file.size > MAX_FILE_SIZE) {
+    return {
+      valid: false,
+      message: `File too large (${formatFileSize(file.size)}). Maximum ${formatFileSize(MAX_FILE_SIZE)} allowed.`
+    }
+  }
+  
+  return { valid: true }
+}
+
+// Get image dimensions from file
+export function getImageDimensions(file: File): Promise<{ width: number; height: number }> {
+  return new Promise((resolve, reject) => {
+    if (!file.type.startsWith('image/')) {
+      reject(new Error('File is not an image'))
+      return
+    }
+    
+    const img = new Image()
+    img.onload = () => {
+      resolve({ width: img.naturalWidth, height: img.naturalHeight })
+      URL.revokeObjectURL(img.src)
+    }
+    img.onerror = () => {
+      reject(new Error('Failed to load image'))
+      URL.revokeObjectURL(img.src)
+    }
+    img.src = URL.createObjectURL(file)
+  })
+}
+
+// Show user-friendly notification
+export function showNotification(message: string, type: 'error' | 'warning' | 'success' = 'error') {
+  // For now, use alert - can be replaced with toast library later
+  const prefix = type === 'error' ? '❌' : type === 'warning' ? '⚠️' : '✅'
+  alert(`${prefix} ${message}`)
+}

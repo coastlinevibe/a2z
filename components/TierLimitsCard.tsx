@@ -7,21 +7,45 @@ import TierUpgradeModal from './TierUpgradeModal'
 
 interface TierLimitsCardProps {
   onUpgrade?: () => void
+  initialTierLimits?: TierLimits | null
+  loading?: boolean
+  onTierLimitsRefresh?: (limits: TierLimits | null) => void
 }
 
-export default function TierLimitsCard({ onUpgrade }: TierLimitsCardProps) {
-  const [limits, setLimits] = useState<TierLimits | null>(null)
-  const [loading, setLoading] = useState(true)
+export default function TierLimitsCard({
+  onUpgrade,
+  initialTierLimits,
+  loading: externalLoading,
+  onTierLimitsRefresh,
+}: TierLimitsCardProps) {
+  const manageOwnState = initialTierLimits === undefined
+  const [limits, setLimits] = useState<TierLimits | null>(initialTierLimits ?? null)
+  const [loading, setLoading] = useState(manageOwnState ? true : externalLoading ?? false)
   const [showUpgradeModal, setShowUpgradeModal] = useState(false)
 
   useEffect(() => {
-    loadTierLimits()
-  }, [])
+    if (manageOwnState) {
+      loadTierLimits()
+    }
+  }, [manageOwnState])
+
+  useEffect(() => {
+    if (!manageOwnState) {
+      setLimits(initialTierLimits ?? null)
+    }
+  }, [initialTierLimits, manageOwnState])
+
+  useEffect(() => {
+    if (!manageOwnState) {
+      setLoading(externalLoading ?? false)
+    }
+  }, [externalLoading, manageOwnState])
 
   const loadTierLimits = async () => {
     try {
       const tierLimits = await getUserTierLimits()
       setLimits(tierLimits)
+      onTierLimitsRefresh?.(tierLimits)
     } catch (error) {
       console.error('Error loading tier limits:', error)
     } finally {

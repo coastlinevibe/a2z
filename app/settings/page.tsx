@@ -118,28 +118,6 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {/* Privacy & Security */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <Lock className="w-5 h-5" />
-                Privacy & Security
-              </h2>
-            </div>
-            <div className="p-6 space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-medium text-gray-900">Profile Visibility</h3>
-                  <p className="text-sm text-gray-500">Make your profile visible to everyone</p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" className="sr-only peer" defaultChecked />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
-                </label>
-              </div>
-            </div>
-          </div>
-
           {/* Danger Zone */}
           <div className="bg-white rounded-xl shadow-sm border border-red-200 overflow-hidden">
             <div className="px-6 py-4 border-b border-red-200 bg-red-50">
