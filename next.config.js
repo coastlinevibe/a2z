@@ -14,6 +14,8 @@ const nextConfig = {
       },
     ],
   },
+  // Disable build tracing to prevent stack overflow on Vercel
+  outputFileTracing: false,
 }
 
 module.exports = nextConfig

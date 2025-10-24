@@ -39,7 +39,7 @@ export function ShareModal({ isOpen, onClose, post, username, className }: Share
     slug: post.slug
   })
   
-  const publicUrl = actualUsername ? `${baseUrl}/${actualUsername}/${post.slug}` : `${baseUrl}/p/${post.slug}`
+  const publicUrl = actualUsername ? `${baseUrl}/u/${actualUsername}/${post.slug}` : `${baseUrl}/p/${post.slug}`
   const price = formatPrice(post.price_cents, post.currency)
   const shareMessage = `${post.title} — ${price}\n${publicUrl}`
 
