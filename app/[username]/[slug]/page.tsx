@@ -9,6 +9,13 @@ import type { Metadata } from 'next'
 // Server-side Supabase client with fallbacks
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://localhost:54321'
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0'
+
+console.log('🔧 Supabase config:', { 
+  url: supabaseUrl, 
+  keyType: process.env.SUPABASE_SERVICE_ROLE_KEY ? 'service_role' : 'anon',
+  keyLength: supabaseKey?.length 
+})
+
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 interface PageProps {
@@ -131,9 +138,26 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function UserListingPage({ params }: PageProps) {
   const { username, slug } = await params
+  
+  console.log('🚀 Route called with params:', { username, slug })
+  
+  // Temporary: Return a simple test page to verify the route works
+  if (username === 'test') {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-2xl mx-auto px-4">
+          <h1>Route Test Success!</h1>
+          <p>Username: {username}</p>
+          <p>Slug: {slug}</p>
+        </div>
+      </div>
+    )
+  }
+  
   const post = await getPost(username, slug)
 
   if (!post) {
+    console.log('❌ Post not found, calling notFound()')
     notFound()
   }
 
