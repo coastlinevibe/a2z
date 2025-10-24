@@ -39,8 +39,8 @@ export function ShareModal({ isOpen, onClose, post, username, className }: Share
     slug: post.slug
   })
   
-  // Use API route for redirect - most reliable approach
-  const publicUrl = `${baseUrl}/api/share/${post.slug}`
+  // Use direct username/slug format
+  const publicUrl = actualUsername ? `${baseUrl}/${actualUsername}/${post.slug}` : `${baseUrl}/p/${post.slug}`
   const price = formatPrice(post.price_cents, post.currency)
   const shareMessage = `${post.title} — ${price}\n${publicUrl}`
 
