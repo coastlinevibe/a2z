@@ -77,6 +77,7 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
       media_urls: [],
       media_items: [],
       description: '',
+      delivery_available: false,
     },
   })
 
@@ -532,6 +533,8 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
                             value={field.value || ''}
                             onChange={(html) => field.onChange(html)}
                             placeholder="Describe your product, condition, features, etc. (required)"
+                            deliveryAvailable={watchedValues.delivery_available || false}
+                            onDeliveryChange={(available) => setValue('delivery_available', available)}
                           />
                         )}
                       />

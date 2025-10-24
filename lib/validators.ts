@@ -39,6 +39,7 @@ export const createPostSchemaBase = z.object({
     }),
   location: z.string().min(3, 'Location is required (minimum 3 characters)'),
   display_type: z.enum(['hover', 'horizontal', 'vertical', 'gallery', 'premium', 'video', 'before_after']).default('hover'),
+  delivery_available: z.boolean().default(false).optional(),
 })
 
 // Function to create tier-specific schema

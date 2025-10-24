@@ -9,17 +9,22 @@ import Underline from '@tiptap/extension-underline'
 import Link from '@tiptap/extension-link'
 import Picker from '@emoji-mart/react'
 import data from '@emoji-mart/data'
+import { Truck } from 'lucide-react'
 
 interface RichTextEditorProps {
   value: string
   onChange: (val: string) => void
   placeholder?: string
+  deliveryAvailable?: boolean
+  onDeliveryChange?: (available: boolean) => void
 }
 
 export default function RichTextEditor({
   value,
   onChange,
   placeholder = 'Describe your product, condition, features, etc.',
+  deliveryAvailable = false,
+  onDeliveryChange,
 }: RichTextEditorProps) {
   const [showPicker, setShowPicker] = useState(false)
   const containerRef = useRef<HTMLDivElement | null>(null)
@@ -150,6 +155,24 @@ export default function RichTextEditor({
         >
           ❌ Clear
         </button>
+        
+        {onDeliveryChange && (
+          <button
+            type="button"
+            className={`ml-auto px-3 py-1 rounded-full flex items-center gap-1.5 transition-colors ${
+              deliveryAvailable 
+                ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200' 
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+            onClick={() => onDeliveryChange(!deliveryAvailable)}
+            title={deliveryAvailable ? 'Delivery available' : 'No delivery'}
+          >
+            <Truck className="h-4 w-4" />
+            <span className="text-xs font-medium">
+              {deliveryAvailable ? 'Delivery ON' : 'Delivery OFF'}
+            </span>
+          </button>
+        )}
       </div>
 
       <EditorContent editor={editor} />

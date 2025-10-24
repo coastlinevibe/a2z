@@ -1,6 +1,6 @@
 'use client'
 
-import { Phone, MapPin } from 'lucide-react'
+import { Phone, MapPin, Truck } from 'lucide-react'
 import { cn, formatPrice } from '@/lib/utils'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { PremiumGallery } from '@/components/PremiumGallery'
@@ -28,6 +28,7 @@ interface Post {
   created_at: string
   verified_seller?: boolean
   seller_name?: string
+  delivery_available?: boolean
 }
 
 interface PublicListingCardProps {
@@ -92,8 +93,15 @@ export function PublicListingCard({ post, className }: PublicListingCardProps) {
       )}
     >
       {/* Product Image */}
-      <div className="w-full">
+      <div className="w-full relative">
         {renderMedia()}
+        {/* Delivery Badge */}
+        {post.delivery_available && (
+          <div className="absolute bottom-3 left-3 bg-emerald-600 text-white px-2.5 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg">
+            <Truck className="h-4 w-4" />
+            <span className="text-xs font-medium">Delivery</span>
+          </div>
+        )}
       </div>
 
       {/* Product Info */}
@@ -140,7 +148,10 @@ export function PublicListingCard({ post, className }: PublicListingCardProps) {
 
                 {/* Description - Below */}
                 {post.description && (
-                  <p className="text-gray-600 text-sm whitespace-pre-wrap">{post.description}</p>
+                  <div 
+                    className="text-gray-600 text-sm prose prose-sm max-w-none"
+                    dangerouslySetInnerHTML={{ __html: post.description }}
+                  />
                 )}
               </div>
             </AccordionContent>
