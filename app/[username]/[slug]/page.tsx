@@ -139,62 +139,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function UserListingPage({ params }: PageProps) {
   const { username, slug } = await params
   
-  console.log('🚀 Route called with params:', { username, slug })
+  console.log('🚀 Old route called, redirecting to new format:', { username, slug })
   
-  // Temporary: Return a simple test page to verify the route works
-  if (username === 'test') {
-    return (
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="max-w-2xl mx-auto px-4">
-          <h1>Route Test Success!</h1>
-          <p>Username: {username}</p>
-          <p>Slug: {slug}</p>
-        </div>
-      </div>
-    )
-  }
-  
-  const post = await getPost(username, slug)
-
-  if (!post) {
-    console.log('❌ Post not found, calling notFound()')
-    notFound()
-  }
-
-  // Increment views
-  incrementViews(post.id)
-
-  return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Breadcrumb */}
-        <div className="mb-4">
-          <Link
-            href={`/${username}`}
-            className="text-emerald-600 hover:text-emerald-700 font-medium"
-          >
-            ← Back to @{username}&apos;s profile
-          </Link>
-        </div>
-
-        {/* Post Card */}
-        <PublicListingCard 
-          post={post}
-        />
-
-        {/* Share Section */}
-        <ShareSection post={post} username={username} />
-
-        {/* Back to Sellr */}
-        <div className="mt-8 text-center">
-          <Link
-            href="/"
-            className="inline-flex items-center text-emerald-600 hover:text-emerald-700 font-medium"
-          >
-            ← Create your own listing on Sellr
-          </Link>
-        </div>
-      </div>
-    </div>
-  )
+  // Redirect to new route format
+  const { redirect } = await import('next/navigation')
+  redirect(`/u/${username}/${slug}`)
 }
