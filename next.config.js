@@ -14,7 +14,7 @@ const nextConfig = {
       },
     ],
   },
-  outputFileTracing: false,
+  // Edge Runtime doesn't need file tracing disabled
 }
 
 module.exports = nextConfig
