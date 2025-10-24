@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
   try {
     // Verify this is a legitimate cron request
     const authHeader = request.headers.get('authorization')
-    const cronSecret = process.env.CRON_SECRET
+    const cronSecret = process.env.CRON_SECRET || ''
     
     if (!cronSecret) {
       console.error('CRON_SECRET environment variable not set')
