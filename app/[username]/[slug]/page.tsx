@@ -16,37 +16,35 @@ interface PageProps {
 }
 
 async function getPost(username: string, slug: string) {
-  // Extract numeric ID from user{numericid} format
-  const numericId = username.startsWith('user') ? username.replace('user', '') : username
+  console.log('Fetching post:', { username, slug })
   
-  console.log('Fetching post:', { username, slug, numericId })
-  
-  // Get all posts with this slug, then filter by owner ID in JavaScript
+  // Join posts with profiles to find by username
   const { data: posts, error } = await supabase
     .from('posts')
-    .select('*')
+    .select(`
+      *,
+      profiles!posts_owner_fkey (
+        username,
+        verified_seller,
+        display_name
+      )
+    `)
     .eq('slug', slug)
     .eq('is_active', true)
+    .eq('profiles.username', username)
   
   console.log('Query result:', { posts, error, count: posts?.length })
   
-  // Filter posts where owner UUID starts with numericId
-  const post = posts?.find(p => p.owner.toString().startsWith(numericId))
+  const post = posts?.[0]
   
   if (error || !post) {
-    console.error('Post fetch error:', { error, slug, numericId, foundPosts: posts?.length })
+    console.error('Post fetch error:', { error, slug, username, foundPosts: posts?.length })
     return null
   }
   
-  const userId = post.owner
-
-  // Get profile data separately
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('verified_seller, display_name')
-    .eq('id', userId)
-    .single()
-
+  // Profile data is already included from the JOIN
+  const profile = post.profiles
+  
   // Combine post and profile data
   return { 
     ...post, 
