@@ -45,10 +45,10 @@ export function VerticalSlider({ images, alt, className }: VerticalSliderProps) 
 
   return (
     <div className={cn('relative w-full bg-white rounded-lg overflow-hidden', className)}>
-      <div className="flex w-full aspect-[16/9]">
+      <div className="flex w-full aspect-[16/9] bg-white">
         {/* Vertical Thumbnail Navigation - Left Side */}
         {images.length > 1 && (
-          <div className="relative w-20 bg-gray-50 flex flex-col shrink-0">
+          <div className="relative w-20 bg-white flex flex-col shrink-0">
             {/* Up Arrow */}
             <button
               type="button"
@@ -77,14 +77,14 @@ export function VerticalSlider({ images, alt, className }: VerticalSliderProps) 
                     {isVideo(url) ? (
                       <video
                         src={url}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover bg-white"
                         muted
                       />
                     ) : (
                       <img
                         src={url}
                         alt={`Thumbnail ${index + 1}`}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover bg-white"
                       />
                     )}
                   </button>
@@ -105,7 +105,7 @@ export function VerticalSlider({ images, alt, className }: VerticalSliderProps) 
         )}
 
         {/* Main Slider - Right Side */}
-        <div className="flex-1 relative overflow-hidden">
+        <div className="flex-1 relative overflow-hidden bg-white">
           <div 
             className="flex transition-transform duration-700 ease-in-out h-full"
             style={{ transform: `translateX(-${currentIndex * 100}%)` }}
@@ -115,7 +115,7 @@ export function VerticalSlider({ images, alt, className }: VerticalSliderProps) 
                 {isVideo(url) ? (
                   <video
                     src={url}
-                    className="w-full h-full object-contain bg-gray-100"
+                    className="w-full h-full object-contain bg-white"
                     controls
                     playsInline
                   />
@@ -123,7 +123,7 @@ export function VerticalSlider({ images, alt, className }: VerticalSliderProps) 
                   <img
                     src={url}
                     alt={`${alt} - ${index + 1}`}
-                    className="w-full h-full object-contain bg-gray-100"
+                    className="w-full h-full object-contain bg-white"
                   />
                 )}
               </div>

@@ -5,6 +5,87 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+// Allowlisted HTML tags and attributes for rich text descriptions
+const ALLOWED_HTML_TAGS = new Set([
+  'b',
+  'strong',
+  'i',
+  'em',
+  'u',
+  'p',
+  'br',
+  'span',
+  'ol',
+  'ul',
+  'li',
+  'a'
+])
+
+const ALLOWED_HTML_ATTRIBUTES: Record<string, string[]> = {
+  a: ['href', 'target', 'rel'],
+  span: ['data-name', 'data-type']
+}
+
+function isSafeUrl(url: string) {
+  const trimmed = url.trim().toLowerCase()
+  if (trimmed === '' || trimmed.startsWith('#')) return true
+  return ['http:', 'https:', 'mailto:', 'tel:'].some((protocol) => trimmed.startsWith(protocol))
+}
+
+export function sanitizeHtml(html: string): string {
+  if (typeof html !== 'string' || html.trim() === '') {
+    return ''
+  }
+
+  // Basic fallback for server-side rendering without DOM APIs
+  if (typeof window === 'undefined' || typeof document === 'undefined') {
+    return html
+      .replace(/<\/(script|style|iframe)[^>]*>/gi, '')
+      .replace(/<(script|style|iframe)[^>]*>/gi, '')
+  }
+
+  const template = document.createElement('template')
+  template.innerHTML = html
+
+  const sanitizeNode = (node: Element) => {
+    const tagName = node.tagName.toLowerCase()
+
+    if (!ALLOWED_HTML_TAGS.has(tagName)) {
+      const fragment = document.createDocumentFragment()
+      while (node.firstChild) {
+        fragment.appendChild(node.firstChild)
+      }
+      node.replaceWith(fragment)
+      return
+    }
+
+    const allowedAttrs = ALLOWED_HTML_ATTRIBUTES[tagName] ?? []
+    Array.from(node.attributes).forEach((attr) => {
+      const attrName = attr.name.toLowerCase()
+      const isDataAttr = attrName.startsWith('data-')
+      const isAllowed = allowedAttrs.includes(attrName) || isDataAttr
+
+      if (!isAllowed) {
+        node.removeAttribute(attr.name)
+        return
+      }
+
+      if (tagName === 'a' && attrName === 'href' && !isSafeUrl(attr.value)) {
+        node.removeAttribute(attr.name)
+      }
+      if (tagName === 'a' && attrName === 'target') {
+        node.setAttribute('rel', 'noopener noreferrer')
+      }
+    })
+
+    Array.from(node.children).forEach((child) => sanitizeNode(child))
+  }
+
+  Array.from(template.content.querySelectorAll('*')).forEach((el) => sanitizeNode(el as Element))
+
+  return template.innerHTML
+}
+
 // Generate URL-friendly slug from title
 export function slugify(text: string): string {
   return text
@@ -190,7 +271,7 @@ export function validateImageDimensions(
   if (width < requirements.minWidth || height < requirements.minHeight) {
     return {
       valid: false,
-      message: `Image too small for ${galleryType} gallery. Minimum ${requirements.minWidth}×${requirements.minHeight}px required (ideal: ${requirements.idealWidth}×${requirements.idealHeight}px).`
+      message: `📏 Image too small! Your image is ${width}×${height}px, but we need at least ${requirements.minWidth}×${requirements.minHeight}px for the best quality. Try uploading a larger image.`
     }
   }
 
@@ -202,7 +283,7 @@ export function validateImageDimensions(
   if (Math.abs(actualRatio - expectedRatio) / expectedRatio > tolerance) {
     return {
       valid: false,
-      message: `Image aspect ratio should be close to ${requirements.aspectRatio}. Uploaded image is ${width}×${height}px.`
+      message: `📐 Image dimensions don't match! Your image is ${width}×${height}px, but for the best results we recommend ${requirements.idealWidth}×${requirements.idealHeight}px. Please resize your image or choose a different gallery style.`
     }
   }
   
@@ -214,10 +295,9 @@ export function validateFileSize(file: File): { valid: boolean; message?: string
   if (file.size > MAX_FILE_SIZE) {
     return {
       valid: false,
-      message: `File too large (${formatFileSize(file.size)}). Maximum ${formatFileSize(MAX_FILE_SIZE)} allowed.`
+      message: `📁 File too large! Your file is ${formatFileSize(file.size)}, but we only allow files up to ${formatFileSize(MAX_FILE_SIZE)}. Please compress your image or choose a smaller file.`
     }
   }
-  
   return { valid: true }
 }
 
@@ -244,7 +324,169 @@ export function getImageDimensions(file: File): Promise<{ width: number; height:
 
 // Show user-friendly notification
 export function showNotification(message: string, type: 'error' | 'warning' | 'success' = 'error') {
-  // For now, use alert - can be replaced with toast library later
-  const prefix = type === 'error' ? '❌' : type === 'warning' ? '⚠️' : '✅'
-  alert(`${prefix} ${message}`)
+  // Check if we're in a browser environment and have access to custom events
+  if (typeof window !== 'undefined') {
+    // Dispatch a custom event that the ToastProvider can listen to
+    const event = new CustomEvent('showToast', {
+      detail: { message, type }
+    })
+    window.dispatchEvent(event)
+  } else {
+    // Fallback for server-side or when toast system isn't available
+    console.log(`${type.toUpperCase()}: ${message}`)
+  }
+}
+
+// Image resizing utilities
+export interface ResizeOptions {
+  targetWidth: number
+  targetHeight: number
+  quality?: number
+  maintainAspectRatio?: boolean
+  cropMode?: 'center' | 'smart'
+}
+
+export interface ResizeResult {
+  resizedFile: File
+  originalDimensions: { width: number; height: number }
+  newDimensions: { width: number; height: number }
+  originalSize: number
+  newSize: number
+}
+
+// Resize image to fit target dimensions
+export function resizeImage(file: File, options: ResizeOptions): Promise<ResizeResult> {
+  return new Promise((resolve, reject) => {
+    if (!file.type.startsWith('image/')) {
+      reject(new Error('File is not an image'))
+      return
+    }
+
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    const img = new Image()
+
+    if (!ctx) {
+      reject(new Error('Canvas context not available'))
+      return
+    }
+
+    img.onload = () => {
+      const originalWidth = img.width
+      const originalHeight = img.height
+      const { targetWidth, targetHeight, quality = 0.9, maintainAspectRatio = true } = options
+
+      let newWidth = targetWidth
+      let newHeight = targetHeight
+      let sourceX = 0
+      let sourceY = 0
+      let sourceWidth = originalWidth
+      let sourceHeight = originalHeight
+
+      if (maintainAspectRatio) {
+        const originalRatio = originalWidth / originalHeight
+        const targetRatio = targetWidth / targetHeight
+
+        if (originalRatio > targetRatio) {
+          // Image is wider than target - crop width
+          sourceWidth = originalHeight * targetRatio
+          sourceX = (originalWidth - sourceWidth) / 2
+        } else {
+          // Image is taller than target - crop height
+          sourceHeight = originalWidth / targetRatio
+          sourceY = (originalHeight - sourceHeight) / 2
+        }
+      }
+
+      // Set canvas dimensions
+      canvas.width = newWidth
+      canvas.height = newHeight
+
+      // Draw and resize image
+      ctx.drawImage(
+        img,
+        sourceX, sourceY, sourceWidth, sourceHeight,
+        0, 0, newWidth, newHeight
+      )
+
+      // Convert to blob
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) {
+            reject(new Error('Failed to create resized image'))
+            return
+          }
+
+          // Create new file
+          const resizedFile = new File([blob], file.name, {
+            type: file.type,
+            lastModified: Date.now()
+          })
+
+          resolve({
+            resizedFile,
+            originalDimensions: { width: originalWidth, height: originalHeight },
+            newDimensions: { width: newWidth, height: newHeight },
+            originalSize: file.size,
+            newSize: resizedFile.size
+          })
+        },
+        file.type,
+        quality
+      )
+
+      // Clean up
+      URL.revokeObjectURL(img.src)
+    }
+
+    img.onerror = () => {
+      reject(new Error('Failed to load image'))
+      URL.revokeObjectURL(img.src)
+    }
+
+    img.src = URL.createObjectURL(file)
+  })
+}
+
+// Check if image needs resizing for gallery type
+export function needsResizing(
+  width: number,
+  height: number,
+  galleryType: keyof typeof GALLERY_DIMENSIONS
+): boolean {
+  const requirements = GALLERY_DIMENSIONS[galleryType]
+  
+  // Check if dimensions are too small
+  if (width < requirements.minWidth || height < requirements.minHeight) {
+    return false // Can't resize up, need larger source
+  }
+
+  // Check if aspect ratio is significantly off
+  const expectedRatio = requirements.idealWidth / requirements.idealHeight
+  const actualRatio = width / height
+  const tolerance = 0.05 // 5%
+
+  return Math.abs(actualRatio - expectedRatio) / expectedRatio > tolerance
+}
+
+// Get resize suggestions for gallery type
+export function getResizeSuggestion(
+  width: number,
+  height: number,
+  galleryType: keyof typeof GALLERY_DIMENSIONS
+): ResizeOptions | null {
+  const requirements = GALLERY_DIMENSIONS[galleryType]
+  
+  // Can't resize if source is too small
+  if (width < requirements.minWidth || height < requirements.minHeight) {
+    return null
+  }
+
+  return {
+    targetWidth: requirements.idealWidth,
+    targetHeight: requirements.idealHeight,
+    quality: 0.9,
+    maintainAspectRatio: true,
+    cropMode: 'center'
+  }
 }

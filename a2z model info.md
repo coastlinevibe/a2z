@@ -104,6 +104,7 @@ Images per Listing	5	8	20
 Image Storage	7-Day Reset Cycle	Permanent	Permanent
 Listing Duration	7-Day Reset Cycle	35 days	60 days
 Gallery Types	4	5	7
+Auto Image Resizing in all plans	✅	✅	✅
 Video Support	❌	1	Multiple videos
 Verified Badge	❌	✅	✅
 Analytics	Basic	Advanced	Professional

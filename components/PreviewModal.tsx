@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { X, Phone, MapPin, Eye, MousePointer, Share2, Trash2 } from 'lucide-react'
-import { cn, formatPrice } from '@/lib/utils'
+import { cn, formatPrice, sanitizeHtml } from '@/lib/utils'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { PremiumGallery } from '@/components/PremiumGallery'
 import { HorizontalSlider } from '@/components/HorizontalSlider'
@@ -170,7 +170,10 @@ export function PreviewModal({ isOpen, onClose, post, className, onShare, onDele
 
                   {/* Description - Below */}
                   {post.description && (
-                    <p className="text-gray-600 text-sm whitespace-pre-wrap">{post.description}</p>
+                    <div
+                      className="prose prose-sm text-gray-600"
+                      dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.description) }}
+                    />
                   )}
 
                   {/* Actions */}

@@ -124,7 +124,7 @@ export function HoverGallery({
     <div
       ref={containerRef}
       className={cn(
-        'relative overflow-hidden bg-gray-100',
+        'relative overflow-hidden bg-white',
         isMobile ? 'cursor-default' : 'cursor-pointer',
         getAspectClass(),
         className
@@ -139,7 +139,7 @@ export function HoverGallery({
       {isVideo(images[currentIndex]) ? (
         <video
           src={images[currentIndex]}
-          className="w-full h-full object-cover transition-opacity duration-200"
+          className="w-full h-full object-cover transition-opacity duration-200 bg-white"
           muted
           playsInline
           loop
@@ -148,7 +148,7 @@ export function HoverGallery({
         <img
           src={images[currentIndex]}
           alt={`${alt} ${currentIndex + 1}`}
-          className="w-full h-full object-cover transition-opacity duration-200"
+          className="w-full h-full object-cover transition-opacity duration-200 bg-white"
         />
       )}
 

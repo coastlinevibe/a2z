@@ -2,9 +2,10 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { Upload, X, Image, Video, Loader2, ChevronLeft, ChevronRight } from 'lucide-react'
-import { cn, compressImage, isValidFileType, formatFileSize, validateImageDimensions, validateFileSize, getImageDimensions, showNotification, GALLERY_DIMENSIONS } from '@/lib/utils'
+import { cn, compressImage, isValidFileType, formatFileSize, validateImageDimensions, validateFileSize, getImageDimensions, showNotification, GALLERY_DIMENSIONS, needsResizing, getResizeSuggestion, type ResizeOptions } from '@/lib/utils'
 import { useAuth } from '@/lib/auth'
 import { supabase } from '@/lib/supabaseClient'
+import { ImageResizerModal } from './ImageResizerModal'
 
 interface MediaUploaderProps {
   mediaUrls: string[]
@@ -40,6 +41,9 @@ export default function MediaUploader({
   const [afterDraft, setAfterDraft] = useState('')
   const [beforeConfirmed, setBeforeConfirmed] = useState(false)
   const [afterConfirmed, setAfterConfirmed] = useState(false)
+  const [showResizeModal, setShowResizeModal] = useState(false)
+  const [fileToResize, setFileToResize] = useState<File | null>(null)
+  const [resizeOptions, setResizeOptions] = useState<ResizeOptions | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
@@ -131,15 +135,15 @@ export default function MediaUploader({
     const validFiles = fileArray.filter(isValidFileType)
     
     if (validFiles.length === 0) {
-      showNotification('Please select valid image (JPEG, PNG, WebP) or video (MP4, WebM) files.', 'error')
+      showNotification('🖼️ Invalid file type! Please select valid image files (JPEG, PNG, WebP) or video files (MP4, WebM).', 'error')
       return
     }
 
     const totalFiles = mediaUrls.length + uploadingFiles.length + validFiles.length
     if (totalFiles > maxFiles) {
       const tierMessage = maxFiles === 5 
-        ? 'Free tier allows maximum 5 images. Upgrade to Premium for 8 images per listing!' 
-        : `Maximum ${maxFiles} images allowed. Please remove some files first.`
+        ? '📸 You\'ve reached your limit! Free accounts can upload up to 5 images. Upgrade to Premium for 8 images per listing!' 
+        : `📸 Too many files! You can upload a maximum of ${maxFiles} images. Please remove some files first.`
       showNotification(tierMessage, 'warning')
       return
     }
@@ -158,18 +162,30 @@ export default function MediaUploader({
       if (file.type.startsWith('image/') && displayType) {
         try {
           const dimensions = await getImageDimensions(file)
-          const dimensionValidation = validateImageDimensions(
-            dimensions.width,
-            dimensions.height,
-            displayType as keyof typeof GALLERY_DIMENSIONS
-          )
           
-          if (!dimensionValidation.valid) {
-            showNotification(dimensionValidation.message!, 'error')
-            continue
+          // Check if image needs resizing
+          if (needsResizing(dimensions.width, dimensions.height, displayType as keyof typeof GALLERY_DIMENSIONS)) {
+            const suggestion = getResizeSuggestion(dimensions.width, dimensions.height, displayType as keyof typeof GALLERY_DIMENSIONS)
+            
+            if (suggestion) {
+              // Show resize modal instead of error
+              setFileToResize(file)
+              setResizeOptions(suggestion)
+              setShowResizeModal(true)
+              return // Stop processing other files, wait for user decision
+            } else {
+              // Image is too small to resize
+              const dimensionValidation = validateImageDimensions(
+                dimensions.width,
+                dimensions.height,
+                displayType as keyof typeof GALLERY_DIMENSIONS
+              )
+              showNotification(dimensionValidation.message!, 'error')
+              continue
+            }
           }
         } catch (error) {
-          showNotification(`Failed to validate image dimensions: ${file.name}`, 'error')
+          showNotification(`❌ Couldn't check image size for "${file.name}". Please try uploading a different image.`, 'error')
           continue
         }
       }
@@ -278,6 +294,83 @@ export default function MediaUploader({
 
   const removeUploadingFile = (id: string) => {
     setUploadingFiles(prev => prev.filter(f => f.id !== id))
+  }
+
+  const handleResizeComplete = async (resizedFile: File) => {
+    setShowResizeModal(false)
+    setFileToResize(null)
+    setResizeOptions(null)
+    
+    // Process the resized file
+    await handleFiles([resizedFile])
+  }
+
+  const handleKeepOriginal = async () => {
+    setShowResizeModal(false)
+    
+    if (fileToResize) {
+      // Process original file without validation
+      const validatedFiles = [fileToResize]
+      
+      // Create uploading file entries
+      const newUploadingFiles: UploadingFile[] = validatedFiles.map(file => ({
+        id: Math.random().toString(36).substr(2, 9),
+        file,
+        progress: 0,
+      }))
+
+      setUploadingFiles(prev => [...prev, ...newUploadingFiles])
+
+      // Process upload (same logic as in handleFiles)
+      const uploadPromises = newUploadingFiles.map(async (uploadingFile) => {
+        try {
+          setUploadingFiles(prev => 
+            prev.map(f => f.id === uploadingFile.id ? { ...f, progress: 25 } : f)
+          )
+
+          let fileToUpload = uploadingFile.file
+          if (uploadingFile.file.type.startsWith('image/')) {
+            fileToUpload = await compressImage(uploadingFile.file)
+          }
+
+          setUploadingFiles(prev => 
+            prev.map(f => f.id === uploadingFile.id ? { ...f, progress: 50 } : f)
+          )
+
+          const publicUrl = await uploadFile(fileToUpload)
+
+          setUploadingFiles(prev => 
+            prev.map(f => f.id === uploadingFile.id ? { ...f, progress: 100, url: publicUrl } : f)
+          )
+
+          setTimeout(() => {
+            setUploadingFiles(prev => prev.filter(f => f.id !== uploadingFile.id))
+          }, 1000)
+
+          return publicUrl
+        } catch (error) {
+          console.error('Upload error:', error)
+          setUploadingFiles(prev => 
+            prev.map(f => 
+              f.id === uploadingFile.id 
+                ? { ...f, error: error instanceof Error ? error.message : 'Upload failed' }
+                : f
+            )
+          )
+          return null
+        }
+      })
+
+      const uploadedUrls = await Promise.all(uploadPromises)
+      const successfulUrls = uploadedUrls.filter(url => url !== null) as string[]
+      
+      if (successfulUrls.length > 0) {
+        onMediaChange([...mediaUrls, ...successfulUrls])
+      }
+    }
+    
+    setFileToResize(null)
+    setResizeOptions(null)
   }
 
   const handleBoxClick = () => {
@@ -618,6 +711,22 @@ export default function MediaUploader({
           </div>
         )}
       </div>
+
+      {/* Image Resizer Modal */}
+      {showResizeModal && fileToResize && resizeOptions && (
+        <ImageResizerModal
+          isOpen={showResizeModal}
+          onClose={() => {
+            setShowResizeModal(false)
+            setFileToResize(null)
+            setResizeOptions(null)
+          }}
+          file={fileToResize}
+          resizeOptions={resizeOptions}
+          onResizeComplete={handleResizeComplete}
+          onKeepOriginal={handleKeepOriginal}
+        />
+      )}
     </div>
   )
 }

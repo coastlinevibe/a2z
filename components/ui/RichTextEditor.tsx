@@ -28,6 +28,9 @@ export default function RichTextEditor({
     extensions: [
       StarterKit.configure({
         heading: false,
+        bulletList: false,
+        orderedList: false,
+        listItem: false,
       }),
       Underline,
       Emoji.configure({
@@ -128,24 +131,6 @@ export default function RichTextEditor({
           onClick={() => editor.chain().focus().toggleUnderline().run()}
         >
           U
-        </button>
-        <button
-          type="button"
-          className={`px-2 py-1 rounded hover:bg-gray-100 ${
-            editor.isActive('bulletList') ? 'bg-gray-200' : ''
-          }`}
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-        >
-          • List
-        </button>
-        <button
-          type="button"
-          className={`px-2 py-1 rounded hover:bg-gray-100 ${
-            editor.isActive('orderedList') ? 'bg-gray-200' : ''
-          }`}
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-        >
-          1.
         </button>
         <button
           type="button"

@@ -56,7 +56,7 @@ export function HorizontalSlider({ images, alt, className }: HorizontalSliderPro
               {isVideo(url) ? (
                 <video
                   src={url}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover bg-white"
                   controls
                   playsInline
                 />
@@ -64,7 +64,7 @@ export function HorizontalSlider({ images, alt, className }: HorizontalSliderPro
                 <img
                   src={url}
                   alt={`${alt} - ${index + 1}`}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover bg-white"
                 />
               )}
             </div>
@@ -113,14 +113,14 @@ export function HorizontalSlider({ images, alt, className }: HorizontalSliderPro
                 {isVideo(url) ? (
                   <video
                     src={url}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover bg-white"
                     muted
                   />
                 ) : (
                   <img
                     src={url}
                     alt={`Thumbnail ${index + 1}`}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover bg-white"
                   />
                 )}
               </button>

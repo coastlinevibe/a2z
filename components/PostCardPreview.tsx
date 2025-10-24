@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { MessageCircle, ChevronLeft, ChevronRight } from 'lucide-react'
-import { cn, formatPrice } from '@/lib/utils'
+import { cn, formatPrice, sanitizeHtml } from '@/lib/utils'
 import { HoverGallery } from '@/components/HoverGallery'
 import { HorizontalSlider } from '@/components/HorizontalSlider'
 import { VerticalSlider } from '@/components/VerticalSlider'
@@ -164,9 +164,10 @@ export function PostCardPreview({
 
         {/* Description */}
         {post.description && (
-          <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-            {post.description}
-          </p>
+          <div
+            className="prose prose-sm text-gray-600 mb-4 line-clamp-3"
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.description) }}
+          />
         )}
 
         {/* Contact button */}
