@@ -18,32 +18,33 @@ interface PageProps {
 async function getPost(username: string, slug: string) {
   console.log('Fetching post:', { username, slug })
   
-  // Join posts with profiles to find by username
-  const { data: posts, error } = await supabase
-    .from('posts')
-    .select(`
-      *,
-      profiles!posts_owner_fkey (
-        username,
-        verified_seller,
-        display_name
-      )
-    `)
-    .eq('slug', slug)
-    .eq('is_active', true)
-    .eq('profiles.username', username)
+  // First get the user by username
+  const { data: profile, error: profileError } = await supabase
+    .from('profiles')
+    .select('id, username, verified_seller, display_name')
+    .eq('username', username)
+    .single()
   
-  console.log('Query result:', { posts, error, count: posts?.length })
-  
-  const post = posts?.[0]
-  
-  if (error || !post) {
-    console.error('Post fetch error:', { error, slug, username, foundPosts: posts?.length })
+  if (profileError || !profile) {
+    console.error('Profile fetch error:', { profileError, username })
     return null
   }
   
-  // Profile data is already included from the JOIN
-  const profile = post.profiles
+  // Then get the post by owner and slug
+  const { data: post, error: postError } = await supabase
+    .from('posts')
+    .select('*')
+    .eq('slug', slug)
+    .eq('owner', profile.id)
+    .eq('is_active', true)
+    .single()
+  
+  console.log('Query result:', { post, postError })
+  
+  if (postError || !post) {
+    console.error('Post fetch error:', { postError, slug, username, profileId: profile.id })
+    return null
+  }
   
   // Combine post and profile data
   return { 
