@@ -135,11 +135,12 @@ export async function DELETE(
       )
     }
 
-    // Verify the user owns this post
+    // Verify the user owns this post (use admin client for auth)
     const token = authHeader.replace('Bearer ', '')
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
+    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token)
     
     if (authError || !user) {
+      console.error('Auth error:', authError)
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
