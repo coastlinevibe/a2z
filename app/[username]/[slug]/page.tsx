@@ -16,42 +16,51 @@ interface PageProps {
 }
 
 async function getPost(username: string, slug: string) {
-  console.log('Fetching post:', { username, slug })
+  console.log('🔍 Fetching post:', { username, slug })
   
-  // First get the user by username
-  const { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .select('id, username, verified_seller, display_name')
-    .eq('username', username)
-    .single()
-  
-  if (profileError || !profile) {
-    console.error('Profile fetch error:', { profileError, username })
+  try {
+    // First get the user by username
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('id, username, verified_seller, display_name')
+      .eq('username', username)
+      .single()
+    
+    console.log('👤 Profile query result:', { profile, profileError })
+    
+    if (profileError || !profile) {
+      console.error('❌ Profile fetch error:', { profileError, username })
+      return null
+    }
+    
+    // Then get the post by owner and slug
+    const { data: post, error: postError } = await supabase
+      .from('posts')
+      .select('*')
+      .eq('slug', slug)
+      .eq('owner', profile.id)
+      .eq('is_active', true)
+      .single()
+    
+    console.log('📝 Post query result:', { post, postError, profileId: profile.id })
+    
+    if (postError || !post) {
+      console.error('❌ Post fetch error:', { postError, slug, username, profileId: profile.id })
+      return null
+    }
+    
+    console.log('✅ Successfully found post:', post.title)
+    
+    // Combine post and profile data
+    return { 
+      ...post, 
+      username,
+      verified_seller: profile?.verified_seller || false,
+      seller_name: profile?.display_name || null
+    }
+  } catch (error) {
+    console.error('💥 Unexpected error in getPost:', error)
     return null
-  }
-  
-  // Then get the post by owner and slug
-  const { data: post, error: postError } = await supabase
-    .from('posts')
-    .select('*')
-    .eq('slug', slug)
-    .eq('owner', profile.id)
-    .eq('is_active', true)
-    .single()
-  
-  console.log('Query result:', { post, postError })
-  
-  if (postError || !post) {
-    console.error('Post fetch error:', { postError, slug, username, profileId: profile.id })
-    return null
-  }
-  
-  // Combine post and profile data
-  return { 
-    ...post, 
-    username,
-    verified_seller: profile?.verified_seller || false,
-    seller_name: profile?.display_name || null
   }
 }
 
