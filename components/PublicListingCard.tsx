@@ -1,6 +1,6 @@
 'use client'
 
-import { Phone, MapPin, Truck } from 'lucide-react'
+import { Phone, MapPin, Truck, MessageCircle } from 'lucide-react'
 import { cn, formatPrice } from '@/lib/utils'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { PremiumGallery } from '@/components/PremiumGallery'
@@ -118,8 +118,8 @@ export function PublicListingCard({ post, className }: PublicListingCardProps) {
                   }}
                   className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center"
                 >
-                  <Phone className="h-4 w-4 mr-2" />
-                  Contact Seller
+                  <MessageCircle className="h-4 w-4 mr-2" />
+                  Chat with Seller
                 </button>
                 <button
                   onClick={(e) => {
