@@ -57,9 +57,9 @@ export function Navbar() {
           {/* Early Adopter Banner */}
           {showEarlyAdopterBanner && (
             <div className="hidden md:flex flex-1 justify-center">
-              <div className="inline-flex items-center gap-3 rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500 px-4 py-2 text-white shadow-md">
-                <Star className="w-4 h-4" fill="white" />
-                <span className="font-semibold text-xs md:text-sm text-center">
+              <div className="inline-flex items-center gap-3 px-4 py-2 text-orange-600">
+                <Star className="w-4 h-4 text-orange-500" fill="currentColor" />
+                <span className="font-semibold text-sm md:text-base text-center">
                   Early Adopter: 45% off the first 500 Premium accounts • Then just R49/month regular price.
                 </span>
                 <Link
@@ -137,9 +137,9 @@ export function Navbar() {
       {showEarlyAdopterBanner && (
         <div className="md:hidden border-t border-gray-200 bg-white">
           <div className="px-4 py-3">
-            <div className="flex flex-col items-center gap-3 rounded-lg bg-gradient-to-r from-yellow-500 to-orange-500 px-4 py-3 text-white shadow">
-              <div className="flex items-center gap-2 text-sm font-semibold text-center">
-                <Star className="w-4 h-4" fill="white" />
+            <div className="flex flex-col items-center gap-3 px-4 py-3 text-orange-600">
+              <div className="flex items-center gap-2 text-base font-semibold text-center">
+                <Star className="w-4 h-4 text-orange-500" fill="currentColor" />
                 <span>Early Adopter: 45% off the first 500 Premium accounts • Then just R49/month regular price.</span>
               </div>
               <Link

@@ -52,9 +52,9 @@ export default function DashboardPage() {
 
   const fetchUsername = async () => {
     try {
-      // Use user ID directly
+      // We'll get the username from the posts data when it's fetched
       if (user?.id) {
-        setUsername(user.id)
+        setUsername(user.id) // Temporary, will be updated when posts are fetched
       }
     } catch (error) {
       console.error('Failed to set username:', error)
@@ -82,6 +82,11 @@ export default function DashboardPage() {
         console.log('Fetched posts:', result.data)
         console.log('First post username:', result.data[0]?.username)
         setPosts(result.data)
+        
+        // Update username from posts data if available
+        if (result.data && result.data.length > 0 && result.data[0].username) {
+          setUsername(result.data[0].username)
+        }
       }
     } catch (error) {
       console.error('Error fetching posts:', error)
