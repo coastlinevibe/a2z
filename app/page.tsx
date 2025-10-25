@@ -139,9 +139,18 @@ export default function HomePage() {
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
               Simple Pricing for Every Seller
             </h2>
-            <p className="text-lg text-gray-600 mb-8">
+            <p className="text-lg text-gray-600 mb-4">
               Start free, upgrade when you're ready. No hidden fees, no commissions.
             </p>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-2xl mx-auto mb-8">
+              <p className="text-blue-800 font-medium text-center">
+                🧪 Currently in Free Plan Testing Phase
+              </p>
+              <p className="text-blue-700 text-sm text-center mt-1">
+                Premium and Business signups are temporarily disabled while we perfect the free experience. 
+                Feel free to test our platform with a free account!
+              </p>
+            </div>
             {/* Early Adopter Badge */}
             <div className="flex justify-center px-4 sm:px-0">
               <MovingBorderButton
@@ -184,12 +193,19 @@ export default function HomePage() {
                   <span>7-day duration</span>
                 </div>
               </div>
-              <Link
-                href="/auth/signup-animated?plan=free"
-                className="w-full py-2 px-4 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors inline-block"
-              >
-                Get Started Free
-              </Link>
+              <div className="space-y-2">
+                <Link
+                  href="/auth/signup-animated?plan=free"
+                  className="w-full py-2 px-4 border-2 border-emerald-300 text-emerald-700 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors inline-block font-medium"
+                >
+                  Get Started Free
+                </Link>
+                <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-2">
+                  <p className="text-emerald-800 font-medium text-xs text-center">
+                    ✨ Perfect for testing!
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Premium Tier */}
@@ -227,12 +243,19 @@ export default function HomePage() {
                   <span>35-day duration</span>
                 </div>
               </div>
-              <Link
-                href="/auth/signup-animated?plan=premium"
-                className="w-full py-2 px-4 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors inline-block"
-              >
-                Start Premium
-              </Link>
+              <div className="space-y-2">
+                <button
+                  disabled
+                  className="w-full py-2 px-4 bg-gray-400 text-white rounded-lg cursor-not-allowed opacity-60"
+                >
+                  Start Premium
+                </button>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-2">
+                  <p className="text-blue-800 font-medium text-xs text-center">
+                    🧪 Testing in progress
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Business Tier */}
@@ -263,12 +286,19 @@ export default function HomePage() {
                   <span>Team collaboration</span>
                 </div>
               </div>
-              <Link
-                href="/auth/signup-animated?plan=business"
-                className="w-full py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors inline-block"
-              >
-                Start Business
-              </Link>
+              <div className="space-y-2">
+                <button
+                  disabled
+                  className="w-full py-2 px-4 bg-gray-400 text-white rounded-lg cursor-not-allowed opacity-60"
+                >
+                  Start Business
+                </button>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-2">
+                  <p className="text-blue-800 font-medium text-xs text-center">
+                    🧪 Testing in progress
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 

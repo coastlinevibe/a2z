@@ -31,10 +31,19 @@ export default function PricingPage() {
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
             Simple Pricing for Every Seller
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-4">
             Start free, upgrade when you're ready. No hidden fees, no commissions.
             Just beautiful listings that convert.
           </p>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-2xl mx-auto mb-8">
+            <p className="text-blue-800 font-medium text-center">
+              🧪 Currently in Free Plan Testing Phase
+            </p>
+            <p className="text-blue-700 text-sm text-center mt-1">
+              Premium and Business signups are temporarily disabled while we perfect the free experience. 
+              Feel free to test our platform with a free account!
+            </p>
+          </div>
 
           {/* Early Adopter Banner */}
           <div className="flex justify-center mb-8">
@@ -126,12 +135,22 @@ export default function PricingPage() {
               </div>
             </div>
 
-            <Link
-              href="/auth/signup-animated?plan=free"
-              className="w-full py-3 px-6 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors inline-block text-center"
-            >
-              Get Started Free
-            </Link>
+            <div className="space-y-3">
+              <Link
+                href="/auth/signup-animated?plan=free"
+                className="w-full py-3 px-6 border-2 border-emerald-300 text-emerald-700 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors inline-block text-center font-medium"
+              >
+                Get Started Free
+              </Link>
+              <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3">
+                <p className="text-emerald-800 font-medium text-xs text-center">
+                  ✨ Perfect for testing!
+                </p>
+                <p className="text-emerald-700 text-xs text-center mt-1">
+                  Feel free to explore all features
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Premium Tier */}
@@ -207,13 +226,23 @@ export default function PricingPage() {
               </div>
             </div>
 
-            <Link
-              href="/auth/signup-animated?plan=premium"
-              className="w-full py-3 px-6 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors flex items-center justify-center gap-2"
-            >
-              <Zap className="w-5 h-5" />
-              Start Premium
-            </Link>
+            <div className="space-y-3">
+              <button
+                disabled
+                className="w-full py-3 px-6 bg-gray-400 text-white rounded-lg cursor-not-allowed opacity-60 flex items-center justify-center gap-2"
+              >
+                <Zap className="w-5 h-5" />
+                Start Premium
+              </button>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <p className="text-blue-800 font-medium text-xs text-center">
+                  🧪 Testing in progress
+                </p>
+                <p className="text-blue-700 text-xs text-center mt-1">
+                  Premium signup temporarily disabled
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Business Tier */}
@@ -282,12 +311,22 @@ export default function PricingPage() {
               </div>
             </div>
 
-            <Link
-              href="/auth/signup-animated?plan=business"
-              className="w-full py-3 px-6 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors inline-block text-center"
-            >
-              Start Business
-            </Link>
+            <div className="space-y-3">
+              <button
+                disabled
+                className="w-full py-3 px-6 bg-gray-400 text-white rounded-lg cursor-not-allowed opacity-60 text-center"
+              >
+                Start Business
+              </button>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <p className="text-blue-800 font-medium text-xs text-center">
+                  🧪 Testing in progress
+                </p>
+                <p className="text-blue-700 text-xs text-center mt-1">
+                  Business signup temporarily disabled
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 

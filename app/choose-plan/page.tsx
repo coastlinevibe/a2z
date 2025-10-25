@@ -218,13 +218,38 @@ export default function ChoosePlanPage() {
 
         {/* Continue Button */}
         <div className="text-center">
-          <Link
-            href={getSignupUrl(selectedPlan)}
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-semibold py-4 px-8 rounded-xl hover:from-emerald-600 hover:to-blue-600 transition-all shadow-lg"
-          >
-            Continue with {selectedPlan === 'free' ? 'Free' : selectedPlan === 'premium' ? 'Premium' : 'Business'} Plan
-            <ArrowRight className="w-5 h-5" />
-          </Link>
+          {selectedPlan === 'free' ? (
+            <div className="space-y-4">
+              <Link
+                href={getSignupUrl(selectedPlan)}
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-semibold py-4 px-8 rounded-xl hover:from-emerald-600 hover:to-blue-600 transition-all shadow-lg"
+              >
+                Continue with Free Plan
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+              <p className="text-gray-600 text-sm max-w-md mx-auto">
+                Feel free to test our platform! Sign up for a free account and explore all the features.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <button
+                disabled
+                className="inline-flex items-center gap-2 bg-gray-400 text-white font-semibold py-4 px-8 rounded-xl cursor-not-allowed opacity-60"
+              >
+                Continue with {selectedPlan === 'premium' ? 'Premium' : 'Business'} Plan
+                <ArrowRight className="w-5 h-5" />
+              </button>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
+                <p className="text-blue-800 font-medium text-sm">
+                  🧪 Free plan testing in progress
+                </p>
+                <p className="text-blue-700 text-sm mt-1">
+                  Premium and Business plans are temporarily disabled while we perfect the free experience. Feel free to test and sign up for a free account!
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
