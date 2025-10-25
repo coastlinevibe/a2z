@@ -200,9 +200,9 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
   }
 
   return (
-    <div className={cn('max-w-6xl mx-auto', className)}>
+    <div className={cn('max-w-6xl mx-auto px-2 sm:px-4', className)}>
       {/* Tier Limits Card */}
-      <div className="mb-6">
+      <div className="mb-4 sm:mb-6">
         <TierLimitsCard
           initialTierLimits={tierLimits}
           loading={loadingLimits}
@@ -210,9 +210,9 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
         />
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-8">
+      <div className="grid lg:grid-cols-2 gap-4 sm:gap-8">
         {/* Form */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           <div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
               Create Your Listing
@@ -233,7 +233,7 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Media Display
               </label>
-              <div className="grid grid-cols-6 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
                 {/* Hover Gallery */}
                 <div className="flex flex-col items-center">
                   <button
@@ -384,7 +384,7 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
               </div>
             </div>
 
-            <p className="text-gray-600 mt-4">
+            <p className="text-gray-600 mt-4 text-sm sm:text-base">
               Fill in the details below to create a shareable listing.
             </p>
           </div>
@@ -392,47 +392,47 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {/* 3-Step Header */}
             <div className="bg-white rounded-xl border border-gray-200">
-              <div className="flex items-center justify-between border-b border-gray-200 rounded-t-xl">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-200 rounded-t-xl">
                 <div className="flex overflow-x-auto overflow-y-hidden whitespace-nowrap">
                   <button type="button" onClick={() => setCurrentStep(0)}
                   className={cn(
                     'inline-flex items-center h-9 px-2 py-1 -mb-px text-center sm:px-3 whitespace-nowrap focus:outline-none',
                     currentStep === 0 ? 'text-emerald-600 border-b-2 border-emerald-500' : 'text-gray-700 border-b-2 border-transparent hover:border-gray-300'
                   )}>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 sm:w-4 sm:h-4 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0" />
                   </svg>
-                  <span className="mx-1 text-sm">Title</span>
+                  <span className="mx-1 text-xs sm:text-sm">Title</span>
                 </button>
                 <button type="button" onClick={() => setCurrentStep(1)}
                   className={cn(
                     'inline-flex items-center h-9 px-2 py-1 -mb-px text-center sm:px-3 whitespace-nowrap focus:outline-none',
                     currentStep === 1 ? 'text-emerald-600 border-b-2 border-emerald-500' : 'text-gray-700 border-b-2 border-transparent hover:border-gray-300'
                   )}>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 sm:w-4 sm:h-4 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4" />
                   </svg>
-                  <span className="mx-1 text-sm">Emoji Tags</span>
+                  <span className="mx-1 text-xs sm:text-sm">Tags</span>
                 </button>
                 <button type="button" onClick={() => setCurrentStep(2)}
                   className={cn(
                     'inline-flex items-center h-9 px-2 py-1 -mb-px text-center sm:px-3 whitespace-nowrap focus:outline-none',
                     currentStep === 2 ? 'text-emerald-600 border-b-2 border-emerald-500' : 'text-gray-700 border-b-2 border-transparent hover:border-gray-300'
                   )}>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 sm:w-4 sm:h-4 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11m-9 6v1a3 3 0 106 0v-1" />
                   </svg>
-                  <span className="mx-1 text-sm">Contact & Location</span>
+                  <span className="mx-1 text-xs sm:text-sm">Contact</span>
                 </button>
                 </div>
                 
-                {/* Navigation buttons inline with tabs */}
-                <div className="flex gap-2 px-3">
+                {/* Navigation buttons */}
+                <div className="flex gap-2 px-3 py-2 sm:py-0 border-t sm:border-t-0 border-gray-200 sm:border-0">
                   {currentStep > 0 && (
                     <button
                       type="button"
                       onClick={() => setCurrentStep((prev) => (prev - 1) as 0 | 1 | 2)}
-                      className="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-lg"
+                      className="flex-1 sm:flex-none px-3 py-1.5 text-xs sm:text-sm bg-gray-100 text-gray-700 rounded-lg"
                     >
                       Back
                     </button>
@@ -441,7 +441,7 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
                     <button
                       type="button"
                       onClick={() => setCurrentStep((prev) => (prev + 1) as 0 | 1 | 2)}
-                      className="px-3 py-1.5 text-sm bg-emerald-600 text-white rounded-lg"
+                      className="flex-1 sm:flex-none px-3 py-1.5 text-xs sm:text-sm bg-emerald-600 text-white rounded-lg"
                     >
                       Next
                     </button>
@@ -450,16 +450,16 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
               </div>
 
               {/* Step Content */}
-              <div className="p-3">
+              <div className="p-3 sm:p-4">
                 {currentStep === 0 && (
-                  <div className="space-y-6">
+                  <div className="space-y-4 sm:space-y-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Product Title *</label>
                       <input
                         {...register('title')}
                         type="text"
                         placeholder="e.g., Handmade Wooden Table"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm sm:text-base"
                       />
                       {errors.title && (
                         <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>
@@ -467,7 +467,7 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
                     </div>
 
                     {/* Price */}
-                    <div className="grid grid-cols-3 gap-3">
+                    <div className="grid grid-cols-3 gap-2 sm:gap-3">
                       <div className="col-span-2">
                         <label className="block text-sm font-medium text-gray-700 mb-1">Price *</label>
                         <input
@@ -501,7 +501,7 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
                             setPriceDisplay(displayValue)
                             setValue('price_cents', Math.round(numValue * 100))
                           }}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm sm:text-base"
                         />
                         {errors.price_cents && (
                           <p className="mt-1 text-sm text-red-600">{errors.price_cents.message}</p>
@@ -511,7 +511,7 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
                         <label className="block text-sm font-medium text-gray-700 mb-1">Currency</label>
                         <select
                           {...register('currency')}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm sm:text-base"
                         >
                           <option value="ZAR">ZAR</option>
                           <option value="USD">USD</option>
@@ -561,7 +561,7 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
                   </div>
                 )}
                 {currentStep === 2 && (
-                  <div className="space-y-3">
+                  <div className="space-y-3 sm:space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Contact Number <span className="text-red-500">*</span>
@@ -570,7 +570,7 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
                         {...register('whatsapp_number')}
                         type="tel"
                         placeholder="0712345678 (required)"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm sm:text-base"
                       />
                       {errors.whatsapp_number && (
                         <p className="mt-1 text-sm text-red-600">{errors.whatsapp_number.message}</p>
@@ -584,7 +584,7 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
                         {...register('location')}
                         type="text"
                         placeholder="e.g., Cape Town, Western Cape (required)"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm sm:text-base"
                       />
                       {errors.location && (
                         <p className="mt-1 text-sm text-red-600">{errors.location.message}</p>
@@ -620,12 +620,12 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
               )}
             </button>
             {!isFormComplete() && (
-              <p className="text-sm text-gray-500 text-center mt-2">
+              <p className="text-xs sm:text-sm text-gray-500 text-center mt-2">
                 Complete all fields to create your listing
               </p>
             )}
             {!tierLimits?.can_create_listing && (
-              <p className="text-sm text-red-500 text-center mt-2">
+              <p className="text-xs sm:text-sm text-red-500 text-center mt-2">
                 You have reached your listing limit. Upgrade your plan to create more listings.
               </p>
             )}
@@ -634,19 +634,19 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
 
         {/* Live Preview */}
         <div className="lg:sticky lg:top-8">
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900">
+          <div className="space-y-3 sm:space-y-4">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900">
               Live Preview
             </h3>
             <PostCardPreview post={previewPost} layout={previewLayout} displayType={displayType} />
             <button
               type="button"
               onClick={() => setShowPreview(true)}
-              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors"
+              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors text-sm sm:text-base"
             >
               Open Preview Modal
             </button>
-            <p className="text-sm text-gray-500 text-center">
+            <p className="text-xs sm:text-sm text-gray-500 text-center">
               This is how your listing will appear when shared
             </p>
           </div>

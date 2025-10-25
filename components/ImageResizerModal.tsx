@@ -83,19 +83,19 @@ export function ImageResizerModal({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4">
+      <div className="bg-white rounded-xl shadow-2xl max-w-sm sm:max-w-2xl lg:max-w-4xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto mx-2 sm:mx-0">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200">
+          <div className="flex items-center gap-2 sm:gap-3">
             <div className="p-2 bg-blue-100 rounded-lg">
-              <Crop className="h-5 w-5 text-blue-600" />
+              <Crop className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
             </div>
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
                 Resize Image
               </h2>
-              <p className="text-sm text-gray-600">
+              <p className="text-xs sm:text-sm text-gray-600">
                 Your image needs to be resized to fit perfectly
               </p>
             </div>
@@ -109,7 +109,7 @@ export function ImageResizerModal({
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
               <p className="text-sm text-red-600">{error}</p>
@@ -117,12 +117,12 @@ export function ImageResizerModal({
           )}
 
           {/* Image Comparison */}
-          <div className="grid md:grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
             {/* Original */}
-            <div className="space-y-3">
-              <h3 className="font-medium text-gray-900 flex items-center gap-2">
-                Original Image
-                <span className="text-xs bg-gray-100 px-2 py-1 rounded">
+            <div className="space-y-2 sm:space-y-3">
+              <h3 className="font-medium text-gray-900 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                <span>Original Image</span>
+                <span className="text-xs bg-gray-100 px-2 py-1 rounded w-fit">
                   {resizeOptions.targetWidth}×{resizeOptions.targetHeight}px needed
                 </span>
               </h3>
@@ -135,7 +135,7 @@ export function ImageResizerModal({
                   />
                 )}
               </div>
-              <div className="text-sm text-gray-600 space-y-1">
+              <div className="text-xs sm:text-sm text-gray-600 space-y-1">
                 <p>Size: {formatFileSize(file.size)}</p>
                 {resizeResult && (
                   <p>Dimensions: {resizeResult.originalDimensions.width}×{resizeResult.originalDimensions.height}px</p>
@@ -144,16 +144,16 @@ export function ImageResizerModal({
             </div>
 
             {/* Arrow */}
-            <div className="hidden md:flex items-center justify-center">
-              <ArrowRight className="h-8 w-8 text-gray-400" />
+            <div className="hidden sm:flex items-center justify-center">
+              <ArrowRight className="h-6 w-6 sm:h-8 sm:w-8 text-gray-400" />
             </div>
 
             {/* Resized */}
-            <div className="space-y-3">
-              <h3 className="font-medium text-gray-900 flex items-center gap-2">
-                Resized Image
+            <div className="space-y-2 sm:space-y-3">
+              <h3 className="font-medium text-gray-900 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                <span>Resized Image</span>
                 {resizeResult && (
-                  <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded">
+                  <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded w-fit">
                     Perfect fit!
                   </span>
                 )}
@@ -162,8 +162,8 @@ export function ImageResizerModal({
                 {isResizing && (
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center">
-                      <Loader2 className="h-8 w-8 text-blue-500 animate-spin mx-auto mb-2" />
-                      <p className="text-sm text-gray-600">Resizing...</p>
+                      <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500 animate-spin mx-auto mb-2" />
+                      <p className="text-xs sm:text-sm text-gray-600">Resizing...</p>
                     </div>
                   </div>
                 )}
@@ -176,12 +176,12 @@ export function ImageResizerModal({
                 )}
                 {!isResizing && !resizedPreview && (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <p className="text-sm text-gray-500">Preview will appear here</p>
+                    <p className="text-xs sm:text-sm text-gray-500">Preview will appear here</p>
                   </div>
                 )}
               </div>
               {resizeResult && (
-                <div className="text-sm text-gray-600 space-y-1">
+                <div className="text-xs sm:text-sm text-gray-600 space-y-1">
                   <p>Size: {formatFileSize(resizeResult.newSize)}</p>
                   <p>Dimensions: {resizeResult.newDimensions.width}×{resizeResult.newDimensions.height}px</p>
                   {resizeResult.newSize < resizeResult.originalSize && (
@@ -195,12 +195,12 @@ export function ImageResizerModal({
           </div>
 
           {/* Info Box */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-            <div className="flex items-start gap-3">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6">
+            <div className="flex items-start gap-2 sm:gap-3">
               <div className="p-1 bg-blue-100 rounded">
-                <CheckCircle className="h-4 w-4 text-blue-600" />
+                <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600" />
               </div>
-              <div className="text-sm">
+              <div className="text-xs sm:text-sm">
                 <p className="font-medium text-blue-900 mb-1">What we'll do:</p>
                 <ul className="text-blue-700 space-y-1">
                   <li>• Resize to {resizeOptions.targetWidth}×{resizeOptions.targetHeight}px</li>
@@ -213,14 +213,14 @@ export function ImageResizerModal({
           </div>
 
           {/* Actions */}
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col gap-2 sm:gap-3">
             {!resizeResult ? (
               <>
                 <button
                   onClick={handleResize}
                   disabled={isResizing}
                   className={cn(
-                    "flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium transition-colors",
+                    "w-full flex items-center justify-center gap-2 px-4 sm:px-6 py-3 rounded-lg font-medium transition-colors text-sm sm:text-base",
                     isResizing
                       ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                       : "bg-blue-600 hover:bg-blue-700 text-white"
@@ -243,7 +243,7 @@ export function ImageResizerModal({
                     onKeepOriginal()
                     handleClose()
                   }}
-                  className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                  className="w-full px-4 sm:px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors text-sm sm:text-base"
                 >
                   Keep Original
                 </button>
@@ -252,32 +252,34 @@ export function ImageResizerModal({
               <>
                 <button
                   onClick={handleConfirmResize}
-                  className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors"
+                  className="w-full flex items-center justify-center gap-2 px-4 sm:px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors text-sm sm:text-base"
                 >
                   <CheckCircle className="h-4 w-4" />
                   Use Resized Image
                 </button>
-                <button
-                  onClick={() => {
-                    setResizeResult(null)
-                    if (resizedPreview) {
-                      URL.revokeObjectURL(resizedPreview)
-                      setResizedPreview('')
-                    }
-                  }}
-                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
-                >
-                  Try Again
-                </button>
-                <button
-                  onClick={() => {
-                    onKeepOriginal()
-                    handleClose()
-                  }}
-                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
-                >
-                  Keep Original
-                </button>
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                  <button
+                    onClick={() => {
+                      setResizeResult(null)
+                      if (resizedPreview) {
+                        URL.revokeObjectURL(resizedPreview)
+                        setResizedPreview('')
+                      }
+                    }}
+                    className="flex-1 px-4 sm:px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors text-sm sm:text-base"
+                  >
+                    Try Again
+                  </button>
+                  <button
+                    onClick={() => {
+                      onKeepOriginal()
+                      handleClose()
+                    }}
+                    className="flex-1 px-4 sm:px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors text-sm sm:text-base"
+                  >
+                    Keep Original
+                  </button>
+                </div>
               </>
             )}
           </div>

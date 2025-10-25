@@ -68,13 +68,13 @@ export function ShareModal({ isOpen, onClose, post, username, className }: Share
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 z-50">
       <div className={cn(
-        'bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto',
+        'bg-white rounded-xl shadow-xl max-w-sm sm:max-w-md w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto mx-2 sm:mx-0',
         className
       )}>
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b">
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b">
           <h3 className="text-lg font-semibold text-gray-900">
             Share Your Listing
           </h3>
@@ -87,7 +87,7 @@ export function ShareModal({ isOpen, onClose, post, username, className }: Share
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-6">
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
           {/* Public URL */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -98,7 +98,7 @@ export function ShareModal({ isOpen, onClose, post, username, className }: Share
                 type="text"
                 value={publicUrl}
                 readOnly
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-sm"
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-xs sm:text-sm break-all"
               />
             </div>
           </div>
@@ -129,18 +129,18 @@ export function ShareModal({ isOpen, onClose, post, username, className }: Share
               Share Text (Optional)
             </label>
             <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
-              <pre className="text-sm text-gray-700 whitespace-pre-wrap font-sans">
+              <pre className="text-xs sm:text-sm text-gray-700 whitespace-pre-wrap font-sans break-all">
                 {shareMessage}
               </pre>
             </div>
           </div>
 
           {/* Tips */}
-          <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
+          <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3 sm:p-4">
             <h4 className="text-sm font-medium text-emerald-900 mb-2">
               💡 Sharing Tips
             </h4>
-            <ul className="text-sm text-emerald-800 space-y-1">
+            <ul className="text-xs sm:text-sm text-emerald-800 space-y-1">
               <li>• Share your link on WhatsApp, Facebook, Instagram, or SMS</li>
               <li>• Post in relevant groups and communities for better reach</li>
               <li>• Add a personal message to build trust with buyers</li>

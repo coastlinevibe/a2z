@@ -220,26 +220,26 @@ export default function DashboardPage() {
       backgroundRepeat: 'no-repeat, repeat',
       backgroundColor: '#f9fafb'
     }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
         {/* Media Expiration Warning */}
-        <div className="mb-6">
+        <div className="mb-4 sm:mb-6">
           <MediaExpirationWarning />
         </div>
 
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">My Listings</h1>
             <p className="text-gray-600 mt-1">
               Manage your products and track performance
             </p>
           </div>
-          <div className="flex gap-3 mt-4 sm:mt-0">
+          <div className="flex gap-2 sm:gap-3 mt-4 sm:mt-0">
             {/* View Toggle */}
             <div className="flex bg-white rounded-lg shadow-sm border border-gray-200">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`px-4 py-2 text-sm font-medium rounded-l-lg ${
+                className={`px-3 sm:px-4 py-2 text-sm font-medium rounded-l-lg ${
                   viewMode === 'grid' 
                     ? 'bg-emerald-600 text-white' 
                     : 'text-gray-600 hover:text-emerald-600'
@@ -249,7 +249,7 @@ export default function DashboardPage() {
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`px-4 py-2 text-sm font-medium rounded-r-lg ${
+                className={`px-3 sm:px-4 py-2 text-sm font-medium rounded-r-lg ${
                   viewMode === 'list' 
                     ? 'bg-emerald-600 text-white' 
                     : 'text-gray-600 hover:text-emerald-600'
@@ -261,10 +261,11 @@ export default function DashboardPage() {
             
             <Link
               href="/create"
-              className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition-colors flex items-center shadow-sm"
+              className="bg-emerald-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-emerald-700 transition-colors flex items-center shadow-sm text-sm sm:text-base"
             >
-              <Plus className="h-4 w-4 mr-2" />
-              Create Listing
+              <Plus className="h-4 w-4 mr-1 sm:mr-2" />
+              <span className="hidden xs:inline sm:inline">Create Listing</span>
+              <span className="xs:hidden sm:hidden">Create</span>
             </Link>
           </div>
         </div>
@@ -274,7 +275,7 @@ export default function DashboardPage() {
 
         {/* Stats Overview */}
         {posts.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
             {/* Views */}
             <div 
               ref={card1Ref}

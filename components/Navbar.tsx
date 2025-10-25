@@ -136,11 +136,11 @@ export function Navbar() {
       {/* Mobile Early Adopter Banner */}
       {showEarlyAdopterBanner && (
         <div className="md:hidden border-t border-gray-200 bg-white">
-          <div className="px-4 py-3">
-            <div className="flex flex-col items-center gap-3 px-4 py-3 text-orange-600">
-              <div className="flex items-center gap-2 text-base font-semibold text-center">
-                <Star className="w-4 h-4 text-orange-500" fill="currentColor" />
-                <span>Early Adopter: 45% off the first 500 Premium accounts • Then just R49/month regular price.</span>
+          <div className="px-2 py-2">
+            <div className="flex flex-col items-center gap-2 px-2 py-2 text-orange-600">
+              <div className="flex items-center gap-2 text-sm font-semibold text-center">
+                <Star className="w-4 h-4 text-orange-500 flex-shrink-0" fill="currentColor" />
+                <span className="leading-tight">Early Adopter: 45% off the first 500 Premium accounts • Then just R49/month regular price.</span>
               </div>
               <Link
                 href="/auth/signup-animated?plan=free"

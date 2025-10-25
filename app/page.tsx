@@ -10,9 +10,9 @@ export default function HomePage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-black bg-[url('/images/hero/bg2.jpg')] bg-center bg-no-repeat bg-[length:65%] sm:bg-[length:75%] md:bg-[length:85%] lg:bg-[length:95%] xl:bg-cover pt-[52px] pb-28 md:pt-[68px] md:pb-32 lg:pt-[100px] lg:pb-40">
+      <section className="relative bg-black bg-[url('/images/hero/bg2.jpg')] bg-center bg-no-repeat bg-[length:65%] sm:bg-[length:75%] md:bg-[length:85%] lg:bg-[length:95%] xl:bg-cover pt-[52px] pb-16 sm:pb-28 md:pt-[68px] md:pb-32 lg:pt-[100px] lg:pb-40">
         <div className="absolute inset-0 bg-gradient-to-b from-emerald-950/85 via-emerald-950/65 to-emerald-950/85 backdrop-blur-[1px] md:backdrop-blur-sm"></div>
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative z-10 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="text-center">
             {user ? (
               <>
@@ -42,32 +42,34 @@ export default function HomePage() {
               </>
             ) : (
               <>
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
-                  Point, shoot, profit.<br />
-                  <span className="text-emerald-300 drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)]">a2z turns any product or service into a live listing in under a minute—full sales engine, no store build.</span>
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-4 sm:mb-6 drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)] leading-tight">
+                  Point, shoot, profit.
                 </h1>
-                <p className="text-xl text-emerald-50 mb-6 max-w-3xl mx-auto drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
+                <h2 className="text-lg sm:text-xl lg:text-2xl text-emerald-300 mb-4 sm:mb-6 max-w-4xl mx-auto drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)] leading-relaxed">
+                  a2z turns any product or service into a live listing in under a minute—full sales engine, no store build.
+                </h2>
+                <p className="text-base sm:text-lg lg:text-xl text-emerald-50 mb-6 max-w-3xl mx-auto drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)] leading-relaxed">
                   Snap an image, launch a listing, and start selling across WhatsApp, Facebook, Instagram, and more in under sixty seconds.
                 </p>
-                <div className="text-emerald-200 mb-[62px] max-w-2xl mx-auto">
-                  <div className="flex flex-wrap justify-center gap-6 text-sm">
+                <div className="text-emerald-200 mb-8 sm:mb-12 lg:mb-[62px] max-w-2xl mx-auto">
+                  <div className="flex flex-wrap justify-center gap-3 sm:gap-6 text-xs sm:text-sm">
                     <span>✓ Start Free Forever</span>
                     <span>✓ No Transaction Fees</span>
                     <span>✓ WhatsApp Native</span>
                     <span>✓ Built for SA Sellers</span>
                   </div>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0">
                   <Link
                     href="/auth/signup-animated?plan=free"
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-4 px-8 rounded-xl transition-colors flex items-center justify-center shadow-lg"
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 sm:py-4 px-6 sm:px-8 rounded-xl transition-colors flex items-center justify-center shadow-lg text-sm sm:text-base"
                   >
                     Start Free Trial
-                    <ArrowRight className="ml-2 h-5 w-5" />
+                    <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                   </Link>
                   <Link
                     href="/pricing"
-                    className="bg-white hover:bg-gray-50 text-gray-900 font-semibold py-4 px-8 rounded-xl border border-gray-300 transition-colors"
+                    className="bg-white hover:bg-gray-50 text-gray-900 font-semibold py-3 sm:py-4 px-6 sm:px-8 rounded-xl border border-gray-300 transition-colors text-sm sm:text-base"
                   >
                     View Pricing
                   </Link>
@@ -141,29 +143,31 @@ export default function HomePage() {
               Start free, upgrade when you're ready. No hidden fees, no commissions.
             </p>
             {/* Early Adopter Badge */}
-            <div className="flex justify-center">
+            <div className="flex justify-center px-4 sm:px-0">
               <MovingBorderButton
                 borderRadius="0.75rem"
                 duration={3000}
-                className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-6 py-3"
+                className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-3 sm:px-6 py-2 sm:py-3 w-full sm:w-auto max-w-sm sm:max-w-none"
               >
-                <div className="flex items-center space-x-2">
-                  <Crown className="h-5 w-5" />
-                  <span className="font-semibold">Limited Time Offer</span>
-                </div>
-                <div className="mt-4">
-                  <Link href="/create" className="inline-block bg-white text-emerald-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg">
-                    Get Started Now
-                    <ArrowRight className="inline ml-2 h-4 w-4" />
-                  </Link>
+                <div className="flex flex-col sm:flex-row items-center gap-2 sm:space-x-2 sm:gap-0">
+                  <div className="flex items-center gap-2">
+                    <Crown className="h-4 w-4 sm:h-5 sm:w-5" />
+                    <span className="font-semibold text-sm sm:text-base">Limited Time Offer</span>
+                  </div>
+                  <div className="mt-2 sm:mt-4">
+                    <Link href="/create" className="inline-block bg-white text-emerald-600 px-4 sm:px-8 py-2 sm:py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg text-sm sm:text-base">
+                      Get Started Now
+                      <ArrowRight className="inline ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4" />
+                    </Link>
+                  </div>
                 </div>
               </MovingBorderButton>
             </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto px-4 sm:px-0">
             {/* Free Tier */}
-            <div className="bg-white rounded-2xl border-2 border-gray-200 p-6 text-center">
+            <div className="bg-white rounded-2xl border-2 border-gray-200 p-4 sm:p-6 text-center">
               <h3 className="text-xl font-bold text-gray-900 mb-2">Free</h3>
               <div className="text-3xl font-bold text-gray-900 mb-4">R0</div>
               <div className="space-y-3 mb-6 text-sm text-gray-600">
@@ -189,19 +193,19 @@ export default function HomePage() {
             </div>
 
             {/* Premium Tier */}
-            <div className="bg-white rounded-2xl border-2 border-emerald-500 p-6 text-center relative">
+            <div className="bg-white rounded-2xl border-2 border-emerald-500 p-4 sm:p-6 text-center relative">
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                 <div className="bg-emerald-500 text-white px-3 py-1 rounded-full text-xs font-medium">
                   Most Popular
                 </div>
               </div>
               <div className="flex items-center justify-center gap-2 mb-2">
-                <Crown className="w-5 h-5 text-emerald-500" />
-                <h3 className="text-xl font-bold text-gray-900">Premium</h3>
+                <Crown className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-500" />
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900">Premium</h3>
               </div>
               <div className="mb-2">
-                <div className="text-3xl font-bold text-gray-900">R29</div>
-                <div className="text-sm text-emerald-700 font-medium bg-emerald-50 px-3 py-1 rounded-full shadow-[0_0_18px_rgba(16,185,129,0.25)]">
+                <div className="text-2xl sm:text-3xl font-bold text-gray-900">R29</div>
+                <div className="text-xs sm:text-sm text-emerald-700 font-medium bg-emerald-50 px-2 sm:px-3 py-1 rounded-full shadow-[0_0_18px_rgba(16,185,129,0.25)] leading-tight">
                   45% off the first 500 Premium accounts • Then just R49/month regular price
                 </div>
               </div>
@@ -232,14 +236,14 @@ export default function HomePage() {
             </div>
 
             {/* Business Tier */}
-            <div className="bg-white rounded-2xl border-2 border-blue-500 p-6 text-center">
+            <div className="bg-white rounded-2xl border-2 border-blue-500 p-4 sm:p-6 text-center">
               <div className="flex items-center justify-center gap-2 mb-2">
-                <Users className="w-5 h-5 text-blue-500" />
-                <h3 className="text-xl font-bold text-gray-900">Business</h3>
+                <Users className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900">Business</h3>
               </div>
               <div className="mb-2">
-                <div className="text-3xl font-bold text-gray-900">R99</div>
-                <div className="text-sm text-blue-600 font-medium">45% off for 12 months • Then R179/month</div>
+                <div className="text-2xl sm:text-3xl font-bold text-gray-900">R99</div>
+                <div className="text-xs sm:text-sm text-blue-600 font-medium leading-tight">45% off for 12 months • Then R179/month</div>
               </div>
               <div className="space-y-3 mb-6 text-sm text-gray-600">
                 <div className="flex items-center justify-center gap-2">
@@ -365,33 +369,35 @@ export default function HomePage() {
               className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-6 py-3"
               containerClassName="inline-block"
             >
-              <div className="flex items-center gap-3">
-                <Star className="w-5 h-5" fill="white" />
-                <span className="font-bold text-base">Early Adopter: 45% off the first 500 Premium accounts • Then just R49/month regular price.</span>
-                <Link href="/auth/signup-animated?plan=free" className="ml-2 inline-flex items-center gap-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 text-sm font-bold transition-all shadow-lg hover:shadow-xl hover:scale-105 border border-emerald-400">
+              <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
+                <div className="flex items-center gap-2">
+                  <Star className="w-4 h-4 sm:w-5 sm:h-5" fill="white" />
+                  <span className="font-bold text-sm sm:text-base text-center sm:text-left">Early Adopter: 45% off the first 500 Premium accounts • Then just R49/month regular price.</span>
+                </div>
+                <Link href="/auth/signup-animated?plan=free" className="inline-flex items-center gap-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white px-3 sm:px-4 py-2 text-xs sm:text-sm font-bold transition-all shadow-lg hover:shadow-xl hover:scale-105 border border-emerald-400 whitespace-nowrap">
                   Try Free Plan Now!
-                  <ArrowRight className="h-4 w-4" strokeWidth={3} />
+                  <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4" strokeWidth={3} />
                 </Link>
               </div>
             </MovingBorderButton>
           </div>
-          <h2 className="text-3xl font-bold text-white mb-4">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3 sm:mb-4">
             Ready to Start Selling Smarter?
           </h2>
-          <p className="text-xl text-emerald-100 mb-8">
+          <p className="text-lg sm:text-xl text-emerald-100 mb-6 sm:mb-8 leading-relaxed">
             Join the A2Z revolution. Start free, grow with confidence, and keep 100% of your profits.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0">
             <Link
               href="/auth/signup-animated?plan=free"
-              className="bg-white hover:bg-gray-100 text-emerald-600 font-semibold py-4 px-8 rounded-xl transition-colors inline-flex items-center justify-center"
+              className="bg-white hover:bg-gray-100 text-emerald-600 font-semibold py-3 sm:py-4 px-6 sm:px-8 rounded-xl transition-colors inline-flex items-center justify-center text-sm sm:text-base"
             >
               Start Free Trial
-              <ArrowRight className="ml-2 h-5 w-5" />
+              <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
             </Link>
             <Link
               href="/pricing"
-              className="border-2 border-white text-white hover:bg-white hover:text-emerald-600 font-semibold py-4 px-8 rounded-xl transition-colors inline-flex items-center justify-center"
+              className="border-2 border-white text-white hover:bg-white hover:text-emerald-600 font-semibold py-3 sm:py-4 px-6 sm:px-8 rounded-xl transition-colors inline-flex items-center justify-center text-sm sm:text-base"
             >
               View Pricing
             </Link>

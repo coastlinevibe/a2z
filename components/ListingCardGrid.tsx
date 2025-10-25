@@ -103,11 +103,11 @@ export function ListingCardGrid({ posts, onEdit, onShare, onPreview, onDelete }:
 
   return (
     <>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 max-w-7xl mx-auto p-2 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 max-w-7xl mx-auto px-1 sm:px-2 lg:px-4 items-start">
         {posts.map((post, index) => (
           <div
             key={post.id}
-            className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 max-w-xs"
+            className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 w-full"
           >
             {/* Product Image */}
             <div className="relative w-full">
@@ -119,17 +119,17 @@ export function ListingCardGrid({ posts, onEdit, onShare, onPreview, onDelete }:
 
             {/* Listing Header */}
             <button
-              className="w-full text-left px-3 py-2 bg-gray-50 hover:bg-gray-100 transition-colors"
+              className="w-full text-left px-2 sm:px-3 lg:px-4 py-2 sm:py-3 bg-gray-50 hover:bg-gray-100 transition-colors"
               onClick={() => setOpenCardId(openCardId === post.id ? '' : post.id)}
             >
               <div className="flex items-center justify-between gap-2">
-                <span className="text-xs font-medium text-gray-800 truncate">{post.title}</span>
-                <span className="text-sm font-semibold text-emerald-600 whitespace-nowrap">
+                <span className="text-sm sm:text-base font-medium text-gray-800 truncate">{post.title}</span>
+                <span className="text-sm sm:text-lg font-semibold text-emerald-600 whitespace-nowrap">
                   {formatPrice(post.price_cents, post.currency)}
                 </span>
               </div>
               {post.emoji_tags?.length > 0 && (
-                <div className="flex flex-wrap gap-1 mt-2">
+                <div className="flex flex-wrap gap-1 sm:gap-2 mt-2">
                   {post.emoji_tags.map((tagId) => {
                     const tagMeta = BUILTIN_TAGS.find((tag) => tag.id === tagId)
                     const Icon = tagMeta?.icon || TagIcon
@@ -139,11 +139,11 @@ export function ListingCardGrid({ posts, onEdit, onShare, onPreview, onDelete }:
                       <span
                         key={tagId}
                         className={cn(
-                          'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border',
+                          'inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border',
                           tagMeta ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-gray-100 border-gray-200 text-gray-600'
                         )}
                       >
-                        <Icon className="h-3 w-3" />
+                        <Icon className="h-3 w-3 sm:h-4 sm:w-4" />
                         <span>{label}</span>
                       </span>
                     )
@@ -153,7 +153,7 @@ export function ListingCardGrid({ posts, onEdit, onShare, onPreview, onDelete }:
             </button>
 
             {/* Accordion */}
-            <div className="p-2">
+            <div className="p-2 sm:p-3 lg:p-4">
               <Accordion
                 type="single"
                 collapsible
@@ -169,15 +169,15 @@ export function ListingCardGrid({ posts, onEdit, onShare, onPreview, onDelete }:
               >
                 <AccordionItem value="details" className="border-emerald-200">
                   <AccordionTrigger className="hover:bg-emerald-50 p-0">
-                    <div className="flex items-center gap-1 w-full p-2">
+                    <div className="flex items-center gap-2 w-full p-2 sm:p-3">
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
                           handleContactSeller(post)
                         }}
-                        className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-1.5 px-2 rounded transition-colors flex items-center justify-center text-xs"
+                        className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-3 rounded transition-colors flex items-center justify-center text-sm"
                       >
-                        <Phone className="h-3 w-3 mr-1" />
+                        <Phone className="h-4 w-4 mr-2" />
                         Contact
                       </button>
                       <button
@@ -185,39 +185,40 @@ export function ListingCardGrid({ posts, onEdit, onShare, onPreview, onDelete }:
                           e.stopPropagation()
                           handleCallSeller(post)
                         }}
-                        className="p-1.5 bg-gray-100 hover:bg-gray-200 rounded transition-colors"
+                        className="p-2 bg-gray-100 hover:bg-gray-200 rounded transition-colors"
                       >
-                        <Phone className="h-3 w-3 text-gray-700" />
+                        <Phone className="h-4 w-4 text-gray-700" />
                       </button>
                     </div>
                   </AccordionTrigger>
                   <AccordionContent>
-                    <div className="space-y-2">
+                    <div className="space-y-2 sm:space-y-3 px-2 sm:px-3 pb-2">
                       {/* Title, Price & Location */}
-                      <div className="flex items-center justify-between gap-1">
-                        <p className="text-gray-700 text-xs flex-1 truncate">{post.title}</p>
-                        <p className="text-sm font-bold text-emerald-600 whitespace-nowrap">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-gray-700 text-sm flex-1 truncate">{post.title}</p>
+                        <p className="text-base font-bold text-emerald-600 whitespace-nowrap">
                           {formatPrice(post.price_cents, post.currency)}
                         </p>
-                        {post.location && (
-                          <div className="flex items-center text-xs text-gray-500 whitespace-nowrap">
-                            <MapPin className="h-2.5 w-2.5 mr-0.5" />
-                            {post.location}
-                          </div>
-                        )}
                       </div>
+                      
+                      {post.location && (
+                        <div className="flex items-center text-sm text-gray-500">
+                          <MapPin className="h-4 w-4 mr-1" />
+                          {post.location}
+                        </div>
+                      )}
 
                       {/* Description */}
                       {post.description && (
-                        <p className="text-gray-600 text-xs line-clamp-2">{post.description}</p>
+                        <p className="text-gray-600 text-sm line-clamp-3">{post.description}</p>
                       )}
 
                       {/* Action Buttons */}
-                      <div className="flex gap-1 pt-1 border-t">
+                      <div className="flex gap-2 pt-2 border-t">
                         {onShare && (
                           <button
                             onClick={() => onShare(post)}
-                            className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-medium py-1 px-2 rounded transition-colors text-xs"
+                            className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-3 rounded transition-colors text-sm"
                           >
                             Share
                           </button>
@@ -225,7 +226,7 @@ export function ListingCardGrid({ posts, onEdit, onShare, onPreview, onDelete }:
                         {onPreview && (
                           <button
                             onClick={() => onPreview(post)}
-                            className="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-medium py-1 px-2 rounded transition-colors text-xs"
+                            className="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-3 rounded transition-colors text-sm"
                           >
                             Preview
                           </button>
@@ -233,7 +234,7 @@ export function ListingCardGrid({ posts, onEdit, onShare, onPreview, onDelete }:
                         {onDelete && (
                           <button
                             onClick={() => onDelete(post.id)}
-                            className="flex-1 bg-red-500 hover:bg-red-600 text-white font-medium py-1 px-2 rounded transition-colors text-xs"
+                            className="flex-1 bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-3 rounded transition-colors text-sm"
                           >
                             Delete
                           </button>
