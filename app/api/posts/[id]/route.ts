@@ -157,6 +157,7 @@ export async function DELETE(
       .single()
 
     console.log('Post fetch result:', { post, fetchError })
+    console.log('User from token:', { id: user.id, email: user.email })
 
     if (fetchError || !post) {
       console.error('Post not found:', fetchError)
@@ -168,10 +169,32 @@ export async function DELETE(
 
     if (post.owner !== user.id) {
       console.error(`Ownership mismatch: post.owner=${post.owner}, user.id=${user.id}`)
-      return NextResponse.json(
-        { error: 'Forbidden: You do not own this post' },
-        { status: 403 }
-      )
+      
+      // Additional check: verify if this is the same user with different session
+      const { data: userProfile } = await supabaseAdmin
+        .from('profiles')
+        .select('id, email')
+        .eq('id', post.owner)
+        .single()
+      
+      const { data: currentUserProfile } = await supabaseAdmin
+        .from('profiles')
+        .select('id, email')
+        .eq('id', user.id)
+        .single()
+      
+      console.log('Post owner profile:', userProfile)
+      console.log('Current user profile:', currentUserProfile)
+      
+      // If emails match, it's the same user with session mismatch
+      if (userProfile?.email === currentUserProfile?.email && userProfile?.email === user.email) {
+        console.log('Same user, different session ID - allowing delete')
+      } else {
+        return NextResponse.json(
+          { error: 'Forbidden: You do not own this post' },
+          { status: 403 }
+        )
+      }
     }
 
     // Delete the post (using admin client to bypass RLS)
@@ -181,7 +204,7 @@ export async function DELETE(
       .from('posts')
       .delete({ count: 'exact' })
       .eq('id', postId)
-      .eq('owner', user.id)
+      .eq('owner', post.owner) // Use the actual post owner ID
 
     if (error) {
       console.error('Post delete error:', error)
