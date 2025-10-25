@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { X, Phone, MapPin, Eye, MousePointer, Share2, Trash2 } from 'lucide-react'
+import { X, Phone, MapPin, Eye, MousePointer, Share2, Trash2, Truck } from 'lucide-react'
 import { cn, formatPrice, sanitizeHtml } from '@/lib/utils'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { PremiumGallery } from '@/components/PremiumGallery'
@@ -26,6 +26,7 @@ interface Post {
   views: number
   clicks: number
   created_at: string
+  delivery_available?: boolean
 }
 
 interface PreviewModalProps {
@@ -122,8 +123,15 @@ export function PreviewModal({ isOpen, onClose, post, className, onShare, onDele
         </button>
 
         {/* Product Image */}
-        <div className="w-full">
+        <div className="w-full relative">
           {renderMedia()}
+          {/* Delivery Badge */}
+          {post.delivery_available && (
+            <div className="absolute bottom-3 left-3 bg-emerald-600 text-white px-2.5 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg">
+              <Truck className="h-4 w-4" />
+              <span className="text-xs font-medium">Delivery</span>
+            </div>
+          )}
         </div>
 
         {/* Product Info */}

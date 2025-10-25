@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { MessageCircle, ChevronLeft, ChevronRight } from 'lucide-react'
+import { MessageCircle, ChevronLeft, ChevronRight, Truck } from 'lucide-react'
 import { cn, formatPrice, sanitizeHtml } from '@/lib/utils'
 import { HoverGallery } from '@/components/HoverGallery'
 import { HorizontalSlider } from '@/components/HorizontalSlider'
@@ -24,6 +24,7 @@ interface Post {
   whatsapp_number?: string | null
   location?: string | null
   display_type?: string | null
+  delivery_available?: boolean
 }
 
 interface PostCardPreviewProps {
@@ -78,7 +79,7 @@ export function PostCardPreview({
       className
     )}>
       {/* Image Display */}
-      <div className="group">
+      <div className="group relative">
         {displayType === 'hover' ? (
           <HoverGallery 
             images={post.media_urls}
@@ -123,6 +124,14 @@ export function PostCardPreview({
             images={post.media_urls}
             className="rounded-t-xl"
           />
+        )}
+        
+        {/* Delivery Badge */}
+        {post.delivery_available && (
+          <div className="absolute bottom-3 left-3 bg-emerald-600 text-white px-2.5 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg">
+            <Truck className="h-4 w-4" />
+            <span className="text-xs font-medium">Delivery</span>
+          </div>
         )}
       </div>
 

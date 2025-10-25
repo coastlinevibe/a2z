@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createClient } from '@supabase/supabase-js'
 import { PublicListingCard } from '@/components/PublicListingCard'
 import { ShareSection } from '@/components/ShareSection'
+import { ViewTracker } from '@/components/ViewTracker'
 import { formatPrice } from '@/lib/utils'
 import type { Metadata } from 'next'
 
@@ -178,12 +179,12 @@ export default async function UserListingPage({ params }: PageProps) {
     notFound()
   }
 
-  // Increment views
-  incrementViews(post.id)
-
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* View Tracker */}
+        <ViewTracker postId={post.id} />
+        
         {/* Post Card */}
         <PublicListingCard 
           post={post}

@@ -196,6 +196,7 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
     whatsapp_number: watchedValues.whatsapp_number || undefined,
     location: watchedValues.location || undefined,
     display_type: displayType,
+    delivery_available: watchedValues.delivery_available || false,
   }
 
   return (

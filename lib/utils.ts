@@ -230,8 +230,14 @@ export function compressImage(file: File, maxWidth: number = 1200, quality: numb
 
 // Validate file type
 export function isValidFileType(file: File): boolean {
-  const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+  const validImageTypes = ['image/jpeg', 'image/png', 'image/webp']
   const validVideoTypes = ['video/mp4', 'video/webm']
+  
+  console.log('File validation:', { 
+    fileName: file.name, 
+    fileType: file.type, 
+    isValid: [...validImageTypes, ...validVideoTypes].includes(file.type) 
+  })
   
   return [...validImageTypes, ...validVideoTypes].includes(file.type)
 }
