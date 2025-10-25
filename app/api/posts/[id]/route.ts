@@ -148,13 +148,18 @@ export async function DELETE(
     }
 
     // Check if the post belongs to the user (using admin client to bypass RLS)
+    console.log(`Looking for post ${postId} owned by user ${user.id}`)
+    
     const { data: post, error: fetchError } = await supabaseAdmin
       .from('posts')
-      .select('owner')
+      .select('id, owner')
       .eq('id', postId)
       .single()
 
+    console.log('Post fetch result:', { post, fetchError })
+
     if (fetchError || !post) {
+      console.error('Post not found:', fetchError)
       return NextResponse.json(
         { error: 'Post not found' },
         { status: 404 }
@@ -162,6 +167,7 @@ export async function DELETE(
     }
 
     if (post.owner !== user.id) {
+      console.error(`Ownership mismatch: post.owner=${post.owner}, user.id=${user.id}`)
       return NextResponse.json(
         { error: 'Forbidden: You do not own this post' },
         { status: 403 }
@@ -171,12 +177,11 @@ export async function DELETE(
     // Delete the post (using admin client to bypass RLS)
     console.log(`Attempting to delete post ${postId} for user ${user.id}`)
     
-    const { data: deletedData, error } = await supabaseAdmin
+    const { error, count } = await supabaseAdmin
       .from('posts')
-      .delete()
+      .delete({ count: 'exact' })
       .eq('id', postId)
       .eq('owner', user.id)
-      .select()
 
     if (error) {
       console.error('Post delete error:', error)
@@ -186,9 +191,9 @@ export async function DELETE(
       )
     }
 
-    console.log('Delete result:', deletedData)
+    console.log('Delete count:', count)
     
-    if (!deletedData || deletedData.length === 0) {
+    if (count === 0) {
       console.error('No post was deleted - post may not exist or user may not own it')
       return NextResponse.json(
         { error: 'Post not found or you do not have permission to delete it' },
@@ -199,7 +204,7 @@ export async function DELETE(
     return NextResponse.json({
       ok: true,
       message: 'Post deleted successfully',
-      deletedPost: deletedData[0]
+      deletedCount: count
     })
   } catch (error) {
     console.error('Post DELETE API error:', error)
