@@ -237,14 +237,37 @@ export default function DashboardPage() {
           <div className="flex gap-3 mt-4 sm:mt-0">
             {/* View Toggle */}
             <div className="flex bg-white rounded-lg shadow-sm border border-gray-200">
-              <feFuncA type="discrete" tableValues="0 1"></feFuncA>
-            </feComponentTransfer>
-            <feGaussianBlur stdDeviation="5"></feGaussianBlur>
-            <feComponentTransfer>
-              <feFuncA type="table" tableValues="-5 11"></feFuncA>
-            </feComponentTransfer>
-          </filter>
-        </svg>
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`px-4 py-2 text-sm font-medium rounded-l-lg ${
+                  viewMode === 'grid' 
+                    ? 'bg-emerald-600 text-white' 
+                    : 'text-gray-600 hover:text-emerald-600'
+                }`}
+              >
+                <Grid className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => setViewMode('list')}
+                className={`px-4 py-2 text-sm font-medium rounded-r-lg ${
+                  viewMode === 'list' 
+                    ? 'bg-emerald-600 text-white' 
+                    : 'text-gray-600 hover:text-emerald-600'
+                }`}
+              >
+                <List className="h-4 w-4" />
+              </button>
+            </div>
+            
+            <Link
+              href="/create"
+              className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition-colors flex items-center shadow-sm"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Create Listing
+            </Link>
+          </div>
+        </div>
 
         {/* Free Account Notifications */}
         <FreeAccountNotifications />
