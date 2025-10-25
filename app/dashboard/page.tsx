@@ -235,8 +235,8 @@ export default function DashboardPage() {
             </p>
           </div>
           <div className="flex gap-2 sm:gap-3 mt-4 sm:mt-0">
-            {/* View Toggle */}
-            <div className="flex bg-white rounded-lg shadow-sm border border-gray-200">
+            {/* View Toggle - Hidden on mobile, shown on desktop only */}
+            <div className="hidden md:flex bg-white rounded-lg shadow-sm border border-gray-200">
               <button
                 onClick={() => setViewMode('grid')}
                 className={`px-3 sm:px-4 py-2 text-sm font-medium rounded-l-lg ${
@@ -434,112 +434,221 @@ export default function DashboardPage() {
               Create Listing
             </Link>
           </div>
-        ) : viewMode === 'grid' ? (
-          <ListingCardGrid
-            posts={posts}
-            onShare={(post) => setSharePost(post)}
-            onPreview={(post) => setPreviewPost(post)}
-            onDelete={(postId) => setDeletePostId(postId)}
-          />
         ) : (
-          <div className="space-y-6">
-            {posts.map((post) => (
-              <div key={post.id} className="bg-white rounded-xl shadow-sm overflow-hidden">
-                <div className="p-6">
-                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-                    {/* Post Info */}
-                    <div className="flex items-start space-x-4 flex-1">
-                      {/* Media Preview */}
-                      <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-                        {post.media_urls.length > 0 && (
-                          post.media_urls[0].includes('.mp4') || post.media_urls[0].includes('.webm') ? (
-                            <video
-                              src={post.media_urls[0]}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <img
-                              src={post.media_urls[0]}
-                              alt={post.title}
-                              className="w-full h-full object-cover"
-                            />
-                          )
-                        )}
-                      </div>
+          <>
+            {/* Desktop view - Grid/List toggle */}
+            <div className="hidden md:block">
+              {viewMode === 'grid' ? (
+                <ListingCardGrid
+                  posts={posts}
+                  onShare={(post) => setSharePost(post)}
+                  onPreview={(post) => setPreviewPost(post)}
+                  onDelete={(postId) => setDeletePostId(postId)}
+                />
+              ) : (
+                <div className="space-y-6">
+                  {posts.map((post) => (
+                    <div key={post.id} className="bg-white rounded-xl shadow-sm overflow-hidden">
+                      <div className="p-6">
+                        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                          {/* Post Info */}
+                          <div className="flex items-start space-x-4 flex-1">
+                            {/* Media Preview */}
+                            <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                              {post.media_urls.length > 0 && (
+                                post.media_urls[0].includes('.mp4') || post.media_urls[0].includes('.webm') ? (
+                                  <video
+                                    src={post.media_urls[0]}
+                                    className="w-full h-full object-cover"
+                                  />
+                                ) : (
+                                  <img
+                                    src={post.media_urls[0]}
+                                    alt={post.title}
+                                    className="w-full h-full object-cover"
+                                  />
+                                )
+                              )}
+                            </div>
 
-                      {/* Details */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-2 mb-1">
-                          <h3 className="text-lg font-semibold text-gray-900 truncate">
-                            {post.title}
-                          </h3>
-                          <span className="text-lg font-bold text-emerald-600">
-                            {formatPrice(post.price_cents, post.currency)}
-                          </span>
+                            {/* Details */}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center space-x-2 mb-1">
+                                <h3 className="text-lg font-semibold text-gray-900 truncate">
+                                  {post.title}
+                                </h3>
+                                <span className="text-lg font-bold text-emerald-600">
+                                  {formatPrice(post.price_cents, post.currency)}
+                                </span>
+                              </div>
+                              
+                              {post.emoji_tags.length > 0 && (
+                                <div className="flex flex-wrap gap-1 mb-2">
+                                  {post.emoji_tags.slice(0, 3).map((tag, index) => (
+                                    <span
+                                      key={index}
+                                      className="inline-block px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full"
+                                    >
+                                      {tag}
+                                    </span>
+                                  ))}
+                                  {post.emoji_tags.length > 3 && (
+                                    <span className="text-xs text-gray-500">
+                                      +{post.emoji_tags.length - 3} more
+                                    </span>
+                                  )}
+                                </div>
+                              )}
+
+                              <div className="flex items-center space-x-4 text-sm text-gray-500">
+                                <div className="flex items-center">
+                                  <Eye className="h-4 w-4 mr-1" />
+                                  {post.views} views
+                                </div>
+                                <div className="flex items-center">
+                                  <MousePointer className="h-4 w-4 mr-1" />
+                                  {post.clicks} clicks
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Actions */}
+                          <div className="flex items-center space-x-2 mt-4 lg:mt-0">
+                            <button
+                              onClick={() => setSharePost(post)}
+                              className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
+                              title="Share"
+                            >
+                              <Share2 className="h-4 w-4" />
+                            </button>
+
+                            <button
+                              onClick={() => setPreviewPost(post)}
+                              className="p-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors"
+                              title="Preview"
+                            >
+                              <Eye className="h-4 w-4" />
+                            </button>
+
+                            <button
+                              onClick={() => setDeletePostId(post.id)}
+                              className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 hover:scale-110 transition-all duration-200 active:scale-95"
+                              title="Delete"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
                         </div>
-                        
-                        {post.emoji_tags.length > 0 && (
-                          <div className="flex flex-wrap gap-1 mb-2">
-                            {post.emoji_tags.slice(0, 3).map((tag, index) => (
-                              <span
-                                key={index}
-                                className="inline-block px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full"
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                            {post.emoji_tags.length > 3 && (
-                              <span className="text-xs text-gray-500">
-                                +{post.emoji_tags.length - 3} more
-                              </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Mobile view - Always list mode */}
+            <div className="md:hidden">
+              <div className="space-y-6">
+                {posts.map((post) => (
+                  <div key={post.id} className="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <div className="p-6">
+                      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                        {/* Post Info */}
+                        <div className="flex items-start space-x-4 flex-1">
+                          {/* Media Preview */}
+                          <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                            {post.media_urls.length > 0 && (
+                              post.media_urls[0].includes('.mp4') || post.media_urls[0].includes('.webm') ? (
+                                <video
+                                  src={post.media_urls[0]}
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <img
+                                  src={post.media_urls[0]}
+                                  alt={post.title}
+                                  className="w-full h-full object-cover"
+                                />
+                              )
                             )}
                           </div>
-                        )}
 
-                        <div className="flex items-center space-x-4 text-sm text-gray-500">
-                          <div className="flex items-center">
-                            <Eye className="h-4 w-4 mr-1" />
-                            {post.views} views
+                          {/* Details */}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center space-x-2 mb-1">
+                              <h3 className="text-lg font-semibold text-gray-900 truncate">
+                                {post.title}
+                              </h3>
+                              <span className="text-lg font-bold text-emerald-600">
+                                {formatPrice(post.price_cents, post.currency)}
+                              </span>
+                            </div>
+                            
+                            {post.emoji_tags.length > 0 && (
+                              <div className="flex flex-wrap gap-1 mb-2">
+                                {post.emoji_tags.slice(0, 3).map((tag, index) => (
+                                  <span
+                                    key={index}
+                                    className="inline-block px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full"
+                                  >
+                                    {tag}
+                                  </span>
+                                ))}
+                                {post.emoji_tags.length > 3 && (
+                                  <span className="text-xs text-gray-500">
+                                    +{post.emoji_tags.length - 3} more
+                                  </span>
+                                )}
+                              </div>
+                            )}
+
+                            <div className="flex items-center space-x-4 text-sm text-gray-500">
+                              <div className="flex items-center">
+                                <Eye className="h-4 w-4 mr-1" />
+                                {post.views} views
+                              </div>
+                              <div className="flex items-center">
+                                <MousePointer className="h-4 w-4 mr-1" />
+                                {post.clicks} clicks
+                              </div>
+                            </div>
                           </div>
-                          <div className="flex items-center">
-                            <MousePointer className="h-4 w-4 mr-1" />
-                            {post.clicks} clicks
-                          </div>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex items-center space-x-2 mt-4 lg:mt-0">
+                          <button
+                            onClick={() => setSharePost(post)}
+                            className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
+                            title="Share"
+                          >
+                            <Share2 className="h-4 w-4" />
+                          </button>
+
+                          <button
+                            onClick={() => setPreviewPost(post)}
+                            className="p-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors"
+                            title="Preview"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </button>
+
+                          <button
+                            onClick={() => setDeletePostId(post.id)}
+                            className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 hover:scale-110 transition-all duration-200 active:scale-95"
+                            title="Delete"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
                         </div>
                       </div>
                     </div>
-
-                    {/* Actions */}
-                    <div className="flex items-center space-x-2 mt-4 lg:mt-0">
-                      <button
-                        onClick={() => setSharePost(post)}
-                        className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
-                        title="Share"
-                      >
-                        <Share2 className="h-4 w-4" />
-                      </button>
-
-                      <button
-                        onClick={() => setPreviewPost(post)}
-                        className="p-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors"
-                        title="Preview"
-                      >
-                        <Eye className="h-4 w-4" />
-                      </button>
-
-                      <button
-                        onClick={() => setDeletePostId(post.id)}
-                        className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 hover:scale-110 transition-all duration-200 active:scale-95"
-                        title="Delete"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </div>
                   </div>
-                </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          </>
         )}
 
         {/* Share Modal */}
