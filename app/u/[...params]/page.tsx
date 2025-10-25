@@ -115,30 +115,38 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
   const publicUrl = `${baseUrl}/u/${username}/${post.slug}`
 
+  // Clean description for better social sharing
+  const cleanDescription = post.description 
+    ? post.description.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim().slice(0, 160)
+    : `${post.title} for ${price}. Contact ${username} on WhatsApp.`
+
+  // Use first image or fallback
+  const socialImage = post.media_urls.length > 0 ? post.media_urls[0] : `${baseUrl}/api/og?title=${encodeURIComponent(post.title)}&price=${encodeURIComponent(price)}&username=${encodeURIComponent(username)}`
+
   return {
     title: `${post.title} - ${price} | ${username} on A2Z`,
-    description: post.description || `${post.title} for ${price}. Contact ${username} on WhatsApp.`,
+    description: cleanDescription,
     openGraph: {
       title: `${post.title} - ${price}`,
-      description: post.description || `${post.title} for ${price}`,
+      description: cleanDescription,
       url: publicUrl,
-      siteName: 'A2Z',
-      images: post.media_urls.length > 0 ? [
+      siteName: 'A2Z Marketplace',
+      images: [
         {
-          url: post.media_urls[0],
+          url: socialImage,
           width: 1200,
           height: 630,
-          alt: post.title,
+          alt: `${post.title} - ${price} on A2Z`,
         }
-      ] : [],
+      ],
       locale: 'en_ZA',
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
       title: `${post.title} - ${price}`,
-      description: post.description || `${post.title} for ${price}`,
-      images: post.media_urls.length > 0 ? [post.media_urls[0]] : [],
+      description: cleanDescription,
+      images: [socialImage],
     },
     alternates: {
       canonical: publicUrl,
