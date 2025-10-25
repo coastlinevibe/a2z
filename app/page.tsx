@@ -144,18 +144,17 @@ export default function HomePage() {
             <div className="flex justify-center">
               <MovingBorderButton
                 borderRadius="0.75rem"
-                duration={4000}
+                duration={3000}
                 className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-6 py-3"
-                containerClassName="inline-block"
               >
-                <div className="flex items-center gap-3">
-                  <Star className="w-5 h-5" fill="white" />
-                  <span className="font-bold text-base">Early Adopter: 45% off the first 500 Premium accounts • Then just R49/month regular price.</span>
-                  <Link href="/auth/signup-animated?plan=free">
-                    <button className="ml-2 inline-flex items-center gap-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 text-sm font-bold transition-all shadow-lg hover:shadow-xl hover:scale-105 border border-emerald-400">
-                      Try Free Plan Now!
-                      <ArrowRight className="h-4 w-4" strokeWidth={3} />
-                    </button>
+                <div className="flex items-center space-x-2">
+                  <Crown className="h-5 w-5" />
+                  <span className="font-semibold">Limited Time Offer</span>
+                </div>
+                <div className="mt-4">
+                  <Link href="/create" className="inline-block bg-white text-emerald-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg">
+                    Get Started Now
+                    <ArrowRight className="inline ml-2 h-4 w-4" />
                   </Link>
                 </div>
               </MovingBorderButton>
@@ -369,11 +368,9 @@ export default function HomePage() {
               <div className="flex items-center gap-3">
                 <Star className="w-5 h-5" fill="white" />
                 <span className="font-bold text-base">Early Adopter: 45% off the first 500 Premium accounts • Then just R49/month regular price.</span>
-                <Link href="/auth/signup-animated?plan=free">
-                  <button className="ml-2 inline-flex items-center gap-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 text-sm font-bold transition-all shadow-lg hover:shadow-xl hover:scale-105 border border-emerald-400">
-                    Try Free Plan Now!
-                    <ArrowRight className="h-4 w-4" strokeWidth={3} />
-                  </button>
+                <Link href="/auth/signup-animated?plan=free" className="ml-2 inline-flex items-center gap-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 text-sm font-bold transition-all shadow-lg hover:shadow-xl hover:scale-105 border border-emerald-400">
+                  Try Free Plan Now!
+                  <ArrowRight className="h-4 w-4" strokeWidth={3} />
                 </Link>
               </div>
             </MovingBorderButton>
