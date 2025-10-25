@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { Plus, Eye, MousePointer, Edit, Trash2, ExternalLink, Share2, ToggleLeft, ToggleRight, Grid, List } from 'lucide-react'
+import { useAuth } from '@/lib/auth'
+import { supabase } from '@/lib/supabaseClient'
 import { formatPrice, cn } from '@/lib/utils'
 import { ShareModal } from '@/components/ShareModal'
 import { PreviewModal } from '@/components/PreviewModal'
@@ -70,6 +72,26 @@ export default function DashboardPage() {
     ref.current.style.setProperty('--y', y.toString())
   }
 
+  const refreshUserSession = async () => {
+    try {
+      const { data: { session: newSession }, error } = await supabase.auth.getSession()
+      if (error) {
+        console.error('Error refreshing session:', error)
+        return false
+      }
+      if (newSession) {
+        console.log('Session refreshed successfully')
+        // Force a page reload to get fresh user data
+        window.location.reload()
+        return true
+      }
+      return false
+    } catch (error) {
+      console.error('Error refreshing session:', error)
+      return false
+    }
+  }
+
   const fetchPosts = async (forceRefresh = false) => {
     if (!user) return
     
@@ -124,6 +146,14 @@ export default function DashboardPage() {
       alert('Please log in to delete posts')
       return
     }
+
+    // Debug: Show current user info
+    console.log('Current user from session:', {
+      id: user?.id,
+      email: user?.email,
+      session_user_id: session.user?.id
+    })
+    console.log('Attempting to delete post:', postId)
 
     try {
       const response = await fetch(`/api/posts/${postId}`, {
@@ -207,46 +237,6 @@ export default function DashboardPage() {
           <div className="flex gap-3 mt-4 sm:mt-0">
             {/* View Toggle */}
             <div className="flex bg-white rounded-lg shadow-sm border border-gray-200">
-              <button
-                onClick={() => setViewMode('grid')}
-                className={cn(
-                  "px-4 py-2 rounded-l-lg transition-colors flex items-center gap-2",
-                  viewMode === 'grid' 
-                    ? "bg-emerald-600 text-white" 
-                    : "text-gray-600 hover:bg-gray-50"
-                )}
-              >
-                <Grid className="h-4 w-4" />
-                Grid
-              </button>
-              <button
-                onClick={() => setViewMode('list')}
-                className={cn(
-                  "px-4 py-2 rounded-r-lg transition-colors flex items-center gap-2",
-                  viewMode === 'list' 
-                    ? "bg-emerald-600 text-white" 
-                    : "text-gray-600 hover:bg-gray-50"
-                )}
-              >
-                <List className="h-4 w-4" />
-                List
-              </button>
-            </div>
-            
-            <Link
-              href="/create"
-              className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              New Listing
-            </Link>
-          </div>
-        </div>
-
-        {/* SVG Filter for Gooey Effect */}
-        <svg width="0" height="0" style={{ position: 'absolute' }}>
-          <filter id="goo" x="-50%" y="-50%" width="200%" height="200%">
-            <feComponentTransfer>
               <feFuncA type="discrete" tableValues="0 1"></feFuncA>
             </feComponentTransfer>
             <feGaussianBlur stdDeviation="5"></feGaussianBlur>
