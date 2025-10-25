@@ -70,12 +70,18 @@ export default function DashboardPage() {
     ref.current.style.setProperty('--y', y.toString())
   }
 
-  const fetchPosts = async () => {
+  const fetchPosts = async (forceRefresh = false) => {
     if (!user) return
     
     try {
-      // Fetch only the authenticated user's posts
-      const response = await fetch('/api/posts?owner=' + user.id)
+      // Fetch only the authenticated user's posts with cache-busting
+      const url = `/api/posts?owner=${user.id}${forceRefresh ? '&t=' + Date.now() : ''}`
+      const response = await fetch(url, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      })
       const result = await response.json()
       
       if (result.ok) {
@@ -114,8 +120,8 @@ export default function DashboardPage() {
   }
 
   const deletePost = async (postId: string) => {
-    if (!session?.access_token) {
-      console.error('No access token available')
+    if (!session) {
+      alert('Please log in to delete posts')
       return
     }
 
@@ -128,7 +134,19 @@ export default function DashboardPage() {
       })
 
       if (response.ok) {
-        setPosts(posts.filter(post => post.id !== postId))
+        // Immediately update the UI by removing the post from state
+        setPosts(prevPosts => prevPosts.filter(post => post.id !== postId))
+        
+        // Close the delete modal
+        setDeletePostId(null)
+        
+        // Show success message
+        alert('Listing deleted successfully!')
+        
+        // Force refresh posts to ensure consistency
+        setTimeout(() => {
+          fetchPosts(true)
+        }, 500)
       } else {
         const error = await response.json()
         console.error('Delete failed:', error)

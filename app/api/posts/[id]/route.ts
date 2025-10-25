@@ -169,11 +169,14 @@ export async function DELETE(
     }
 
     // Delete the post (using admin client to bypass RLS)
-    const { error } = await supabaseAdmin
+    console.log(`Attempting to delete post ${postId} for user ${user.id}`)
+    
+    const { data: deletedData, error } = await supabaseAdmin
       .from('posts')
       .delete()
       .eq('id', postId)
       .eq('owner', user.id)
+      .select()
 
     if (error) {
       console.error('Post delete error:', error)
@@ -183,9 +186,20 @@ export async function DELETE(
       )
     }
 
+    console.log('Delete result:', deletedData)
+    
+    if (!deletedData || deletedData.length === 0) {
+      console.error('No post was deleted - post may not exist or user may not own it')
+      return NextResponse.json(
+        { error: 'Post not found or you do not have permission to delete it' },
+        { status: 404 }
+      )
+    }
+
     return NextResponse.json({
       ok: true,
       message: 'Post deleted successfully',
+      deletedPost: deletedData[0]
     })
   } catch (error) {
     console.error('Post DELETE API error:', error)
