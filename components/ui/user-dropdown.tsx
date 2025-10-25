@@ -35,7 +35,7 @@ const MENU_ITEMS = {
     { icon: Gift, label: "Referrals", action: "referrals" },
     { 
       icon: HelpCircle, 
-      label: "Get help", 
+      label: "Support", 
       action: "help"
     }
   ],

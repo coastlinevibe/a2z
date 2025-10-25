@@ -4,6 +4,7 @@ import './globals.css'
 import { Navbar } from '@/components/Navbar'
 import { AuthProvider } from '@/lib/auth'
 import { ToastProvider } from '@/components/ui/ToastProvider'
+import { SupportButton } from '@/components/SupportButton'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -34,6 +35,7 @@ export default function RootLayout({
             <div className="min-h-screen bg-gray-50">
               <Navbar />
               <main>{children}</main>
+              <SupportButton />
             </div>
           </ToastProvider>
         </AuthProvider>

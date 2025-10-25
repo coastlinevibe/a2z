@@ -416,9 +416,15 @@ export default function HomePage() {
               Everything A to Z. No Store Needed.
             </p>
             <div className="flex items-center justify-center gap-4 mb-4">
-              <Link href="/help" className="text-sm text-gray-400 hover:text-gray-300 transition-colors">
-                Help
-              </Link>
+              <button 
+                onClick={() => {
+                  const message = encodeURIComponent('Hi! I need support with A2Z Marketplace.')
+                  window.open(`https://wa.me/27714329190?text=${message}`, '_blank')
+                }}
+                className="text-sm text-gray-400 hover:text-gray-300 transition-colors"
+              >
+                Support
+              </button>
               <span className="text-gray-600">•</span>
               <Link href="/pricing" className="text-sm text-gray-400 hover:text-gray-300 transition-colors">
                 Pricing

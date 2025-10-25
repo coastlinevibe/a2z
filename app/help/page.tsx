@@ -1,10 +1,10 @@
 'use client'
 
-import { ArrowLeft, HelpCircle, Mail, MessageCircle, Book } from 'lucide-react'
+import { ArrowLeft, HelpCircle, Mail, MessageCircle, Book, Phone } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 
-export default function HelpPage() {
+export default function SupportPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -26,7 +26,7 @@ export default function HelpPage() {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-emerald-100 rounded-full mb-4">
             <HelpCircle className="w-8 h-8 text-emerald-600" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">How can we help?</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Support Center</h1>
           <p className="text-gray-600">Get answers to your questions and learn how to use A2Z</p>
         </div>
 
@@ -110,15 +110,28 @@ export default function HelpPage() {
 
         {/* Contact Support */}
         <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-xl shadow-sm p-8 text-center text-white">
-          <Mail className="w-12 h-12 mx-auto mb-4 opacity-90" />
-          <h2 className="text-2xl font-bold mb-2">Still need help?</h2>
+          <MessageCircle className="w-12 h-12 mx-auto mb-4 opacity-90" />
+          <h2 className="text-2xl font-bold mb-2">Still need support?</h2>
           <p className="mb-6 opacity-90">Our support team is here to assist you</p>
-          <Button 
-            className="bg-white text-emerald-600 hover:bg-gray-100"
-            onClick={() => window.location.href = 'mailto:support@a2z.co.za'}
-          >
-            Contact Support
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button 
+              className="bg-white text-emerald-600 hover:bg-gray-100"
+              onClick={() => {
+                const message = encodeURIComponent('Hi! I need support with A2Z Marketplace.')
+                window.open(`https://wa.me/27714329190?text=${message}`, '_blank')
+              }}
+            >
+              <MessageCircle className="w-4 h-4 mr-2" />
+              WhatsApp Support
+            </Button>
+            <Button 
+              className="bg-white text-emerald-600 hover:bg-gray-100"
+              onClick={() => window.open('tel:0714329190', '_self')}
+            >
+              <Phone className="w-4 h-4 mr-2" />
+              Call Support
+            </Button>
+          </div>
         </div>
       </div>
     </div>

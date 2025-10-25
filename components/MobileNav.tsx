@@ -136,13 +136,16 @@ export function MobileHeader() {
               >
                 Settings
               </Link>
-              <Link
-                href="/help"
-                className="block px-4 py-3 rounded-lg hover:bg-gray-100 transition-colors"
-                onClick={() => setMenuOpen(false)}
+              <button
+                onClick={() => {
+                  const message = encodeURIComponent('Hi! I need support with A2Z Marketplace.')
+                  window.open(`https://wa.me/27714329190?text=${message}`, '_blank')
+                  setMenuOpen(false)
+                }}
+                className="block w-full text-left px-4 py-3 rounded-lg hover:bg-gray-100 transition-colors"
               >
-                Help
-              </Link>
+                Support
+              </button>
             </nav>
           </div>
         </div>

@@ -95,7 +95,8 @@ export function UserProfileDropdown() {
         router.push('/referrals');
         break;
       case 'help':
-        router.push('/help');
+        const message = encodeURIComponent('Hi! I need support with A2Z Marketplace.')
+        window.open(`https://wa.me/27714329190?text=${message}`, '_blank')
         break;
       case 'logout':
         await signOut();
