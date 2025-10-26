@@ -103,7 +103,7 @@ export function ListingCardGrid({ posts, onEdit, onShare, onPreview, onDelete }:
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 max-w-7xl mx-auto px-1 sm:px-2 lg:px-4 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 w-[120%] items-start">
         {posts.map((post, index) => (
           <div
             key={post.id}
@@ -196,21 +196,24 @@ export function ListingCardGrid({ posts, onEdit, onShare, onPreview, onDelete }:
                       {/* Title, Price & Location */}
                       <div className="flex items-center justify-between gap-2">
                         <p className="text-gray-700 text-sm flex-1 truncate">{post.title}</p>
-                        <p className="text-base font-bold text-emerald-600 whitespace-nowrap">
-                          {formatPrice(post.price_cents, post.currency)}
-                        </p>
-                      </div>
-                      
-                      {post.location && (
-                        <div className="flex items-center text-sm text-gray-500">
-                          <MapPin className="h-4 w-4 mr-1" />
-                          {post.location}
+                        <div className="flex flex-col items-end">
+                          <p className="text-base font-bold text-emerald-600 whitespace-nowrap">
+                            {formatPrice(post.price_cents, post.currency)}
+                          </p>
+                          {post.location && (
+                            <div className="flex items-center text-xs text-gray-500 mt-1">
+                              <MapPin className="h-3 w-3 mr-1" />
+                              {post.location}
+                            </div>
+                          )}
                         </div>
-                      )}
+                      </div>
 
                       {/* Description */}
                       {post.description && (
-                        <p className="text-gray-600 text-sm line-clamp-3">{post.description}</p>
+                        <p className="text-gray-600 text-sm line-clamp-3">
+                          {post.description.replace(/<[^>]*>/g, '')}
+                        </p>
                       )}
 
                       {/* Action Buttons */}
