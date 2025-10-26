@@ -120,8 +120,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     ? post.description.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim().slice(0, 160)
     : `${post.title} for ${price}. Contact ${username} on WhatsApp.`
 
-  // Use first image or fallback
-  const socialImage = post.media_urls.length > 0 ? post.media_urls[0] : `${baseUrl}/api/og?title=${encodeURIComponent(post.title)}&price=${encodeURIComponent(price)}&username=${encodeURIComponent(username)}`
+  // Use first image or fallback - ensure absolute URL
+  let socialImage = post.media_urls.length > 0 ? post.media_urls[0] : `${baseUrl}/api/og?title=${encodeURIComponent(post.title)}&price=${encodeURIComponent(price)}&username=${encodeURIComponent(username)}`
+  
+  // Ensure image URL is absolute
+  if (socialImage && !socialImage.startsWith('http')) {
+    socialImage = `${baseUrl}${socialImage.startsWith('/') ? '' : '/'}${socialImage}`
+  }
 
   return {
     title: `${post.title} - ${price} | ${username} on A2Z`,
@@ -150,6 +155,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     alternates: {
       canonical: publicUrl,
+    },
+    other: {
+      'og:image:width': '1200',
+      'og:image:height': '630',
+      'og:image:type': 'image/jpeg',
+      'twitter:image': socialImage,
+      'twitter:image:alt': `${post.title} - ${price} on A2Z`,
     },
   }
 }
@@ -198,23 +210,23 @@ export default async function UserListingPage({ params }: PageProps) {
           post={post}
         />
 
-        {/* Share Section */}
-        <ShareSection post={post} username={username} />
-
         {/* WhatsApp Community */}
         <div className="mt-8 text-center">
-          <p className="text-gray-600 text-sm">
+          <p className="text-gray-600 text-lg font-bold">
             Join our a2z Sellr - WhatsApp community{' '}
             <a
               href="https://chat.whatsapp.com/DIAWnwbUTE0LO2kifr6tGu?mode=wwt"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-emerald-600 hover:text-emerald-700 font-medium underline"
+              className="text-emerald-600 hover:text-emerald-700 font-extrabold underline bg-gradient-to-r from-emerald-500 to-blue-500 bg-clip-text text-transparent animate-pulse"
             >
               here
             </a>
           </p>
         </div>
+
+        {/* Share Section */}
+        <ShareSection post={post} username={username} />
 
         {/* Back to A2Z */}
         <div className="mt-4 text-center">

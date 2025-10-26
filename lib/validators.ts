@@ -11,7 +11,7 @@ export const createPostSchemaBase = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters').max(80, 'Title must be less than 80 characters'),
   price_cents: z.number().min(0, 'Price must be positive'),
   currency: z.string().default('ZAR'),
-  description: z.string().min(10, 'Description must be at least 10 characters').max(600, 'Description must be less than 600 characters'),
+  description: z.string().min(10, 'Description must be at least 10 characters').max(2000, 'Description must be less than 2000 characters'),
   emoji_tags: z.array(z.string()).min(1, 'At least 1 emoji tag is required').max(4, 'Maximum 4 emoji tags allowed'),
   whatsapp_number: z.string()
     .min(1, 'Contact number is required')
