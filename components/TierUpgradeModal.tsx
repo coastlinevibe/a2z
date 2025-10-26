@@ -251,6 +251,17 @@ export default function TierUpgradeModal({
             </div>
           </div>
 
+          {/* Feature Update Notice */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <p className="text-blue-800 font-medium text-sm text-center">
+              🚀 New Premium Features in Development
+            </p>
+            <p className="text-blue-700 text-xs text-center mt-1">
+              We're adding exciting new Premium and Business features! While we finalize these updates, 
+              you can still select your preferred plan and we'll notify you when it's ready to activate.
+            </p>
+          </div>
+
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <button
@@ -260,8 +271,8 @@ export default function TierUpgradeModal({
               Maybe Later
             </button>
             <button
-              onClick={() => onUpgrade(selectedTier, billingCycle)}
-              className="w-full sm:flex-1 px-4 sm:px-6 py-3 bg-gradient-to-r from-emerald-500 to-blue-500 text-white rounded-lg hover:from-emerald-600 hover:to-blue-600 transition-all flex items-center justify-center gap-2 text-sm sm:text-base"
+              disabled
+              className="w-full sm:flex-1 px-4 sm:px-6 py-3 bg-gray-400 text-white rounded-lg cursor-not-allowed opacity-60 flex items-center justify-center gap-2 text-sm sm:text-base"
             >
               <Zap className="w-4 h-4 sm:w-5 sm:h-5" />
               Upgrade to {selectedTier === 'premium' ? 'Premium' : 'Business'}

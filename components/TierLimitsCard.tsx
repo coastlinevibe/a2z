@@ -64,9 +64,9 @@ export default function TierLimitsCard({
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg border p-6">
+      <div className="bg-white rounded-lg border p-4">
         <div className="animate-pulse">
-          <div className="h-4 bg-gray-200 rounded w-1/3 mb-4"></div>
+          <div className="h-4 bg-gray-200 rounded w-1/3 mb-3"></div>
           <div className="space-y-2">
             <div className="h-3 bg-gray-200 rounded"></div>
             <div className="h-3 bg-gray-200 rounded w-2/3"></div>
@@ -89,9 +89,9 @@ export default function TierLimitsCard({
 
   return (
     <>
-      <div className="bg-white rounded-lg border p-6">
+      <div className="bg-white rounded-lg border p-4">
         {/* Header */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Crown className={`w-5 h-5 ${getTierColor(limits.tier)}`} />
             <h3 className="font-semibold text-gray-900">
@@ -112,20 +112,20 @@ export default function TierLimitsCard({
         </div>
 
         {/* Usage Stats */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           {/* Listings Usage */}
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-600">Active Listings</span>
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs text-gray-600">Active Listings</span>
               <span className="text-sm font-medium">
                 {limits.current_listings}
                 {limits.max_listings === -1 ? '' : ` / ${limits.max_listings}`}
               </span>
             </div>
             {limits.max_listings !== -1 && (
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-gray-200 rounded-full h-1.5">
                 <div
-                  className={`h-2 rounded-full transition-all ${
+                  className={`h-1.5 rounded-full transition-all ${
                     isAtLimit 
                       ? 'bg-red-500' 
                       : isNearLimit 
@@ -139,27 +139,27 @@ export default function TierLimitsCard({
           </div>
 
           {/* Features Grid */}
-          <div className="grid grid-cols-2 gap-4 pt-4 border-t">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t">
             <div className="text-center">
-              <div className="text-lg font-semibold text-gray-900">
+              <div className="text-base font-semibold text-gray-900">
                 {limits.max_images}
               </div>
               <div className="text-xs text-gray-600">Images per listing</div>
             </div>
             <div className="text-center">
-              <div className="text-lg font-semibold text-gray-900">
+              <div className="text-base font-semibold text-gray-900">
                 {limits.max_videos === -1 ? '∞' : limits.max_videos}
               </div>
               <div className="text-xs text-gray-600">Videos per listing</div>
             </div>
             <div className="text-center">
-              <div className="text-lg font-semibold text-gray-900">
+              <div className="text-base font-semibold text-gray-900">
                 {limits.listing_duration_days}
               </div>
               <div className="text-xs text-gray-600">Days duration</div>
             </div>
             <div className="text-center">
-              <div className="text-lg font-semibold text-gray-900">
+              <div className="text-base font-semibold text-gray-900">
                 {limits.gallery_types.length}
               </div>
               <div className="text-xs text-gray-600">Gallery types</div>
@@ -168,9 +168,9 @@ export default function TierLimitsCard({
 
           {/* Warnings */}
           {isAtLimit && (
-            <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+            <div className="flex items-center gap-2 p-2 bg-red-50 border border-red-200 rounded-md">
               <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
-              <div className="text-sm">
+              <div className="text-xs">
                 <div className="font-medium text-red-800">Listing limit reached</div>
                 <div className="text-red-600">
                   Upgrade to create more listings or deactivate existing ones.
@@ -180,9 +180,9 @@ export default function TierLimitsCard({
           )}
 
           {isNearLimit && !isAtLimit && (
-            <div className="flex items-center gap-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <div className="flex items-center gap-2 p-2 bg-yellow-50 border border-yellow-200 rounded-md">
               <AlertCircle className="w-4 h-4 text-yellow-500 flex-shrink-0" />
-              <div className="text-sm">
+              <div className="text-xs">
                 <div className="font-medium text-yellow-800">Approaching limit</div>
                 <div className="text-yellow-600">
                   You're using {Math.round(usagePercentage)}% of your listings.
@@ -195,7 +195,7 @@ export default function TierLimitsCard({
           {limits.tier === 'free' && (
             <button
               onClick={() => setShowUpgradeModal(true)}
-              className="w-full mt-4 p-3 bg-gradient-to-r from-emerald-500 to-blue-500 text-white rounded-lg hover:from-emerald-600 hover:to-blue-600 transition-all flex items-center justify-center gap-2"
+              className="w-full mt-2 p-2 bg-gradient-to-r from-emerald-500 to-blue-500 text-white rounded-md hover:from-emerald-600 hover:to-blue-600 transition-all flex items-center justify-center gap-2 text-sm"
             >
               <Zap className="w-4 h-4" />
               Unlock Unlimited Listings

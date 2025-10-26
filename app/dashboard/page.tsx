@@ -12,6 +12,7 @@ import { DeleteConfirmModal } from '@/components/DeleteConfirmModal'
 import { ListingCardGrid } from '@/components/ListingCardGrid'
 import { MediaExpirationWarning } from '@/components/MediaExpirationWarning'
 import FreeAccountNotifications from '@/components/FreeAccountNotifications'
+import { GridBackground } from '@/components/ui/glowing-card'
 import { useRequireAuth } from '@/lib/auth'
 
 interface Post {
@@ -275,78 +276,22 @@ export default function DashboardPage() {
 
         {/* Stats Overview */}
         {posts.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
-            {/* Views */}
-            <div 
-              ref={card1Ref}
-              onMouseMove={(e) => handleMouseMove(e, card1Ref)}
-              className="gooey-card gooey-card-emerald group relative overflow-visible rounded-3xl bg-transparent p-8 transition-all duration-500 hover:scale-105"
-              style={{
-                '--x': '50',
-                '--y': '50',
-                '--hue': '170deg',
-              } as React.CSSProperties}
-            >
-              <div className="relative z-10 flex items-center gap-4">
-                <div className="rounded-2xl bg-white/20 backdrop-blur-sm p-3">
-                  <Eye className="h-7 w-7 text-white" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-white/80">Total Views</p>
-                  <p className="text-4xl font-bold text-white tracking-tight">
-                    {posts.reduce((sum, post) => sum + post.views, 0)}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Clicks */}
-            <div 
-              ref={card2Ref}
-              onMouseMove={(e) => handleMouseMove(e, card2Ref)}
-              className="gooey-card gooey-card-blue group relative overflow-visible rounded-3xl bg-transparent p-8 transition-all duration-500 hover:scale-105"
-              style={{
-                '--x': '50',
-                '--y': '50',
-                '--hue': '220deg',
-              } as React.CSSProperties}
-            >
-              <div className="relative z-10 flex items-center gap-4">
-                <div className="rounded-2xl bg-white/20 backdrop-blur-sm p-3">
-                  <MousePointer className="h-7 w-7 text-white" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-white/80">Total Clicks</p>
-                  <p className="text-4xl font-bold text-white tracking-tight">
-                    {posts.reduce((sum, post) => sum + post.clicks, 0)}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Active Listings */}
-            <div 
-              ref={card3Ref}
-              onMouseMove={(e) => handleMouseMove(e, card3Ref)}
-              className="gooey-card gooey-card-purple group relative overflow-visible rounded-3xl bg-transparent p-8 transition-all duration-500 hover:scale-105"
-              style={{
-                '--x': '50',
-                '--y': '50',
-                '--hue': '280deg',
-              } as React.CSSProperties}
-            >
-              <div className="relative z-10 flex items-center gap-4">
-                <div className="rounded-2xl bg-white/20 backdrop-blur-sm p-3">
-                  <Plus className="h-7 w-7 text-white" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-white/80">Active Listings</p>
-                  <p className="text-4xl font-bold text-white tracking-tight">
-                    {posts.filter(post => post.is_active).length}
-                  </p>
-                </div>
-              </div>
-            </div>
+          <div className="grid grid-cols-3 gap-2 sm:gap-6 mb-6 sm:mb-8">
+            <GridBackground
+              title={posts.reduce((sum, post) => sum + post.views, 0).toString()}
+              description="Total Views"
+              showAvailability={false}
+            />
+            <GridBackground
+              title={posts.reduce((sum, post) => sum + post.clicks, 0).toString()}
+              description="Total Clicks"
+              showAvailability={false}
+            />
+            <GridBackground
+              title={posts.filter(post => post.is_active).length.toString()}
+              description="Active Listings"
+              showAvailability={false}
+            />
           </div>
         )}
 

@@ -37,11 +37,11 @@ export default function PricingPage() {
           </p>
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-2xl mx-auto mb-8">
             <p className="text-blue-800 font-medium text-center">
-              🧪 Currently in Free Plan Testing Phase
+              🚀 New Feature Updates in Progress
             </p>
             <p className="text-blue-700 text-sm text-center mt-1">
-              Premium and Business signups are temporarily disabled while we perfect the free experience. 
-              Feel free to test our platform with a free account!
+              We're rolling out exciting new Premium and Business features! While we finalize these updates, 
+              enjoy our enhanced free plan with all the latest improvements.
             </p>
           </div>
 
@@ -144,10 +144,10 @@ export default function PricingPage() {
               </Link>
               <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3">
                 <p className="text-emerald-800 font-medium text-xs text-center">
-                  ✨ Perfect for testing!
+                  ✨ Enhanced & always free!
                 </p>
                 <p className="text-emerald-700 text-xs text-center mt-1">
-                  Feel free to explore all features
+                  Start with our improved platform
                 </p>
               </div>
             </div>
@@ -236,7 +236,7 @@ export default function PricingPage() {
               </button>
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                 <p className="text-blue-800 font-medium text-xs text-center">
-                  🧪 Testing in progress
+                  🚀 New features coming soon
                 </p>
                 <p className="text-blue-700 text-xs text-center mt-1">
                   Premium signup temporarily disabled
@@ -320,7 +320,7 @@ export default function PricingPage() {
               </button>
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                 <p className="text-blue-800 font-medium text-xs text-center">
-                  🧪 Testing in progress
+                  🚀 New features coming soon
                 </p>
                 <p className="text-blue-700 text-xs text-center mt-1">
                   Business signup temporarily disabled

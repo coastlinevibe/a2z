@@ -228,7 +228,7 @@ export default function ChoosePlanPage() {
                 <ArrowRight className="w-5 h-5" />
               </Link>
               <p className="text-gray-600 text-sm max-w-md mx-auto">
-                Feel free to test our platform! Sign up for a free account and explore all the features.
+                Start with our enhanced free plan and explore all the latest features we've built for sellers.
               </p>
             </div>
           ) : (
@@ -242,10 +242,10 @@ export default function ChoosePlanPage() {
               </button>
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
                 <p className="text-blue-800 font-medium text-sm">
-                  🧪 Free plan testing in progress
+                  🚀 New Premium Features in Development
                 </p>
                 <p className="text-blue-700 text-sm mt-1">
-                  Premium and Business plans are temporarily disabled while we perfect the free experience. Feel free to test and sign up for a free account!
+                  We're adding exciting new Premium and Business features! While we finalize these updates, enjoy our enhanced free plan with all the latest improvements.
                 </p>
               </div>
             </div>

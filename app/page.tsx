@@ -144,33 +144,12 @@ export default function HomePage() {
             </p>
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-2xl mx-auto mb-8">
               <p className="text-blue-800 font-medium text-center">
-                🧪 Currently in Free Plan Testing Phase
+                🚀 New Feature Updates in Progress
               </p>
               <p className="text-blue-700 text-sm text-center mt-1">
-                Premium and Business signups are temporarily disabled while we perfect the free experience. 
-                Feel free to test our platform with a free account!
+                We're rolling out exciting new Premium and Business features! While we finalize these updates, 
+                enjoy our enhanced free plan with all the latest improvements.
               </p>
-            </div>
-            {/* Early Adopter Badge */}
-            <div className="flex justify-center px-4 sm:px-0">
-              <MovingBorderButton
-                borderRadius="0.75rem"
-                duration={3000}
-                className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-3 sm:px-6 py-2 sm:py-3 w-full sm:w-auto max-w-sm sm:max-w-none"
-              >
-                <div className="flex flex-col sm:flex-row items-center gap-2 sm:space-x-2 sm:gap-0">
-                  <div className="flex items-center gap-2">
-                    <Crown className="h-4 w-4 sm:h-5 sm:w-5" />
-                    <span className="font-semibold text-sm sm:text-base">Limited Time Offer</span>
-                  </div>
-                  <div className="mt-2 sm:mt-4">
-                    <Link href="/create" className="inline-block bg-white text-emerald-600 px-4 sm:px-8 py-2 sm:py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg text-sm sm:text-base">
-                      Get Started Now
-                      <ArrowRight className="inline ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4" />
-                    </Link>
-                  </div>
-                </div>
-              </MovingBorderButton>
             </div>
           </div>
 
@@ -202,7 +181,7 @@ export default function HomePage() {
                 </Link>
                 <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-2">
                   <p className="text-emerald-800 font-medium text-xs text-center">
-                    ✨ Perfect for testing!
+                    ✨ Enhanced & always free!
                   </p>
                 </div>
               </div>
@@ -252,7 +231,7 @@ export default function HomePage() {
                 </button>
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-2">
                   <p className="text-blue-800 font-medium text-xs text-center">
-                    🧪 Testing in progress
+                    🚀 New features coming soon
                   </p>
                 </div>
               </div>
@@ -295,7 +274,7 @@ export default function HomePage() {
                 </button>
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-2">
                   <p className="text-blue-800 font-medium text-xs text-center">
-                    🧪 Testing in progress
+                    🚀 New features coming soon
                   </p>
                 </div>
               </div>

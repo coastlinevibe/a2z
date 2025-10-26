@@ -201,8 +201,23 @@ export default async function UserListingPage({ params }: PageProps) {
         {/* Share Section */}
         <ShareSection post={post} username={username} />
 
-        {/* Back to A2Z */}
+        {/* WhatsApp Community */}
         <div className="mt-8 text-center">
+          <p className="text-gray-600 text-sm">
+            Join our a2z Sellr - WhatsApp community{' '}
+            <a
+              href="https://chat.whatsapp.com/DIAWnwbUTE0LO2kifr6tGu?mode=wwt"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-emerald-600 hover:text-emerald-700 font-medium underline"
+            >
+              here
+            </a>
+          </p>
+        </div>
+
+        {/* Back to A2Z */}
+        <div className="mt-4 text-center">
           <Link
             href="/"
             className="inline-flex items-center text-emerald-600 hover:text-emerald-700 font-medium"
