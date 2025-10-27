@@ -38,19 +38,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
   const publicUrl = `${baseUrl}/p/${post.slug}`
 
-  // Use actual product image - this is what was working before
-  let socialImage = post.media_urls && post.media_urls.length > 0 ? post.media_urls[0] : ''
-  
-  // Ensure image URL is absolute
-  if (socialImage && !socialImage.startsWith('http')) {
-    socialImage = `${baseUrl}${socialImage.startsWith('/') ? '' : '/'}${socialImage}`
-  }
-  
-  // Only use generated OG as last resort if no product image
-  if (!socialImage) {
-    socialImage = `${baseUrl}/api/og?title=${encodeURIComponent(post.title)}&price=${encodeURIComponent(price)}&username=Seller`
-  }
-
   return {
     title: `${post.title} - ${price} | Sellr`,
     description: post.description || `${post.title} for ${price}. Contact seller on WhatsApp.`,
@@ -59,14 +46,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: post.description || `${post.title} for ${price}. Contact seller on WhatsApp.`,
       url: publicUrl,
       siteName: 'Sellr',
-      images: [
+      images: post.media_urls.length > 0 ? [
         {
-          url: socialImage,
+          url: post.media_urls[0],
           width: 1200,
           height: 630,
           alt: post.title,
         }
-      ],
+      ] : [],
       locale: 'en_ZA',
       type: 'website',
     },
@@ -74,7 +61,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       card: 'summary_large_image',
       title: `${post.title} - ${price}`,
       description: post.description || `${post.title} for ${price}. Contact seller on WhatsApp.`,
-      images: [socialImage],
+      images: post.media_urls.length > 0 ? [post.media_urls[0]] : [],
     },
     alternates: {
       canonical: publicUrl,

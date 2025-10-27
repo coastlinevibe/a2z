@@ -50,14 +50,7 @@ export function PostCard({
 }: PostCardProps) {
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0)
   const [showDescription, setShowDescription] = useState(false)
-  const [expandDescription, setExpandDescription] = useState(false)
   const hydrated = useHydrated()
-
-  // Truncate description to 75 characters
-  const isLongDescription = post.description && post.description.length > 75
-  const truncatedDescription = post.description && post.description.length > 75 
-    ? post.description.substring(0, 75) + '...' 
-    : post.description
 
   // Track page views if enabled
   usePageView(trackViews ? post.id : null)
@@ -179,19 +172,9 @@ export function PostCard({
 
         {/* Description */}
         {post.description && (
-          <div className="mb-4 space-y-2">
-            <p className="text-gray-600 leading-relaxed">
-              {expandDescription ? post.description : truncatedDescription}
-            </p>
-            {isLongDescription && (
-              <button
-                onClick={() => setExpandDescription(!expandDescription)}
-                className="text-emerald-600 hover:text-emerald-700 font-medium text-sm"
-              >
-                {expandDescription ? 'See Less' : 'See More'}
-              </button>
-            )}
-          </div>
+          <p className="text-gray-600 mb-4 leading-relaxed">
+            {post.description}
+          </p>
         )}
 
         {/* Location */}
@@ -245,18 +228,10 @@ export function PostCard({
 
         {/* Description Section */}
         {showDescription && post.description && (
-          <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200 space-y-2">
+          <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
             <p className="text-gray-700 text-sm leading-relaxed">
-              {expandDescription ? post.description : truncatedDescription}
+              {post.description}
             </p>
-            {isLongDescription && (
-              <button
-                onClick={() => setExpandDescription(!expandDescription)}
-                className="text-emerald-600 hover:text-emerald-700 font-medium text-sm"
-              >
-                {expandDescription ? 'See Less' : 'See More'}
-              </button>
-            )}
           </div>
         )}
 

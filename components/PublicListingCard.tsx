@@ -39,20 +39,8 @@ interface PublicListingCardProps {
 
 export function PublicListingCard({ post, className }: PublicListingCardProps) {
   const [showDescription, setShowDescription] = useState(false)
-  const [expandDescription, setExpandDescription] = useState(false)
   const contactNumber = post.whatsapp_number || '0000000000'
   const price = formatPrice(post.price_cents, post.currency)
-
-  // Strip HTML and get plain text for truncation
-  const stripHtml = (html: string) => {
-    const tmp = document.createElement('DIV')
-    tmp.innerHTML = html
-    return tmp.textContent || tmp.innerText || ''
-  }
-
-  const plainDescription = post.description ? stripHtml(post.description) : ''
-  const isLongDescription = plainDescription.length > 75
-  const truncatedDescription = isLongDescription ? plainDescription.substring(0, 75) + '...' : plainDescription
 
   const handleContactSeller = () => {
     trackWhatsAppClick(post.id)
@@ -163,26 +151,10 @@ export function PublicListingCard({ post, className }: PublicListingCardProps) {
 
                 {/* Description - Below */}
                 {post.description && (
-                  <div className="space-y-2">
-                    <div className="text-gray-600 text-sm">
-                      {expandDescription ? (
-                        <div 
-                          className="prose prose-sm max-w-none"
-                          dangerouslySetInnerHTML={{ __html: post.description }}
-                        />
-                      ) : (
-                        <p>{truncatedDescription}</p>
-                      )}
-                    </div>
-                    {isLongDescription && (
-                      <button
-                        onClick={() => setExpandDescription(!expandDescription)}
-                        className="text-emerald-600 hover:text-emerald-700 font-medium text-sm"
-                      >
-                        {expandDescription ? 'See Less' : 'See More'}
-                      </button>
-                    )}
-                  </div>
+                  <div 
+                    className="text-gray-600 text-sm prose prose-sm max-w-none"
+                    dangerouslySetInnerHTML={{ __html: post.description }}
+                  />
                 )}
               </div>
             </AccordionContent>
@@ -191,22 +163,8 @@ export function PublicListingCard({ post, className }: PublicListingCardProps) {
 
         {/* Description Section */}
         {showDescription && post.description && (
-          <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200 space-y-2">
-            <div className="text-gray-700 text-sm leading-relaxed prose prose-sm max-w-none">
-              {expandDescription ? (
-                <div dangerouslySetInnerHTML={{ __html: post.description }} />
-              ) : (
-                <p>{truncatedDescription}</p>
-              )}
-            </div>
-            {isLongDescription && (
-              <button
-                onClick={() => setExpandDescription(!expandDescription)}
-                className="text-emerald-600 hover:text-emerald-700 font-medium text-sm"
-              >
-                {expandDescription ? 'See Less' : 'See More'}
-              </button>
-            )}
+          <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+            <p className="text-gray-700 text-sm leading-relaxed prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: post.description }} />
           </div>
         )}
       </div>

@@ -10,8 +10,7 @@ export async function GET(request: NextRequest) {
     const price = searchParams.get('price') || 'Price on request'
     const username = searchParams.get('username') || 'Seller'
 
-    // Add cache headers to ensure WhatsApp can cache the image
-    const response = new ImageResponse(
+    return new ImageResponse(
       (
         <div
           style={{
@@ -133,12 +132,6 @@ export async function GET(request: NextRequest) {
         height: 630,
       }
     )
-
-    // Add cache headers for WhatsApp and other crawlers
-    response.headers.set('Cache-Control', 'public, max-age=86400, immutable')
-    response.headers.set('Content-Type', 'image/png')
-    
-    return response
   } catch (e: any) {
     console.log(`Failed to generate OG image: ${e.message}`)
     return new Response(`Failed to generate the image`, {

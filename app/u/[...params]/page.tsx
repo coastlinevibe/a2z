@@ -128,6 +128,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     socialImage = `${baseUrl}${socialImage.startsWith('/') ? '' : '/'}${socialImage}`
   }
 
+  // Detect image type
+  const imageType = socialImage.includes('/api/og') 
+    ? 'image/png' 
+    : socialImage.toLowerCase().includes('.jpg')
+      ? 'image/jpeg'
+      : 'image/png'
+
   return {
     title: `${post.title} - ${price} | ${username} on A2Z`,
     description: cleanDescription,
@@ -159,6 +166,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     other: {
       'og:image:width': '1200',
       'og:image:height': '630',
+      'og:image:type': imageType,
       'twitter:image': socialImage,
       'twitter:image:alt': `${post.title} - ${price} on A2Z`,
     },
