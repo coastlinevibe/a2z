@@ -120,19 +120,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     ? post.description.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim().slice(0, 160)
     : `${post.title} for ${price}. Contact ${username} on WhatsApp.`
 
-  // Use actual product image first, fallback to generated OG image
-  let socialImage = ''
+  // Use actual product image - this is what was working before
+  let socialImage = post.media_urls && post.media_urls.length > 0 ? post.media_urls[0] : ''
   
-  if (post.media_urls && post.media_urls.length > 0) {
-    // Use actual product image
-    socialImage = post.media_urls[0]
-    
-    // Ensure image URL is absolute
-    if (!socialImage.startsWith('http')) {
-      socialImage = `${baseUrl}${socialImage.startsWith('/') ? '' : '/'}${socialImage}`
-    }
-  } else {
-    // Fallback to generated OG image
+  // Ensure image URL is absolute
+  if (socialImage && !socialImage.startsWith('http')) {
+    socialImage = `${baseUrl}${socialImage.startsWith('/') ? '' : '/'}${socialImage}`
+  }
+  
+  // Only use generated OG as last resort if no product image
+  if (!socialImage) {
     socialImage = `${baseUrl}/api/og?title=${encodeURIComponent(post.title)}&price=${encodeURIComponent(price)}&username=${encodeURIComponent(username)}`
   }
 
