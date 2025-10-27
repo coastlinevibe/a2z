@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { Phone, MapPin, Truck, MessageCircle } from 'lucide-react'
 import { cn, formatPrice } from '@/lib/utils'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
@@ -37,6 +38,7 @@ interface PublicListingCardProps {
 }
 
 export function PublicListingCard({ post, className }: PublicListingCardProps) {
+  const [showDescription, setShowDescription] = useState(false)
   const contactNumber = post.whatsapp_number || '0000000000'
   const price = formatPrice(post.price_cents, post.currency)
 
@@ -124,11 +126,12 @@ export function PublicListingCard({ post, className }: PublicListingCardProps) {
                 <button
                   onClick={(e) => {
                     e.stopPropagation()
-                    handleCallSeller()
+                    setShowDescription(!showDescription)
                   }}
-                  className="p-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                  className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2.5 px-4 rounded-lg transition-colors"
+                  title="Toggle description"
                 >
-                  <Phone className="h-5 w-5 text-gray-700" />
+                  Description
                 </button>
               </div>
             </AccordionTrigger>
@@ -157,6 +160,13 @@ export function PublicListingCard({ post, className }: PublicListingCardProps) {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
+
+        {/* Description Section */}
+        {showDescription && post.description && (
+          <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+            <p className="text-gray-700 text-sm leading-relaxed prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: post.description }} />
+          </div>
+        )}
       </div>
     </div>
   )

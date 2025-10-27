@@ -183,11 +183,12 @@ export function ListingCardGrid({ posts, onEdit, onShare, onPreview, onDelete }:
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
-                          handleCallSeller(post)
+                          setOpenCardId(openCardId === post.id ? '' : post.id)
                         }}
-                        className="p-2 bg-gray-100 hover:bg-gray-200 rounded transition-colors"
+                        className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-3 rounded transition-colors text-sm"
+                        title="Toggle description"
                       >
-                        <Phone className="h-4 w-4 text-gray-700" />
+                        Description
                       </button>
                     </div>
                   </AccordionTrigger>

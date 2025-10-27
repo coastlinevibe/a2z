@@ -17,6 +17,7 @@ interface RichTextEditorProps {
   placeholder?: string
   deliveryAvailable?: boolean
   onDeliveryChange?: (available: boolean) => void
+  maxCharacters?: number
 }
 
 export default function RichTextEditor({
@@ -25,6 +26,7 @@ export default function RichTextEditor({
   placeholder = 'Describe your product, condition, features, etc.',
   deliveryAvailable = false,
   onDeliveryChange,
+  maxCharacters = 1500,
 }: RichTextEditorProps) {
   const [showPicker, setShowPicker] = useState(false)
   const containerRef = useRef<HTMLDivElement | null>(null)
@@ -52,6 +54,14 @@ export default function RichTextEditor({
     ],
     content: value || '',
     onUpdate: ({ editor }: { editor: Editor }) => {
+      const plainText = editor.getText()
+      // Enforce character limit
+      if (plainText.length > maxCharacters) {
+        // Truncate content to max characters
+        const truncatedText = plainText.substring(0, maxCharacters)
+        editor.commands.setContent(truncatedText, false)
+        return
+      }
       const html = editor.getHTML()
       onChange(html)
     },
@@ -95,6 +105,10 @@ export default function RichTextEditor({
   }, [showPicker])
 
   if (!editor) return null
+
+  // Get plain text content for character count (excluding HTML tags)
+  const plainText = editor.getText()
+  const charCount = plainText.length
 
   return (
     <div ref={containerRef} className="relative w-full">
@@ -177,9 +191,16 @@ export default function RichTextEditor({
 
       <EditorContent editor={editor} />
 
-      <p className="mt-1 text-xs text-gray-400">
-        Tip: Add emojis 😄 and links to make your listing stand out.
-      </p>
+      <div className="mt-2 flex items-center justify-between">
+        <p className="text-xs text-gray-400">
+          Tip: Add emojis 😄 and links to make your listing stand out.
+        </p>
+        <p className={`text-xs font-medium ${
+          charCount === 0 ? 'text-gray-400' : charCount >= maxCharacters ? 'text-red-600' : charCount < 10 ? 'text-orange-500' : 'text-emerald-600'
+        }`}>
+          {charCount} / {maxCharacters} characters
+        </p>
+      </div>
 
       {showPicker && (
         <div className="absolute left-0 bottom-[calc(100%+0.75rem)] z-50 w-[32rem] max-w-[98vw] rounded-lg border bg-white shadow-lg sm:w-[34rem]">

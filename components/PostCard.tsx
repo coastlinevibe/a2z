@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { MessageCircle, Phone, MapPin, Eye, MousePointer, ChevronLeft, ChevronRight, BadgeCheck } from 'lucide-react'
+import { MessageCircle, MapPin, Eye, MousePointer, ChevronLeft, ChevronRight, BadgeCheck, ExternalLink } from 'lucide-react'
 import { cn, formatPrice, generateWhatsAppUrl, formatRelativeTime } from '@/lib/utils'
 import { useHydrated } from '@/hooks/useHydrated'
 import { usePageView, trackWhatsAppClick, trackPhoneClick } from '@/lib/analytics'
@@ -49,6 +49,7 @@ export function PostCard({
   className 
 }: PostCardProps) {
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0)
+  const [showDescription, setShowDescription] = useState(false)
   const hydrated = useHydrated()
 
   // Track page views if enabled
@@ -208,16 +209,31 @@ export function PostCard({
             Contact Seller
           </button>
           
-          {post.whatsapp_number && (
-            <button
-              onClick={handleCallClick}
-              className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center"
-              title="Call seller"
-            >
-              <Phone className="h-5 w-5" />
-            </button>
-          )}
+          <button
+            onClick={() => setShowDescription(!showDescription)}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition-colors"
+            title="Toggle description"
+          >
+            Description
+          </button>
+          
+          <button
+            onClick={handleWhatsAppClick}
+            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center shadow-lg hover:shadow-xl"
+            title="Open premium listing"
+          >
+            <ExternalLink className="h-5 w-5" />
+          </button>
         </div>
+
+        {/* Description Section */}
+        {showDescription && post.description && (
+          <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+            <p className="text-gray-700 text-sm leading-relaxed">
+              {post.description}
+            </p>
+          </div>
+        )}
 
         {/* Timestamp */}
         <div className="text-xs text-gray-400 mt-4 text-center">
