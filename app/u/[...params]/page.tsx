@@ -120,17 +120,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     ? post.description.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim().slice(0, 160)
     : `${post.title} for ${price}. Contact ${username} on WhatsApp.`
 
-  // Use actual product image - this is what was working before
-  let socialImage = post.media_urls && post.media_urls.length > 0 ? post.media_urls[0] : ''
+  // Use first image or fallback - ensure absolute URL
+  let socialImage = post.media_urls.length > 0 ? post.media_urls[0] : `${baseUrl}/api/og?title=${encodeURIComponent(post.title)}&price=${encodeURIComponent(price)}&username=${encodeURIComponent(username)}`
   
   // Ensure image URL is absolute
   if (socialImage && !socialImage.startsWith('http')) {
     socialImage = `${baseUrl}${socialImage.startsWith('/') ? '' : '/'}${socialImage}`
-  }
-  
-  // Only use generated OG as last resort if no product image
-  if (!socialImage) {
-    socialImage = `${baseUrl}/api/og?title=${encodeURIComponent(post.title)}&price=${encodeURIComponent(price)}&username=${encodeURIComponent(username)}`
   }
 
   return {
@@ -147,7 +142,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
           width: 1200,
           height: 630,
           alt: `${post.title} - ${price} on A2Z`,
-          type: 'image/jpeg',
         }
       ],
       locale: 'en_ZA',
@@ -165,11 +159,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     other: {
       'og:image:width': '1200',
       'og:image:height': '630',
-      'og:image:type': 'image/png',
-      'og:image:secure_url': socialImage,
       'twitter:image': socialImage,
       'twitter:image:alt': `${post.title} - ${price} on A2Z`,
-      'twitter:card': 'summary_large_image',
     },
   }
 }
