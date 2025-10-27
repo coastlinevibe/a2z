@@ -659,6 +659,7 @@ export function CreatePostForm({ className }: CreatePostFormProps) {
           isOpen={showShareModal}
           onClose={() => setShowShareModal(false)}
           post={createdPost}
+          username={createdPost.username}
         />
       )}
 
