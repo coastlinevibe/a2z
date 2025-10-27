@@ -38,9 +38,21 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
   const publicUrl = `${baseUrl}/p/${post.slug}`
 
-  // ALWAYS use generated OG image - most reliable for WhatsApp
-  // Product images may have CORS or accessibility issues
-  const socialImage = `${baseUrl}/api/og?title=${encodeURIComponent(post.title)}&price=${encodeURIComponent(price)}&username=Seller`
+  // Use actual product image first, fallback to generated OG image
+  let socialImage = ''
+  
+  if (post.media_urls && post.media_urls.length > 0) {
+    // Use actual product image
+    socialImage = post.media_urls[0]
+    
+    // Ensure image URL is absolute
+    if (!socialImage.startsWith('http')) {
+      socialImage = `${baseUrl}${socialImage.startsWith('/') ? '' : '/'}${socialImage}`
+    }
+  } else {
+    // Fallback to generated OG image
+    socialImage = `${baseUrl}/api/og?title=${encodeURIComponent(post.title)}&price=${encodeURIComponent(price)}&username=Seller`
+  }
 
   return {
     title: `${post.title} - ${price} | Sellr`,

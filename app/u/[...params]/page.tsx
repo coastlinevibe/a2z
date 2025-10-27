@@ -120,9 +120,21 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     ? post.description.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim().slice(0, 160)
     : `${post.title} for ${price}. Contact ${username} on WhatsApp.`
 
-  // ALWAYS use generated OG image - most reliable for WhatsApp
-  // Product images may have CORS or accessibility issues
-  const socialImage = `${baseUrl}/api/og?title=${encodeURIComponent(post.title)}&price=${encodeURIComponent(price)}&username=${encodeURIComponent(username)}`
+  // Use actual product image first, fallback to generated OG image
+  let socialImage = ''
+  
+  if (post.media_urls && post.media_urls.length > 0) {
+    // Use actual product image
+    socialImage = post.media_urls[0]
+    
+    // Ensure image URL is absolute
+    if (!socialImage.startsWith('http')) {
+      socialImage = `${baseUrl}${socialImage.startsWith('/') ? '' : '/'}${socialImage}`
+    }
+  } else {
+    // Fallback to generated OG image
+    socialImage = `${baseUrl}/api/og?title=${encodeURIComponent(post.title)}&price=${encodeURIComponent(price)}&username=${encodeURIComponent(username)}`
+  }
 
   return {
     title: `${post.title} - ${price} | ${username} on A2Z`,
